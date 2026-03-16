@@ -36,6 +36,7 @@ Then choose a command:
 - `list-backups` – show available backups
 - `restore-backup` – choose and restore a specific backup
 - `publish-github` – stage all, commit, and push changes to your GitHub repo
+- `web-ui` – launch a local browser-based admin menu
 - `edit-site` – update name, about text, links, tags
 - `list-projects` – list builds
 - `list-repairs` – list repairs
@@ -48,6 +49,18 @@ Then choose a command:
 3. Open `index.html` in a browser and verify.
 
 `manage.py` now runs in a loop until you choose `q` to quit.
+
+## Web Admin UI
+From `manage.py`, choose `web-ui` (menu option `16`).
+
+Default URL:
+- `http://127.0.0.1:8081`
+
+The web UI lets you:
+- rebuild and publish
+- edit site settings
+- add/delete builds and repairs
+- manage build story sections
 
 ## Notes
 - Images are copied into `images/` when you add entries with photos.

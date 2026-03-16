@@ -6,6 +6,8 @@ import shutil
 import html
 import subprocess
 from datetime import datetime
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlencode, urlparse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -213,6 +215,628 @@ def publish_to_github():
         return
 
     print("\n✅ Published to GitHub successfully.")
+
+
+def publish_to_github_noninteractive(commit_message: str | None = None) -> tuple[bool, str]:
+    if not os.path.isdir(os.path.join(ROOT, ".git")):
+        return False, "This folder is not a git repository."
+
+    rc, remote, err = run_git(["remote", "get-url", "origin"])
+    if rc != 0 or not remote:
+        return False, f"Git remote 'origin' is not configured. {err}".strip()
+
+    rc, branch, err = run_git(["rev-parse", "--abbrev-ref", "HEAD"])
+    if rc != 0 or not branch:
+        return False, f"Could not detect current branch. {err}".strip()
+
+    rc, status, err = run_git(["status", "--porcelain"])
+    if rc != 0:
+        return False, f"Could not read git status. {err}".strip()
+
+    if not status:
+        rc, out, err = run_git(["push", "origin", branch])
+        if rc == 0:
+            return True, f"No local changes. Remote is up to date on {branch}."
+        return False, f"git push failed. {out} {err}".strip()
+
+    message = commit_message or f"site update {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+
+    rc, out, err = run_git(["add", "-A"])
+    if rc != 0:
+        return False, f"git add failed. {err}".strip()
+
+    rc, out, err = run_git(["commit", "-m", message])
+    if rc != 0:
+        combined = f"{out}\n{err}".strip().lower()
+        if "nothing to commit" not in combined:
+            return False, f"git commit failed. {out} {err}".strip()
+
+    rc, out, err = run_git(["push", "origin", branch])
+    if rc != 0:
+        combined = f"{out}\n{err}".lower()
+        if "non-fast-forward" in combined or "fetch first" in combined:
+            return False, "git push failed (remote ahead). Run sync flow: git pull --rebase origin main, then push."
+        if "password authentication is not supported" in combined:
+            return False, "git push failed: use SSH key or PAT instead of password auth."
+        if "permission denied (publickey)" in combined:
+            return False, "git push failed: SSH key not accepted by GitHub account."
+        return False, f"git push failed. {out} {err}".strip()
+
+    return True, f"Published to GitHub ({branch})."
+
+
+def _split_csv(text: str) -> list[str]:
+    if not text:
+        return []
+    return [item.strip() for item in text.split(",") if item.strip()]
+
+
+def _split_lines(text: str) -> list[str]:
+    if not text:
+        return []
+    return [line.strip() for line in text.splitlines() if line.strip()]
+
+
+def _links_to_lines(links: list[dict]) -> str:
+    rows = []
+    for link in links or []:
+        label = (link.get("label") or "Link").strip()
+        url = (link.get("url") or "").strip()
+        if url:
+            rows.append(f"{label}|{url}")
+    return "\n".join(rows)
+
+
+def _links_from_lines(text: str) -> list[dict]:
+    rows = _split_lines(text)
+    links = []
+    for row in rows:
+        if "|" in row:
+            label, url = row.split("|", 1)
+            label = label.strip() or "Link"
+            url = url.strip()
+        else:
+            label = "Link"
+            url = row.strip()
+        if url:
+            links.append({"label": label, "url": url})
+    return links
+
+
+def _safe_index(value: str, total: int) -> int:
+    if not value or not value.isdigit():
+        return -1
+    idx = int(value)
+    if idx < 0 or idx >= total:
+        return -1
+    return idx
+
+
+def resolve_image_input(image_value: str, title: str) -> str:
+    value = (image_value or "").strip().strip('"')
+    if not value:
+        return ""
+
+    if value.startswith("http://") or value.startswith("https://"):
+        return value
+
+    if os.path.isfile(value):
+        return copy_image_into_site(value, title)
+
+    root_relative = os.path.join(ROOT, value)
+    if os.path.isfile(root_relative):
+        return value.replace("\\", "/")
+
+    return value
+
+
+def _web_layout(title: str, body: str, message: str = "") -> str:
+    message_html = ""
+    if message:
+        message_html = f'<p style="padding:10px;border-radius:8px;background:#eef6ff;border:1px solid #c7ddff;">{html.escape(message)}</p>'
+
+    return f"""
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{html.escape(title)}</title>
+  <style>
+    body {{ font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f5f6f8; color: #1f2937; }}
+    .wrap {{ max-width: 1100px; margin: 0 auto; padding: 20px; }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 16px; }}
+    .card {{ background: white; border-radius: 12px; padding: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); }}
+    h1,h2,h3 {{ margin: 0 0 12px; }}
+    label {{ display: block; margin: 8px 0 4px; font-size: 14px; color: #374151; }}
+    input,textarea,select {{ width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }}
+    textarea {{ min-height: 90px; }}
+    button {{ margin-top: 10px; border: none; background: #2563eb; color: white; padding: 10px 12px; border-radius: 8px; cursor: pointer; }}
+    button.alt {{ background: #4b5563; }}
+    button.warn {{ background: #dc2626; }}
+    .row {{ display: flex; gap: 8px; flex-wrap: wrap; }}
+    .row form {{ margin: 0; }}
+    .list {{ margin: 0; padding-left: 18px; }}
+    .muted {{ color: #6b7280; font-size: 13px; }}
+    a {{ color: #2563eb; text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>RudiMakes Admin</h1>
+    <p class="muted">Web UI for projects, repairs, rebuild, and publish.</p>
+    {message_html}
+    {body}
+  </div>
+</body>
+</html>
+""".strip()
+
+
+def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
+    def parse_form(handler: BaseHTTPRequestHandler) -> dict[str, str]:
+        length = int(handler.headers.get("Content-Length", "0") or "0")
+        raw = handler.rfile.read(length).decode("utf-8") if length > 0 else ""
+        parsed = parse_qs(raw, keep_blank_values=True)
+        return {k: (v[0] if v else "") for k, v in parsed.items()}
+
+    class AdminHandler(BaseHTTPRequestHandler):
+        def _send_html(self, content: str, status: int = 200):
+            data = content.encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+        def _redirect(self, path: str, msg: str = ""):
+            target = path
+            if msg:
+                sep = "&" if "?" in target else "?"
+                target = f"{target}{sep}{urlencode({'msg': msg})}"
+            self.send_response(303)
+            self.send_header("Location", target)
+            self.end_headers()
+
+        def _render_home(self, message: str = ""):
+            projects = load_projects()
+            repairs = load_repairs()
+            site = load_site()
+
+            project_items = "\n".join([
+                f"<li><strong>{html.escape(p.get('title','Untitled'))}</strong> "
+                f"<span class='muted'>[{html.escape(p.get('status','Complete'))}]</span> "
+                f"<a href='/project/edit?idx={i}'>Edit</a> "
+                f"<a href='/story?idx={i}'>Story</a>"
+                f"<form method='post' action='/projects/delete' style='display:inline; margin-left:8px;'>"
+                f"<input type='hidden' name='idx' value='{i}' />"
+                f"<button class='warn' type='submit'>Delete</button></form></li>"
+                for i, p in enumerate(projects)
+            ]) or "<li class='muted'>No builds yet.</li>"
+
+            repair_items = "\n".join([
+                f"<li><strong>{html.escape(r.get('title','Untitled Repair'))}</strong>"
+                f" <a href='/repair/edit?idx={i}'>Edit</a>"
+                f"<form method='post' action='/repairs/delete' style='display:inline; margin-left:8px;'>"
+                f"<input type='hidden' name='idx' value='{i}' />"
+                f"<button class='warn' type='submit'>Delete</button></form></li>"
+                for i, r in enumerate(repairs)
+            ]) or "<li class='muted'>No repairs yet.</li>"
+
+            body = f"""
+<div class='grid'>
+  <div class='card'>
+    <h2>Site Actions</h2>
+    <div class='row'>
+      <form method='post' action='/actions/rebuild'><button type='submit'>Rebuild Site</button></form>
+      <form method='post' action='/actions/publish'>
+        <input type='text' name='commit_message' placeholder='Commit message (optional)' />
+        <button type='submit'>Publish GitHub</button>
+      </form>
+    </div>
+  </div>
+
+  <div class='card'>
+    <h2>Edit Site Info</h2>
+    <form method='post' action='/site/save'>
+      <label>Name</label><input name='name' value='{html.escape(site.get('name',''))}' />
+      <label>Tagline</label><input name='tagline' value='{html.escape(site.get('tagline',''))}' />
+      <label>Build Note</label><input name='build_log_note' value='{html.escape(site.get('build_log_note',''))}' />
+      <label>About</label><textarea name='about_text'>{html.escape(site.get('about_text',''))}</textarea>
+      <label>Email</label><input name='email' value='{html.escape(site.get('email',''))}' />
+      <label>Instagram URL</label><input name='instagram_url' value='{html.escape(site.get('instagram_url',''))}' />
+      <label>YouTube URL</label><input name='youtube_url' value='{html.escape(site.get('youtube_url',''))}' />
+      <label>About Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(site.get('tags') or []))}' />
+      <button type='submit'>Save Site</button>
+    </form>
+  </div>
+
+  <div class='card'>
+    <h2>Add Build</h2>
+    <form method='post' action='/projects/add'>
+      <label>Title</label><input name='title' required />
+      <label>Status</label>
+      <select name='status'><option>Complete</option><option>In Progress</option><option>Archived</option></select>
+      <label>Description</label><textarea name='description'></textarea>
+      <label>Bullets (one per line)</label><textarea name='bullets'></textarea>
+      <label>Tags (comma-separated)</label><input name='tags' />
+      <label>Cover image path or URL</label><input name='image_path' placeholder='images/test-photo.svg or /full/path/img.jpg' />
+      <button type='submit'>Add Build</button>
+    </form>
+  </div>
+
+  <div class='card'>
+    <h2>Add Repair</h2>
+    <form method='post' action='/repairs/add'>
+      <label>Title</label><input name='title' required />
+      <label>Date</label><input name='date' value='{datetime.now().strftime('%Y-%m-%d')}' />
+      <label>Status</label><input name='status' value='Fixed' />
+      <label>Device</label><input name='device' />
+      <label>Symptom</label><textarea name='symptom'></textarea>
+      <label>Diagnosis</label><textarea name='diagnosis'></textarea>
+      <label>Fix</label><textarea name='fix'></textarea>
+      <label>Notes</label><textarea name='notes'></textarea>
+      <label>Tags (comma-separated)</label><input name='tags' />
+      <label>Photo path or URL</label><input name='image_path' />
+      <button type='submit'>Add Repair</button>
+    </form>
+  </div>
+
+  <div class='card'>
+    <h2>Builds</h2>
+    <ol class='list'>{project_items}</ol>
+  </div>
+
+  <div class='card'>
+    <h2>Repairs</h2>
+    <ol class='list'>{repair_items}</ol>
+  </div>
+</div>
+"""
+            self._send_html(_web_layout("RudiMakes Admin", body, message))
+
+        def _render_story(self, idx: int, message: str = ""):
+            projects = load_projects()
+            if idx < 0 or idx >= len(projects):
+                self._redirect("/", "Invalid project selection")
+                return
+
+            project = projects[idx]
+            steps = project.get("steps") or []
+            section_items = "\n".join([
+                f"<li><strong>{i+1}. {html.escape(s.get('title','Part'))}</strong>"
+                f" <a href='/story/edit?idx={idx}&step_idx={i}'>Edit</a>"
+                f"<form method='post' action='/story/delete' style='display:inline; margin-left:8px;'>"
+                f"<input type='hidden' name='idx' value='{idx}' />"
+                f"<input type='hidden' name='step_idx' value='{i}' />"
+                f"<button class='warn' type='submit'>Delete</button></form></li>"
+                for i, s in enumerate(steps)
+            ]) or "<li class='muted'>No story sections yet.</li>"
+
+            body = f"""
+<div class='card'>
+  <h2>Build Story: {html.escape(project.get('title','Untitled'))}</h2>
+  <p><a href='/'>← Back to dashboard</a></p>
+  <ol class='list'>{section_items}</ol>
+  <form method='post' action='/story/clear'>
+    <input type='hidden' name='idx' value='{idx}' />
+    <button class='warn' type='submit'>Clear All Sections</button>
+  </form>
+</div>
+
+<div class='card'>
+  <h3>Add Story Section</h3>
+  <form method='post' action='/story/add'>
+    <input type='hidden' name='idx' value='{idx}' />
+    <label>Section title</label><input name='title' placeholder='Part {len(steps)+1}' />
+    <label>Section text</label><textarea name='text'></textarea>
+    <label>Image path or URL</label><input name='image_path' />
+    <label>Image alt text</label><input name='alt' />
+    <button type='submit'>Add Section</button>
+  </form>
+</div>
+"""
+            self._send_html(_web_layout("Build Story", body, message))
+
+                def _render_project_edit(self, idx: int, message: str = ""):
+                        projects = load_projects()
+                        if idx < 0 or idx >= len(projects):
+                                self._redirect("/", "Invalid build selection")
+                                return
+
+                        p = projects[idx]
+                        status_value = p.get("status", "Complete")
+                        options = ["Complete", "In Progress", "Archived"]
+                        status_opts = "\n".join([
+                                f"<option {'selected' if status_value == opt else ''}>{opt}</option>" for opt in options
+                        ])
+
+                        body = f"""
+<div class='card'>
+    <h2>Edit Build: {html.escape(p.get('title','Untitled'))}</h2>
+    <p><a href='/'>← Back to dashboard</a></p>
+    <form method='post' action='/projects/save'>
+        <input type='hidden' name='idx' value='{idx}' />
+        <label>Title</label><input name='title' value='{html.escape(p.get('title',''))}' required />
+        <label>Status</label><select name='status'>{status_opts}</select>
+        <label>Description</label><textarea name='description'>{html.escape(p.get('description',''))}</textarea>
+        <label>Bullets (one per line)</label><textarea name='bullets'>{html.escape(chr(10).join(p.get('bullets') or []))}</textarea>
+        <label>Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(p.get('tags') or []))}' />
+        <label>Cover image path or URL</label><input name='cover_image' value='{html.escape(p.get('cover_image') or p.get('image') or '')}' />
+        <label>Alt text</label><input name='alt' value='{html.escape(p.get('alt') or p.get('title') or '')}' />
+        <label>Gallery image paths/URLs (one per line)</label><textarea name='images'>{html.escape(chr(10).join(p.get('images') or []))}</textarea>
+        <label>Links (one per line: label|url)</label><textarea name='links'>{html.escape(_links_to_lines(p.get('links') or []))}</textarea>
+        <button type='submit'>Save Build</button>
+    </form>
+</div>
+"""
+                        self._send_html(_web_layout("Edit Build", body, message))
+
+                def _render_repair_edit(self, idx: int, message: str = ""):
+                        repairs = load_repairs()
+                        if idx < 0 or idx >= len(repairs):
+                                self._redirect("/", "Invalid repair selection")
+                                return
+
+                        r = repairs[idx]
+                        body = f"""
+<div class='card'>
+    <h2>Edit Repair: {html.escape(r.get('title','Untitled Repair'))}</h2>
+    <p><a href='/'>← Back to dashboard</a></p>
+    <form method='post' action='/repairs/save'>
+        <input type='hidden' name='idx' value='{idx}' />
+        <label>Title</label><input name='title' value='{html.escape(r.get('title',''))}' required />
+        <label>Date</label><input name='date' value='{html.escape(r.get('date',''))}' />
+        <label>Status</label><input name='status' value='{html.escape(r.get('status',''))}' />
+        <label>Device</label><input name='device' value='{html.escape(r.get('device',''))}' />
+        <label>Symptom</label><textarea name='symptom'>{html.escape(r.get('symptom',''))}</textarea>
+        <label>Diagnosis</label><textarea name='diagnosis'>{html.escape(r.get('diagnosis',''))}</textarea>
+        <label>Fix</label><textarea name='fix'>{html.escape(r.get('fix',''))}</textarea>
+        <label>Notes</label><textarea name='notes'>{html.escape(r.get('notes',''))}</textarea>
+        <label>Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(r.get('tags') or []))}' />
+        <label>Photo path or URL</label><input name='image' value='{html.escape(r.get('image') or '')}' />
+        <label>Alt text</label><input name='alt' value='{html.escape(r.get('alt') or r.get('title') or '')}' />
+        <button type='submit'>Save Repair</button>
+    </form>
+</div>
+"""
+                        self._send_html(_web_layout("Edit Repair", body, message))
+
+                def _render_story_edit(self, idx: int, step_idx: int, message: str = ""):
+                        projects = load_projects()
+                        if idx < 0 or idx >= len(projects):
+                                self._redirect("/", "Invalid project selection")
+                                return
+                        steps = projects[idx].get("steps") or []
+                        if step_idx < 0 or step_idx >= len(steps):
+                                self._redirect(f"/story?idx={idx}", "Invalid section selection")
+                                return
+
+                        s = steps[step_idx]
+                        body = f"""
+<div class='card'>
+    <h2>Edit Story Section: {html.escape(projects[idx].get('title','Untitled'))}</h2>
+    <p><a href='/story?idx={idx}'>← Back to story</a></p>
+    <form method='post' action='/story/save'>
+        <input type='hidden' name='idx' value='{idx}' />
+        <input type='hidden' name='step_idx' value='{step_idx}' />
+        <label>Section title</label><input name='title' value='{html.escape(s.get('title',''))}' />
+        <label>Section text</label><textarea name='text'>{html.escape(s.get('text',''))}</textarea>
+        <label>Image path or URL</label><input name='image' value='{html.escape(s.get('image',''))}' />
+        <label>Alt text</label><input name='alt' value='{html.escape(s.get('alt',''))}' />
+        <button type='submit'>Save Section</button>
+    </form>
+</div>
+"""
+                        self._send_html(_web_layout("Edit Story Section", body, message))
+
+        def do_GET(self):
+            parsed = urlparse(self.path)
+            query = parse_qs(parsed.query)
+            message = (query.get("msg") or [""])[0]
+
+            if parsed.path == "/":
+                self._render_home(message)
+                return
+
+            if parsed.path == "/story":
+                idx_raw = (query.get("idx") or ["-1"])[0]
+                idx = _safe_index(idx_raw, len(load_projects()))
+                self._render_story(idx, message)
+                return
+
+            self._send_html(_web_layout("Not Found", "<div class='card'><h2>404</h2></div>"), status=404)
+
+        def do_POST(self):
+            form = parse_form(self)
+            path = urlparse(self.path).path
+
+            if path == "/actions/rebuild":
+                rebuild_all()
+                self._redirect("/", "Rebuilt site pages.")
+                return
+
+            if path == "/actions/publish":
+                ok, msg = publish_to_github_noninteractive(form.get("commit_message", ""))
+                self._redirect("/", msg)
+                return
+
+            if path == "/site/save":
+                create_backup_note("web-site-save")
+                site = load_site()
+                site["name"] = form.get("name", "")
+                site["tagline"] = form.get("tagline", "")
+                site["build_log_note"] = form.get("build_log_note", "")
+                site["about_text"] = form.get("about_text", "")
+                site["email"] = form.get("email", "")
+                site["instagram_url"] = form.get("instagram_url", "")
+                site["youtube_url"] = form.get("youtube_url", "")
+                site["tags"] = _split_csv(form.get("tags", ""))
+                save_site(site)
+                rebuild_all()
+                self._redirect("/", "Saved site settings.")
+                return
+
+            if path == "/projects/add":
+                title = (form.get("title") or "").strip()
+                if not title:
+                    self._redirect("/", "Build title is required.")
+                    return
+                create_backup_note("web-project-add")
+
+                image_rel = resolve_image_input(form.get("image_path", ""), title)
+                project = {
+                    "title": title,
+                    "slug": slugify(title),
+                    "status": normalize_status(form.get("status", "Complete")),
+                    "cover_image": image_rel,
+                    "image": image_rel,
+                    "images": [],
+                    "alt": title,
+                    "description": form.get("description", ""),
+                    "bullets": _split_lines(form.get("bullets", "")),
+                    "tags": _split_csv(form.get("tags", "")),
+                    "links": [],
+                    "steps": [],
+                    "created": datetime.now().isoformat(timespec="seconds"),
+                }
+                projects = load_projects()
+                projects.insert(0, project)
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect("/", "Added build.")
+                return
+
+            if path == "/projects/delete":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid build selection.")
+                    return
+                create_backup_note("web-project-delete")
+                projects.pop(idx)
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect("/", "Deleted build.")
+                return
+
+            if path == "/repairs/add":
+                title = (form.get("title") or "").strip()
+                if not title:
+                    self._redirect("/", "Repair title is required.")
+                    return
+                create_backup_note("web-repair-add")
+                image_rel = resolve_image_input(form.get("image_path", ""), title)
+                entry = {
+                    "title": title,
+                    "date": form.get("date", datetime.now().strftime("%Y-%m-%d")),
+                    "status": form.get("status", "Fixed"),
+                    "device": form.get("device", ""),
+                    "symptom": form.get("symptom", ""),
+                    "diagnosis": form.get("diagnosis", ""),
+                    "fix": form.get("fix", ""),
+                    "image": image_rel,
+                    "alt": title,
+                    "notes": form.get("notes", ""),
+                    "tags": _split_csv(form.get("tags", "")),
+                    "created": datetime.now().isoformat(timespec="seconds"),
+                }
+                repairs = load_repairs()
+                repairs.insert(0, entry)
+                save_repairs(repairs)
+                rebuild_all()
+                self._redirect("/", "Added repair entry.")
+                return
+
+            if path == "/repairs/delete":
+                repairs = load_repairs()
+                idx = _safe_index(form.get("idx", "-1"), len(repairs))
+                if idx < 0:
+                    self._redirect("/", "Invalid repair selection.")
+                    return
+                create_backup_note("web-repair-delete")
+                repairs.pop(idx)
+                save_repairs(repairs)
+                rebuild_all()
+                self._redirect("/", "Deleted repair entry.")
+                return
+
+            if path == "/story/add":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid project selection.")
+                    return
+                create_backup_note("web-story-add")
+                project = projects[idx]
+                steps = project.get("steps") or []
+                step_no = len(steps) + 1
+                title = (form.get("title") or f"Part {step_no}").strip()
+                image_rel = resolve_image_input(form.get("image_path", ""), f"{project.get('title','project')}-part-{step_no}")
+                steps.append(
+                    {
+                        "title": title,
+                        "text": form.get("text", ""),
+                        "image": image_rel,
+                        "alt": form.get("alt", "") or title,
+                    }
+                )
+                project["steps"] = steps
+                project["updated"] = datetime.now().isoformat(timespec="seconds")
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect(f"/story?idx={idx}", "Added story section.")
+                return
+
+            if path == "/story/delete":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid project selection.")
+                    return
+                steps = projects[idx].get("steps") or []
+                step_idx = _safe_index(form.get("step_idx", "-1"), len(steps))
+                if step_idx < 0:
+                    self._redirect(f"/story?idx={idx}", "Invalid section selection.")
+                    return
+                create_backup_note("web-story-delete")
+                steps.pop(step_idx)
+                projects[idx]["steps"] = steps
+                projects[idx]["updated"] = datetime.now().isoformat(timespec="seconds")
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect(f"/story?idx={idx}", "Deleted story section.")
+                return
+
+            if path == "/story/clear":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid project selection.")
+                    return
+                create_backup_note("web-story-clear")
+                projects[idx]["steps"] = []
+                projects[idx]["updated"] = datetime.now().isoformat(timespec="seconds")
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect(f"/story?idx={idx}", "Cleared story sections.")
+                return
+
+            self._redirect("/", "Unknown action.")
+
+        def log_message(self, fmt, *args):
+            return
+
+    server = ThreadingHTTPServer((host, port), AdminHandler)
+    print(f"\nWeb UI running at http://{host}:{port}")
+    print("Press Ctrl+C to stop the web UI server.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nWeb UI stopped.")
+    finally:
+        server.server_close()
 
 
 def load_projects():
@@ -1337,6 +1961,7 @@ def print_menu():
     print(" 13) list-backups    (show JSON backups)")
     print(" 14) restore-backup  (choose backup to restore)")
     print(" 15) publish-github  (git add/commit/push all changes)")
+    print(" 16) web-ui          (open browser admin menu)")
     print("  q) quit")
 
 
@@ -1379,6 +2004,13 @@ def main():
             restore_backup_interactive()
         elif cmd in ["15", "publish-github", "publish", "push"]:
             publish_to_github()
+        elif cmd in ["16", "web-ui", "web", "ui"]:
+            host = prompt("Web host", default="127.0.0.1", optional=True)
+            port_raw = prompt("Web port", default="8081", optional=True)
+            port = 8081
+            if port_raw.isdigit():
+                port = int(port_raw)
+            start_web_ui(host=host or "127.0.0.1", port=port)
         else:
             print("Unknown command.")
 
