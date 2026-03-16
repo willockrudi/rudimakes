@@ -199,7 +199,17 @@ def publish_to_github():
             print(out)
         if err:
             print(err)
-        print("Tip: make sure git auth is set up (SSH key or GitHub token).")
+
+        combined = f"{out}\n{err}".lower()
+        if "password authentication is not supported" in combined:
+            print("Tip: GitHub no longer accepts account passwords over HTTPS.")
+            print("Use SSH remote (git@github.com:owner/repo.git) or use a Personal Access Token.")
+        elif "permission denied (publickey)" in combined:
+            print("Tip: SSH key is missing in GitHub account. Add ~/.ssh/id_ed25519.pub to GitHub SSH keys.")
+        elif "non-fast-forward" in combined or "fetch first" in combined:
+            print("Tip: Remote has newer commits. Run: git pull --rebase origin main, then push again.")
+        else:
+            print("Tip: make sure git auth is set up (SSH key or GitHub token).")
         return
 
     print("\n✅ Published to GitHub successfully.")
