@@ -1,7 +1,6 @@
 
-/* =========================
-   Base / Reset
-   ========================= */
+
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -11,9 +10,6 @@ body {
   line-height: 1.6;
 }
 
-/* =========================
-   Layout
-   ========================= */
 .container {
   max-width: 1000px;
   margin: 0 auto;
@@ -21,23 +17,10 @@ body {
 }
 
 header {
-  position: relative;          /* needed for top-left logo */
   text-align: center;
   padding-top: 3rem;
 }
 
-.projects { margin-top: 3rem; }
-.about, .contact { margin-top: 3rem; }
-
-.footer {
-  text-align: center;
-  margin-top: 4rem;
-  color: #777;
-}
-
-/* =========================
-   Header bits
-   ========================= */
 .subtitle {
   color: #666;
   margin-top: 0.5rem;
@@ -58,40 +41,56 @@ header {
 
 .quick a:hover { border-bottom-color: #333; }
 
-/* Top-left logo link */
-.brand {
-  position: absolute;
-  left: 2rem;
-  top: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
+.projects { margin-top: 3rem; }
 
-.brand-logo {
-  width: 44px;
-  height: 44px;
-  display: block;
-  border-radius: 12px; /* remove if you want perfectly square */
-}
-
-/* =========================
-   Sections
-   ========================= */
 .section-note {
   color: #555;
   margin: 0.5rem 0 1.5rem;
 }
 
-.muted {
-  color: #666;
-  margin-top: 0.75rem;
+.status-badge{
+  display:inline-block;
+  font-size:0.85rem;
+  padding:0.25rem 0.6rem;
+  border-radius:999px;
+  background:#e9e9e9;
+  color:#333;
+  margin-left:0.5rem;
+  vertical-align:middle;
 }
 
-/* =========================
-   Cards
-   ========================= */
+.status-complete{ background:#e6f4ea; color:#1e4620; }
+.status-progress{ background:#fff4e5; color:#663c00; }
+.status-archived{ background:#e8eaed; color:#3c4043; }
+
+.gallery-toggle{
+  display:inline-block;
+  margin-top:0.5rem;
+  padding:0.35rem 0.7rem;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.15);
+  background:transparent;
+  cursor:pointer;
+  font:inherit;
+}
+
+.gallery{
+  margin-top:0.75rem;
+  display:none;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.gallery.is-open{ display:flex; }
+
+.gallery img{
+  width:160px;
+  height:110px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,0.10);
+}
+
 .project-card {
   background: #fff;
   border-radius: 12px;
@@ -110,27 +109,18 @@ header {
   object-fit: cover;
 }
 
-.project-info { padding: 1.5rem; }
-.project-info h3 { margin-bottom: 0.5rem; }
-.project-info p { margin-bottom: 1rem; color: #444; }
-
-/* Status badge */
-.status-badge {
-  display: inline-block;
-  font-size: 0.85rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  background: #e9e9e9;
-  color: #333;
-  margin-left: 0.5rem;
-  vertical-align: middle;
+.project-thumb {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
 }
 
-.status-complete { background:#e6f4ea; color:#1e4620; }
-.status-progress { background:#fff4e5; color:#663c00; }
-.status-archived { background:#e8eaed; color:#3c4043; }
+.project-info { padding: 1.5rem; }
 
-/* Bullets */
+.project-info h3 { margin-bottom: 0.5rem; }
+
+.project-info p { margin-bottom: 1rem; color: #444; }
+
 .bullets {
   list-style: none;
   margin: 0 0 1rem;
@@ -142,7 +132,55 @@ header {
   color: #444;
 }
 
-/* Links buttons */
+.project-open {
+  display: inline-block;
+  margin: 0 0 1rem;
+  text-decoration: none;
+  color: #fff;
+  background: #333;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+}
+
+.project-open:hover { background: #555; }
+
+.project-detail {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+}
+
+.project-detail-hero {
+  width: 100%;
+  max-height: 520px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-top: 1rem;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+.project-steps {
+  margin-top: 2rem;
+}
+
+.project-step {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+  margin-top: 1rem;
+}
+
+.step-image {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.10);
+  margin-top: 0.75rem;
+}
+
 .links a {
   display: inline-block;
   margin-right: 0.75rem;
@@ -155,8 +193,11 @@ header {
 
 .links a:hover { background: #555; }
 
-/* About tags */
-.tags { margin-top: 1rem; }
+.about, .contact { margin-top: 3rem; }
+
+.tags {
+  margin-top: 1rem;
+}
 
 .tags span {
   display: inline-block;
@@ -168,58 +209,10 @@ header {
   font-size: 0.9rem;
 }
 
-/* Per-card tag chips */
-.card-tags {
-  margin: 0.25rem 0 0.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+.muted { color: #666; margin-top: 0.75rem; }
 
-.tag-chip {
-  display: inline-block;
-  background: #eef0f2;
-  color: #333;
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-}
+.footer { text-align: center; margin-top: 4rem; color: #777; }
 
-/* =========================
-   Gallery
-   ========================= */
-.gallery-toggle {
-  display: inline-block;
-  margin-top: 0.5rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.15);
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-}
-
-.gallery {
-  margin-top: 0.75rem;
-  display: none;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.gallery.is-open { display: flex; }
-
-.gallery img {
-  width: 160px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.10);
-}
-
-/* =========================
-   Filters
-   ========================= */
 .filter-bar {
   margin: 16px 0 24px;
   display: flex;
@@ -236,7 +229,9 @@ header {
   outline: none;
 }
 
-.search:focus { border-color: rgba(0,0,0,0.25); }
+.search:focus {
+  border-color: rgba(0,0,0,0.25);
+}
 
 .tag-filters {
   display: flex;
@@ -258,9 +253,27 @@ header {
   background: rgba(0,0,0,0.08);
 }
 
-/* =========================
-   Theme toggle
-   ========================= */
+/* --- NEW: per-card tag chips --- */
+.card-tags {
+  margin: 0.25rem 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-chip {
+  display: inline-block;
+  background: #eef0f2;
+  color: #333;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* =======================
+   Dark mode (data-theme)
+   ======================= */
 .theme-toggle {
   margin-top: 14px;
   padding: 10px 12px;
@@ -269,18 +282,13 @@ header {
   background: rgba(0,0,0,0.03);
   cursor: pointer;
   font: inherit;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
-.theme-toggle:hover { background: rgba(0,0,0,0.07); }
+.theme-toggle:hover {
+  background: rgba(0,0,0,0.07);
+}
 
-/* =========================
-   Dark mode overrides
-   ========================= */
+/* Dark theme overrides */
 html[data-theme="dark"] body {
   background: #0f1115;
   color: #e7eaf0;
@@ -293,8 +301,13 @@ html[data-theme="dark"] .project-info p {
   color: #b7beca;
 }
 
-html[data-theme="dark"] .quick a { color: #e7eaf0; }
-html[data-theme="dark"] .quick a:hover { border-bottom-color: #e7eaf0; }
+html[data-theme="dark"] .quick a {
+  color: #e7eaf0;
+}
+
+html[data-theme="dark"] .quick a:hover {
+  border-bottom-color: #e7eaf0;
+}
 
 html[data-theme="dark"] .project-card {
   background: #171a21;
@@ -325,8 +338,27 @@ html[data-theme="dark"] .tag-chip {
   border-color: rgba(255,255,255,0.10);
 }
 
-html[data-theme="dark"] .links a { background: #2b2f3a; }
-html[data-theme="dark"] .links a:hover { background: #3a3f4d; }
+html[data-theme="dark"] .links a {
+  background: #2b2f3a;
+}
+
+html[data-theme="dark"] .project-open {
+  background: #2b2f3a;
+}
+
+html[data-theme="dark"] .project-open:hover {
+  background: #3a3f4d;
+}
+
+html[data-theme="dark"] .project-detail,
+html[data-theme="dark"] .project-step {
+  background: #171a21;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
+
+html[data-theme="dark"] .links a:hover {
+  background: #3a3f4d;
+}
 
 html[data-theme="dark"] .gallery-toggle,
 html[data-theme="dark"] .theme-toggle {
@@ -340,14 +372,11 @@ html[data-theme="dark"] .theme-toggle:hover {
   background: rgba(255,255,255,0.10);
 }
 
-/* =========================
-   Mobile tweaks
-   ========================= */
-@media (max-width: 520px) {
-  .container { padding: 1.25rem; }
-
-  header { padding-top: 2.5rem; }
-
-  .brand { left: 1rem; top: 1rem; }
-  .brand-logo { width: 38px; height: 38px; }
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+
+
