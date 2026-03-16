@@ -1,0 +1,21 @@
+[
+  {
+    "title": "loadstar audio gen",
+    "date": "2016-02-25",
+    "status": "Fixed",
+    "device": "bad zener",
+    "symptom": "no audio",
+    "diagnosis": "no bias replaced zener 43v 1w",
+    "fix": "replaced diode and cleaned switches",
+    "image": "images/test-photo.svg",
+    "alt": "Test photo",
+    "notes": "tech bench audio gen",
+    "tags": [
+      "audio",
+      "power",
+      "zener",
+      "diagnostics"
+    ],
+    "created": "2026-03-01T20:38:17"
+  }
+]
