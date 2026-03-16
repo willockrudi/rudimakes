@@ -539,20 +539,20 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 """
             self._send_html(_web_layout("Build Story", body, message))
 
-                def _render_project_edit(self, idx: int, message: str = ""):
-                        projects = load_projects()
-                        if idx < 0 or idx >= len(projects):
-                                self._redirect("/", "Invalid build selection")
-                                return
+        def _render_project_edit(self, idx: int, message: str = ""):
+            projects = load_projects()
+            if idx < 0 or idx >= len(projects):
+                self._redirect("/", "Invalid build selection")
+                return
 
-                        p = projects[idx]
-                        status_value = p.get("status", "Complete")
-                        options = ["Complete", "In Progress", "Archived"]
-                        status_opts = "\n".join([
-                                f"<option {'selected' if status_value == opt else ''}>{opt}</option>" for opt in options
-                        ])
+            p = projects[idx]
+            status_value = p.get("status", "Complete")
+            options = ["Complete", "In Progress", "Archived"]
+            status_opts = "\n".join([
+                f"<option {'selected' if status_value == opt else ''}>{opt}</option>" for opt in options
+            ])
 
-                        body = f"""
+            body = f"""
 <div class='card'>
     <h2>Edit Build: {html.escape(p.get('title','Untitled'))}</h2>
     <p><a href='/'>← Back to dashboard</a></p>
@@ -571,16 +571,16 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
     </form>
 </div>
 """
-                        self._send_html(_web_layout("Edit Build", body, message))
+            self._send_html(_web_layout("Edit Build", body, message))
 
-                def _render_repair_edit(self, idx: int, message: str = ""):
-                        repairs = load_repairs()
-                        if idx < 0 or idx >= len(repairs):
-                                self._redirect("/", "Invalid repair selection")
-                                return
+        def _render_repair_edit(self, idx: int, message: str = ""):
+            repairs = load_repairs()
+            if idx < 0 or idx >= len(repairs):
+                self._redirect("/", "Invalid repair selection")
+                return
 
-                        r = repairs[idx]
-                        body = f"""
+            r = repairs[idx]
+            body = f"""
 <div class='card'>
     <h2>Edit Repair: {html.escape(r.get('title','Untitled Repair'))}</h2>
     <p><a href='/'>← Back to dashboard</a></p>
@@ -601,20 +601,20 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
     </form>
 </div>
 """
-                        self._send_html(_web_layout("Edit Repair", body, message))
+            self._send_html(_web_layout("Edit Repair", body, message))
 
-                def _render_story_edit(self, idx: int, step_idx: int, message: str = ""):
-                        projects = load_projects()
-                        if idx < 0 or idx >= len(projects):
-                                self._redirect("/", "Invalid project selection")
-                                return
-                        steps = projects[idx].get("steps") or []
-                        if step_idx < 0 or step_idx >= len(steps):
-                                self._redirect(f"/story?idx={idx}", "Invalid section selection")
-                                return
+        def _render_story_edit(self, idx: int, step_idx: int, message: str = ""):
+            projects = load_projects()
+            if idx < 0 or idx >= len(projects):
+                self._redirect("/", "Invalid project selection")
+                return
+            steps = projects[idx].get("steps") or []
+            if step_idx < 0 or step_idx >= len(steps):
+                self._redirect(f"/story?idx={idx}", "Invalid section selection")
+                return
 
-                        s = steps[step_idx]
-                        body = f"""
+            s = steps[step_idx]
+            body = f"""
 <div class='card'>
     <h2>Edit Story Section: {html.escape(projects[idx].get('title','Untitled'))}</h2>
     <p><a href='/story?idx={idx}'>← Back to story</a></p>
@@ -629,7 +629,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
     </form>
 </div>
 """
-                        self._send_html(_web_layout("Edit Story Section", body, message))
+            self._send_html(_web_layout("Edit Story Section", body, message))
 
         def do_GET(self):
             parsed = urlparse(self.path)
@@ -644,6 +644,28 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 idx_raw = (query.get("idx") or ["-1"])[0]
                 idx = _safe_index(idx_raw, len(load_projects()))
                 self._render_story(idx, message)
+                return
+
+            if parsed.path == "/project/edit":
+                idx_raw = (query.get("idx") or ["-1"])[0]
+                idx = _safe_index(idx_raw, len(load_projects()))
+                self._render_project_edit(idx, message)
+                return
+
+            if parsed.path == "/repair/edit":
+                idx_raw = (query.get("idx") or ["-1"])[0]
+                idx = _safe_index(idx_raw, len(load_repairs()))
+                self._render_repair_edit(idx, message)
+                return
+
+            if parsed.path == "/story/edit":
+                idx_raw = (query.get("idx") or ["-1"])[0]
+                step_raw = (query.get("step_idx") or ["-1"])[0]
+                projects = load_projects()
+                idx = _safe_index(idx_raw, len(projects))
+                steps_total = len(projects[idx].get("steps") or []) if idx >= 0 else 0
+                step_idx = _safe_index(step_raw, steps_total)
+                self._render_story_edit(idx, step_idx, message)
                 return
 
             self._send_html(_web_layout("Not Found", "<div class='card'><h2>404</h2></div>"), status=404)
@@ -721,6 +743,38 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 self._redirect("/", "Deleted build.")
                 return
 
+            if path == "/projects/save":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid build selection.")
+                    return
+
+                create_backup_note("web-project-save")
+                p = projects[idx]
+                title = (form.get("title") or p.get("title") or "Untitled").strip()
+                p["title"] = title
+                p["status"] = normalize_status(form.get("status", p.get("status", "Complete")))
+                p["description"] = form.get("description", "")
+                p["bullets"] = _split_lines(form.get("bullets", ""))
+                p["tags"] = _split_csv(form.get("tags", ""))
+                p["alt"] = form.get("alt", "") or title
+
+                cover = resolve_image_input(form.get("cover_image", ""), title)
+                p["cover_image"] = cover
+                p["image"] = cover
+                p["images"] = [resolve_image_input(v, title) for v in _split_lines(form.get("images", ""))]
+                p["links"] = _links_from_lines(form.get("links", ""))
+                p["updated"] = datetime.now().isoformat(timespec="seconds")
+
+                if not p.get("slug"):
+                    p["slug"] = slugify(title)
+
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect("/", "Saved build.")
+                return
+
             if path == "/repairs/add":
                 title = (form.get("title") or "").strip()
                 if not title:
@@ -762,6 +816,34 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 self._redirect("/", "Deleted repair entry.")
                 return
 
+            if path == "/repairs/save":
+                repairs = load_repairs()
+                idx = _safe_index(form.get("idx", "-1"), len(repairs))
+                if idx < 0:
+                    self._redirect("/", "Invalid repair selection.")
+                    return
+
+                create_backup_note("web-repair-save")
+                entry = repairs[idx]
+                title = (form.get("title") or entry.get("title") or "Repair").strip()
+                entry["title"] = title
+                entry["date"] = form.get("date", "")
+                entry["status"] = form.get("status", "")
+                entry["device"] = form.get("device", "")
+                entry["symptom"] = form.get("symptom", "")
+                entry["diagnosis"] = form.get("diagnosis", "")
+                entry["fix"] = form.get("fix", "")
+                entry["notes"] = form.get("notes", "")
+                entry["tags"] = _split_csv(form.get("tags", ""))
+                entry["image"] = resolve_image_input(form.get("image", ""), title)
+                entry["alt"] = form.get("alt", "") or title
+                entry["updated"] = datetime.now().isoformat(timespec="seconds")
+
+                save_repairs(repairs)
+                rebuild_all()
+                self._redirect("/", "Saved repair entry.")
+                return
+
             if path == "/story/add":
                 projects = load_projects()
                 idx = _safe_index(form.get("idx", "-1"), len(projects))
@@ -787,6 +869,34 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 save_projects(projects)
                 rebuild_all(projects)
                 self._redirect(f"/story?idx={idx}", "Added story section.")
+                return
+
+            if path == "/story/save":
+                projects = load_projects()
+                idx = _safe_index(form.get("idx", "-1"), len(projects))
+                if idx < 0:
+                    self._redirect("/", "Invalid project selection.")
+                    return
+                steps = projects[idx].get("steps") or []
+                step_idx = _safe_index(form.get("step_idx", "-1"), len(steps))
+                if step_idx < 0:
+                    self._redirect(f"/story?idx={idx}", "Invalid section selection.")
+                    return
+
+                create_backup_note("web-story-save")
+                title = (form.get("title") or steps[step_idx].get("title") or "Part").strip()
+                steps[step_idx]["title"] = title
+                steps[step_idx]["text"] = form.get("text", "")
+                steps[step_idx]["image"] = resolve_image_input(
+                    form.get("image", ""), f"{projects[idx].get('title','project')}-part-{step_idx+1}"
+                )
+                steps[step_idx]["alt"] = form.get("alt", "") or title
+                projects[idx]["steps"] = steps
+                projects[idx]["updated"] = datetime.now().isoformat(timespec="seconds")
+
+                save_projects(projects)
+                rebuild_all(projects)
+                self._redirect(f"/story?idx={idx}", "Saved story section.")
                 return
 
             if path == "/story/delete":

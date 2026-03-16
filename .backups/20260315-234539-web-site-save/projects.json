@@ -1,0 +1,89 @@
+[
+  {
+    "title": "d",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "d",
+    "description": "dfg",
+    "bullets": [
+      "dfg"
+    ],
+    "tags": [
+      "prototype"
+    ],
+    "links": [],
+    "created": "2026-03-01T20:45:58",
+    "slug": "d",
+    "steps": [
+      {
+        "title": "Step 1 - Overview",
+        "text": "First test step text.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ],
+    "updated": "2026-03-15T22:58:15"
+  },
+  {
+    "title": "a",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "a",
+    "description": "a",
+    "bullets": [
+      "a"
+    ],
+    "tags": [
+      "fabrication"
+    ],
+    "links": [],
+    "created": "2026-03-01T20:42:31",
+    "slug": "a",
+    "steps": [
+      {
+        "title": "Part 1",
+        "text": "Photo placement test section.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ]
+  },
+  {
+    "title": "test",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "test",
+    "description": "testy test",
+    "bullets": [
+      "still cool"
+    ],
+    "tags": [
+      "marine",
+      "build"
+    ],
+    "links": [],
+    "created": "2026-03-01T18:45:34",
+    "updated": "2026-03-01T18:59:22",
+    "slug": "test",
+    "steps": [
+      {
+        "title": "Part 1",
+        "text": "Photo placement test section.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ]
+  }
+]

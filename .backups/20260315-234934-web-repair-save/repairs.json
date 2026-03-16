@@ -5,9 +5,9 @@
     "status": "Fixed",
     "device": "bad zener",
     "symptom": "no audio",
-    "diagnosis": "no bias replaced zener 43v 1w boobs\r\n",
+    "diagnosis": "no bias replaced zener 43v 1w",
     "fix": "replaced diode and cleaned switches",
-    "image": "images/2026-03-15-loadstar-audio-gen.svg",
+    "image": "images/test-photo.svg",
     "alt": "Test photo",
     "notes": "tech bench audio gen",
     "tags": [
@@ -16,7 +16,6 @@
       "zener",
       "diagnostics"
     ],
-    "created": "2026-03-01T20:38:17",
-    "updated": "2026-03-15T23:49:34"
+    "created": "2026-03-01T20:38:17"
   }
 ]
