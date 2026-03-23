@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARIA | Advanced Roland Intelligence Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="index.html#builds">Builds</a></li>
+        <li><a href="repairs.html">Repairs</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="aria.html" class="active">ARIA</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">AI Project</p>
+      <h1 class="hero-title">ARIA</h1>
+      <p class="hero-subtitle">Advanced Roland Intelligence Assistant</p>
+      <p class="hero-bio">
+        An AI trained on 8,000+ Roland-specific sources. Built by a backline technician
+        who works with the gear every day. It answers questions about Roland and BOSS products
+        with the accuracy of a senior Roland specialist.
+      </p>
+      <div class="hero-cta">
+        <a href="mailto:rudiwillockmakes@gmail.com" class="btn btn-primary">Get In Touch</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- WHAT ARIA DOES -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Capabilities</p>
+          <h2 class="section-title">What ARIA Does</h2>
+        </div>
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="feature-icon">🎹</div>
+            <h3>Product Knowledge</h3>
+            <p>Answers questions about every Roland and BOSS product ever made — from the TR-808 to the TD-50X, V-Piano to Fantom.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Technical Support</h3>
+            <p>Troubleshoots issues with the accuracy of a senior Roland specialist. Real answers from real documentation.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎛️</div>
+            <h3>Backline Intelligence</h3>
+            <p>Deep knowledge of live sound, cables, MIDI, synthesis, RF wireless, and the technical infrastructure of professional touring.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WAS BUILT -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Architecture</p>
+          <h2 class="section-title">How It Was Built</h2>
+        </div>
+        <p style="color:var(--text-muted); font-size:1.05rem; max-width:720px; line-height:1.9; margin-bottom:2rem;">
+          ARIA is a RAG (Retrieval Augmented Generation) system trained on over 8,000 Roland-specific
+          sources — product manuals, support documentation, forum archives, YouTube transcripts, and
+          67 hand-written technical reference documents covering every Roland product ever made.
+          The knowledge base was built by a working backline technician who understands what questions
+          actually get asked in professional production environments.
+        </p>
+        <div class="section-header" style="margin-bottom:1rem;">
+          <p class="section-label">Tech Stack</p>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">GPT-4o</span>
+          <span class="tech-tag">LlamaIndex</span>
+          <span class="tech-tag">ChromaDB</span>
+          <span class="tech-tag">Chainlit</span>
+          <span class="tech-tag">OpenAI Embeddings</span>
+          <span class="tech-tag">RAG Architecture</span>
+          <span class="tech-tag">text-embedding-ada-002</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Demo</p>
+          <h2 class="section-title">See ARIA in Action</h2>
+        </div>
+        <div class="demo-box">
+          <div class="feature-icon">▶</div>
+          <p style="font-size:1.1rem; margin-bottom:0.5rem;">Demo video coming soon</p>
+          <p style="color:var(--text-muted); margin-bottom:1.5rem;">Watch ARIA answer real Roland product questions in real time</p>
+          <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="btn btn-outline">Subscribe for Updates</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNOWLEDGE BASE -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Data</p>
+          <h2 class="section-title">The Knowledge Base</h2>
+        </div>
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="feature-icon">📄</div>
+            <h3>8,000+ Documents</h3>
+            <p>Roland site, support articles, product manuals, BOSS documentation, forum archives, and YouTube transcripts.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📚</div>
+            <h3>67 Reference Documents</h3>
+            <p>Hand-written technical references covering synthesis, MIDI, live sound, backline operations, amplifier theory, and more.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Roland-Exclusive</h3>
+            <p>Every source is Roland and BOSS specific. No generic music technology data — only what matters for Roland professionals.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="cta-section">
+          <h2>Interested in ARIA?</h2>
+          <p>I'm exploring partnership and licensing opportunities with Roland and music technology companies. If you're at Roland or represent a company that could benefit from ARIA's capabilities, I'd love to talk.</p>
+          <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="mailto:rudiwillockmakes@gmail.com" class="btn btn-primary">Get In Touch</a>
+            <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener" class="btn btn-outline">Connect on LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

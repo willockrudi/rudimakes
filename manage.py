@@ -5,6 +5,7 @@ import re
 import shutil
 import html
 import subprocess
+import sys
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlencode, urlparse
@@ -2076,6 +2077,18 @@ def print_menu():
 
 
 def main():
+    if len(sys.argv) > 1:
+        arg = sys.argv[1].strip().lower()
+        if arg in ["web-ui", "web", "ui"]:
+            host = "127.0.0.1"
+            port = 8081
+            if len(sys.argv) > 2 and sys.argv[2].strip():
+                host = sys.argv[2].strip()
+            if len(sys.argv) > 3 and sys.argv[3].strip().isdigit():
+                port = int(sys.argv[3].strip())
+            start_web_ui(host=host, port=port)
+            return
+
     while True:
         print_menu()
         cmd = prompt("\nEnter command").lower().strip()

@@ -5,53 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rudi Willock | Builds & Inventions</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Apply saved theme ASAP -->
   <script>
     (function () {
       try {
         const saved = localStorage.getItem("theme");
-        if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
-        else document.documentElement.removeAttribute("data-theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
       } catch (e) {}
     })();
   </script>
 </head>
 <body>
 
-  <header class="container">
-<a class="brand" href="index.html" aria-label="Home">
-  <img class="brand-logo" src="images/logo.png" alt="Rudi Willock logo">
-</a>
-
-    <h1>Rudi Willock</h1>
-    <p class="subtitle">[Electronics • Fabrication • Custom Builds]</p>
-
-    <div class="quick">
-      <a href="#builds">Builds</a>
-      <a href="repairs.html">Troubleshooting</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </div>
-
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
-      🌙 Dark
-    </button>
-  </header>
-
-  <main class="container">
-
-    <section id="builds" class="projects">
-      <h2>Build Log</h2>
-      <p class="section-note">A running collection of things I’ve built, repaired, and engineered — from electronics to mechanical systems.</p>
-
-      <!-- Filters -->
-      <div class="filter-bar">
-        <input id="search" class="search" type="search" placeholder="Search builds..." />
-        <div id="tagFilters" class="tag-filters"></div>
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="#builds" class="active">Builds</a></li>
+        <li><a href="repairs.html">Repairs</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="aria.html">ARIA</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">☀️ Light</button>
       </div>
+    </div>
+  </nav>
 
-      <!-- PROJECTS_START -->
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Indianapolis, Indiana</p>
+      <h1 class="hero-title">Rudi Willock</h1>
+      <p class="hero-subtitle">Backline Technician &nbsp;•&nbsp; Music Technologist &nbsp;•&nbsp; Builder</p>
+      <p class="hero-bio">
+        I maintain technical systems for major touring productions. I build synthesizers,
+        write software, design hardware, and make music. This is where the work lives.
+      </p>
+      <div class="hero-cta">
+        <a href="#builds" class="btn btn-primary">See My Builds</a>
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="btn btn-outline">Watch on YouTube</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- BUILDS -->
+    <section id="builds" class="projects">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Build Log</p>
+          <h2 class="section-title">What I've Built</h2>
+          <p class="section-note">A running collection of things I’ve built, repaired, and engineered — from electronics to mechanical systems.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <input id="search" class="search" type="search" placeholder="Search builds..." />
+          <div id="tagFilters" class="tag-filters"></div>
+        </div>
+
+        <!-- PROJECTS_START -->
 
       <div class="project-card" data-tags="prototype">
         <img class="project-thumb" src="images/test-photo.svg" alt="d">
@@ -65,8 +85,8 @@
           <ul class="bullets">
             <li>dfg</li>
           </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-d-68968">More photos</button>
-          <div class="gallery" id="gallery-d-68968">
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-d-95821">More photos</button>
+          <div class="gallery" id="gallery-d-95821">
             <img src="images/test-photo.svg" alt="d">
           </div>
         </div>
@@ -84,8 +104,8 @@
           <ul class="bullets">
             <li>a</li>
           </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-a-68968">More photos</button>
-          <div class="gallery" id="gallery-a-68968">
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-a-95821">More photos</button>
+          <div class="gallery" id="gallery-a-95821">
             <img src="images/test-photo.svg" alt="a">
           </div>
         </div>
@@ -104,47 +124,70 @@
           <ul class="bullets">
             <li>still cool</li>
           </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-test-68968">More photos</button>
-          <div class="gallery" id="gallery-test-68968">
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-test-95821">More photos</button>
+          <div class="gallery" id="gallery-test-95821">
             <img src="images/test-photo.svg" alt="test">
           </div>
         </div>
       </div>
 <!-- PROJECTS_END -->
-    </section>
-
-    <section id="about" class="about">
-      <h2>About</h2>
-      <p>I build custom physical projects — electronics, mechanisms, repairs, and one-off inventions. I’m comfortable taking a concept to a working build: planning, sourcing, fabrication, wiring, and troubleshooting.</p>
-
-      <div class="tags">
-        <!-- TAGS_START -->
-
-      <!-- TAGS_END -->
       </div>
     </section>
 
-    <section id="contact" class="contact">
-      <h2>Contact</h2>
-      <p>Email: <a href="mailto:rudiwillockmakes@gmail.com">rudiwillockmakes@gmail.com</a></p>
+    <!-- ABOUT -->
+    <section id="about" class="about">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">About</p>
+          <h2 class="section-title">Who I Am</h2>
+        </div>
+        <p>I build custom physical projects — electronics, mechanisms, repairs, and one-off inventions. I’m comfortable taking a concept to a working build: planning, sourcing, fabrication, wiring, and troubleshooting.</p>
+        <div class="tags">
+          <!-- TAGS_START -->
 
-      <div class="links">
-        <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://youtube.com/@yourhandle" target="_blank" rel="noopener">YouTube</a>
+      <!-- TAGS_END -->
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Contact</p>
+          <h2 class="section-title">Get In Touch</h2>
+        </div>
+        <p>Open to repairs, consulting, collaboration, and conversations about music technology.</p>
+        <p>Email: <a href="mailto:rudiwillockmakes@gmail.com">rudiwillockmakes@gmail.com</a></p>
+        <div class="social-links">
+          <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>
+          <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener" class="social-link">◈ Instagram</a>
+          <a href="https://github.com/willockrudi" target="_blank" rel="noopener" class="social-link">⌥ GitHub</a>
+          <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener" class="social-link">in LinkedIn</a>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="container footer">
-    <p>© <span id="year"></span> Rudi Willock</p>
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 
-  <!-- Theme toggle (same behavior on BOTH pages) -->
+  <!-- Theme toggle -->
   <script>
     (function () {
       const root = document.documentElement;
@@ -152,68 +195,65 @@
       const key = "theme";
 
       function setTheme(mode) {
-        if (mode === "dark") {
-          root.setAttribute("data-theme", "dark");
-          if (btn) btn.textContent = "☀️ Light";
+        if (mode === "light") {
+          root.setAttribute("data-theme", "light");
+          if (btn) btn.textContent = "🌙 Dark";
         } else {
           root.removeAttribute("data-theme");
-          if (btn) btn.textContent = "🌙 Dark";
+          if (btn) btn.textContent = "☀️ Light";
         }
       }
 
       let saved = null;
       try { saved = localStorage.getItem(key); } catch (e) {}
-
-      if (saved === "dark" || saved === "light") {
-        setTheme(saved);
-      } else {
-        const prefersDark =
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        setTheme(prefersDark ? "dark" : "light");
-      }
+      setTheme(saved === "light" ? "light" : "dark");
 
       if (!btn) return;
-
       btn.addEventListener("click", () => {
-        const isDark = root.getAttribute("data-theme") === "dark";
-        const next = isDark ? "light" : "dark";
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
         try { localStorage.setItem(key, next); } catch (e) {}
         setTheme(next);
       });
     })();
   </script>
 
+  <!-- Mobile nav toggle -->
   <script>
-    // Expand/collapse photo galleries
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => {
+        menu.classList.toggle("is-open");
+      });
+    })();
+  </script>
+
+  <!-- Gallery expand/collapse -->
+  <script>
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-gallery-toggle]");
       if (!btn) return;
-
       const id = btn.getAttribute("data-gallery-toggle");
       const gallery = document.getElementById(id);
       if (!gallery) return;
-
       const open = gallery.classList.toggle("is-open");
       btn.textContent = open ? "Hide photos" : "More photos";
     });
   </script>
 
+  <!-- Search + tag filtering -->
   <script>
-    // Search + tag filtering (cards must have data-tags="tag1,tag2")
     (function () {
       const search = document.getElementById("search");
       const tagWrap = document.getElementById("tagFilters");
       const cards = Array.from(document.querySelectorAll(".project-card"));
-
       if (!search || !tagWrap || cards.length === 0) return;
 
       const tagSet = new Set();
       for (const c of cards) {
-        const tags = (c.dataset.tags || "")
-          .split(",")
-          .map(t => t.trim())
-          .filter(Boolean);
-        tags.forEach(t => tagSet.add(t));
+        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
       }
 
       const tags = ["all", ...Array.from(tagSet).sort()];
@@ -226,28 +266,17 @@
           btn.type = "button";
           btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
           btn.textContent = t === "all" ? "All" : t;
-          btn.addEventListener("click", () => {
-            activeTag = t;
-            renderTags();
-            apply();
-          });
+          btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
           tagWrap.appendChild(btn);
         }
       }
 
       function apply() {
         const q = (search.value || "").trim().toLowerCase();
-
         for (const c of cards) {
           const textMatch = c.textContent.toLowerCase().includes(q);
-
-          const cardTags = (c.dataset.tags || "")
-            .split(",")
-            .map(t => t.trim())
-            .filter(Boolean);
-
+          const cardTags = (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean);
           const tagMatch = activeTag === "all" ? true : cardTags.includes(activeTag);
-
           c.style.display = (textMatch && tagMatch) ? "" : "none";
         }
       }

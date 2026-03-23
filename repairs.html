@@ -1,56 +1,58 @@
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rudi Willock | Circuit Troubleshooting</title>
+  <title>Rudi Willock | Repair Log</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Apply saved theme ASAP -->
   <script>
     (function () {
       try {
         const saved = localStorage.getItem("theme");
-        if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
-        else document.documentElement.removeAttribute("data-theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
       } catch (e) {}
     })();
   </script>
 </head>
 <body>
 
-  <header class="container">
-    <h1>Rudi Willock</h1>
-    <p class="subtitle">[Electronics • Fabrication • Custom Builds]</p>
-
-    <div class="quick">
-      <a href="index.html#builds">Builds</a>
-      <a href="#repairs">Troubleshooting</a>
-      <a href="index.html#about">About</a>
-      <a href="index.html#contact">Contact</a>
-    </div>
-
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
-      🌙 Dark
-    </button>
-  </header>
-
-  <main class="container">
-
-    <section id="repairs" class="projects">
-      <h2>Circuit Troubleshooting Log</h2>
-      <p class="section-note">
-        Diagnostics, fault isolation, and repair documentation.
-      </p>
-
-      <!-- Filters -->
-      <div class="filter-bar">
-        <input id="search" class="search" type="search" placeholder="Search repairs..." />
-        <div id="tagFilters" class="tag-filters"></div>
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="index.html#builds">Builds</a></li>
+        <li><a href="repairs.html" class="active">Repairs</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="aria.html">ARIA</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
       </div>
+    </div>
+  </nav>
 
-      <!-- REPAIRS_START -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Documentation</p>
+      <h1 class="hero-title">Repair Log</h1>
+      <p class="hero-bio">Real bench diagnostics. Real fixes. Documented. Amplifiers, synthesizers, guitar pedals, and professional audio equipment.</p>
+    </div>
+  </section>
+
+  <main>
+    <section id="repairs" class="projects">
+      <div class="container">
+        <div class="filter-bar">
+          <input id="search" class="search" type="search" placeholder="Search repairs..." />
+          <div id="tagFilters" class="tag-filters"></div>
+        </div>
+
+        <!-- REPAIRS_START -->
 
       <div class="project-card" data-tags="audio,power,zener,diagnostics">
         <img src="images/2026-03-15-loadstar-audio-gen.svg" alt="Test photo">
@@ -72,78 +74,92 @@
         </div>
       </div>
 <!-- REPAIRS_END -->
+      </div>
     </section>
 
+    <section class="repair-contact">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Inquiries</p>
+          <h2 class="section-title">Need a Repair?</h2>
+        </div>
+        <p>I service amplifiers, synthesizers, guitar pedals, and professional audio equipment. Send me a message and I'll get back to you.</p>
+        <form action="mailto:rudiwillockmakes@gmail.com" method="get" enctype="text/plain" style="max-width:600px;">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="John Smith" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" placeholder="john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="device">Device / Equipment</label>
+            <input type="text" id="device" name="device" placeholder="Marshall JCM800, Moog Minimoog, etc." />
+          </div>
+          <div class="form-group">
+            <label for="problem">Describe the Problem</label>
+            <textarea id="problem" name="body" placeholder="What's happening? When did it start? What have you tried?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Repair Inquiry</button>
+        </form>
+      </div>
+    </section>
   </main>
 
-  <footer class="container footer">
-    <p>© <span id="year"></span> Rudi Willock</p>
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-
-  <!-- Theme toggle -->
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
   <script>
     (function () {
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
-      const key = "theme";
-
       function setTheme(mode) {
-        if (mode === "dark") {
-          root.setAttribute("data-theme", "dark");
-          if (btn) btn.textContent = "☀️ Light";
-        } else {
-          root.removeAttribute("data-theme");
-          if (btn) btn.textContent = "🌙 Dark";
-        }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
       }
-
       let saved = null;
-      try { saved = localStorage.getItem(key); } catch (e) {}
-
-      if (saved === "dark" || saved === "light") {
-        setTheme(saved);
-      } else {
-        const prefersDark =
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        setTheme(prefersDark ? "dark" : "light");
-      }
-
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
       if (!btn) return;
-
       btn.addEventListener("click", () => {
-        const isDark = root.getAttribute("data-theme") === "dark";
-        const next = isDark ? "light" : "dark";
-        try { localStorage.setItem(key, next); } catch (e) {}
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
         setTheme(next);
       });
     })();
   </script>
-
-  <!-- Search + tag filtering -->
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
   <script>
     (function () {
       const search = document.getElementById("search");
       const tagWrap = document.getElementById("tagFilters");
       const cards = Array.from(document.querySelectorAll(".project-card"));
-
       if (!search || !tagWrap || cards.length === 0) return;
-
       const tagSet = new Set();
       for (const c of cards) {
-        const tags = (c.dataset.tags || "")
-          .split(",")
-          .map(t => t.trim())
-          .filter(Boolean);
-        tags.forEach(t => tagSet.add(t));
+        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
       }
-
       const tags = ["all", ...Array.from(tagSet).sort()];
       let activeTag = "all";
-
       function renderTags() {
         tagWrap.innerHTML = "";
         for (const t of tags) {
@@ -151,34 +167,20 @@
           btn.type = "button";
           btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
           btn.textContent = t === "all" ? "All" : t;
-          btn.addEventListener("click", () => {
-            activeTag = t;
-            renderTags();
-            apply();
-          });
+          btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
           tagWrap.appendChild(btn);
         }
       }
-
       function apply() {
         const q = (search.value || "").trim().toLowerCase();
-
         for (const c of cards) {
           const textMatch = c.textContent.toLowerCase().includes(q);
-
-          const cardTags = (c.dataset.tags || "")
-            .split(",")
-            .map(t => t.trim())
-            .filter(Boolean);
-
+          const cardTags = (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean);
           const tagMatch = activeTag === "all" ? true : cardTags.includes(activeTag);
-
           c.style.display = (textMatch && tagMatch) ? "" : "none";
         }
       }
-
-      renderTags();
-      apply();
+      renderTags(); apply();
       search.addEventListener("input", apply);
     })();
   </script>

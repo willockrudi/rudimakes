@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rudi Willock | Music</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="index.html#builds">Builds</a></li>
+        <li><a href="repairs.html">Repairs</a></li>
+        <li><a href="music.html" class="active">Music</a></li>
+        <li><a href="aria.html">ARIA</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <p class="hero-eyebrow">Sound & Craft</p>
+      <h1 class="hero-title">Music</h1>
+      <p class="hero-bio">
+        Guitarist, composer, synthesizer builder, and sound explorer.
+        I work at the intersection of acoustic and electronic music —
+        where a handbuilt 555-timer synth meets a Telecaster through a tube amp.
+      </p>
+      <div class="hero-cta">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="btn btn-primary">Watch on YouTube</a>
+        <a href="index.html#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- WHAT I MAKE -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Approach</p>
+          <h2 class="section-title">What I Make</h2>
+        </div>
+        <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; line-height:1.8;">
+          I play guitar and build instruments. I'm interested in the sounds between genres —
+          the space where handbuilt analog synthesis meets traditional playing technique.
+          As a backline technician I work with the best instruments in the world every day,
+          and that exposure directly shapes how I think about sound and design.
+          My builds are experiments. My playing is documentation.
+        </p>
+      </div>
+    </section>
+
+    <!-- INSTRUMENTS I BUILD -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Hardware</p>
+          <h2 class="section-title">Instruments I Build</h2>
+        </div>
+        <div class="grid-3">
+          <div class="feature-card">
+            <div class="feature-icon">🎛️</div>
+            <h3>555 Polyphonic Synthesizer</h3>
+            <p>A polyphonic synthesizer built around the 555 timer IC with analog effects chain. Exploring what's possible with humble components.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎸</div>
+            <h3>Custom Guitar Pedals</h3>
+            <p>Hand-built effects pedals — overdrive, fuzz, modulation. Designed, etched, and built from scratch.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🪵</div>
+            <h3>Guitar Builds</h3>
+            <p>Building guitars with my dad — combining his woodworking and guitar expertise with my electronics knowledge. In progress.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTEN -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Listen</p>
+          <h2 class="section-title">On YouTube</h2>
+        </div>
+        <div class="demo-box">
+          <div class="feature-icon">▶</div>
+          <p style="font-size:1.1rem; margin-bottom:1.5rem;">Videos coming soon on <strong>@RudiMakes</strong></p>
+          <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="btn btn-primary">Subscribe on YouTube</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GEAR -->
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Tools</p>
+          <h2 class="section-title">Gear I Work With</h2>
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag">Roland</span>
+          <span class="tech-tag">BOSS</span>
+          <span class="tech-tag">Fender</span>
+          <span class="tech-tag">Marshall</span>
+          <span class="tech-tag">Moog</span>
+          <span class="tech-tag">Telecaster</span>
+          <span class="tech-tag">Tube Amplifiers</span>
+          <span class="tech-tag">Analog Synthesis</span>
+          <span class="tech-tag">MIDI</span>
+          <span class="tech-tag">555 Timer</span>
+          <span class="tech-tag">Eurorack</span>
+          <span class="tech-tag">Guitar Pedals</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

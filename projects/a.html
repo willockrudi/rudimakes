@@ -5,40 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>a | Rudi Willock</title>
   <link rel="stylesheet" href="../style.css" />
-
   <script>
     (function () {
       try {
         const saved = localStorage.getItem("theme");
-        if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
-        else document.documentElement.removeAttribute("data-theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
       } catch (e) {}
     })();
   </script>
 </head>
 <body>
 
-  <header class="container">
-    <h1>Rudi Willock</h1>
-    <p class="subtitle">[Electronics • Fabrication • Custom Builds]</p>
-
-    <div class="quick">
-      <a href="../index.html#builds">Builds</a>
-      <a href="../repairs.html">Troubleshooting</a>
-      <a href="../index.html#about">About</a>
-      <a href="../index.html#contact">Contact</a>
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../repairs.html">Repairs</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#about">About</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
     </div>
+  </nav>
 
-    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
-      🌙 Dark
-    </button>
-  </header>
+  <main>
+    <div class="container project-detail">
 
-  <main class="container">
-    <article class="project-detail">
-      <p class="muted"><a href="../index.html#builds">← Back to build list</a></p>
-      <h2>a <span class="status-badge status-complete">✅ Complete</span></h2>
-      <p>a</p>
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        a
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        a
+        <span class="status-badge status-complete">✅ Complete</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">a</p>
+
       <div class="card-tags">
             <span class="tag-chip">fabrication</span>
           </div>
@@ -46,12 +61,15 @@
           <li>a</li>
         </ul>
       
-      <img class="project-detail-hero" src="../images/test-photo.svg" alt="a">
-    </article>
 
-    <section class="project-steps">
-      <h2>Build Story</h2>
-      <!-- PROJECT_STEPS_START -->
+      <img class="project-detail-hero" src="../images/test-photo.svg" alt="a">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
 
     <article class="project-step">
       <h3>1. Part 1</h3>
@@ -59,52 +77,49 @@
       <img class="step-image" src="../images/test-photo.svg" alt="Test photo">
     </article>
 <!-- PROJECT_STEPS_END -->
-    </section>
+      </div>
+    </div>
   </main>
 
-  <footer class="container footer">
-    <p>© <span id="year"></span> Rudi Willock</p>
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
   <script>
     (function () {
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
-      const key = "theme";
-
       function setTheme(mode) {
-        if (mode === "dark") {
-          root.setAttribute("data-theme", "dark");
-          if (btn) btn.textContent = "☀️ Light";
-        } else {
-          root.removeAttribute("data-theme");
-          if (btn) btn.textContent = "🌙 Dark";
-        }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
       }
-
       let saved = null;
-      try { saved = localStorage.getItem(key); } catch (e) {}
-
-      if (saved === "dark" || saved === "light") {
-        setTheme(saved);
-      } else {
-        const prefersDark =
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        setTheme(prefersDark ? "dark" : "light");
-      }
-
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
       if (!btn) return;
-
       btn.addEventListener("click", () => {
-        const isDark = root.getAttribute("data-theme") === "dark";
-        const next = isDark ? "light" : "dark";
-        try { localStorage.setItem(key, next); } catch (e) {}
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
         setTheme(next);
       });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
     })();
   </script>
 
