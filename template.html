@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{NAME}} | Builds & Inventions</title>
+  <meta property="og:title" content="RudiMakes | Rudi Willock" />
+  <meta property="og:description" content="Backline Technician · Builder · Music Technologist. Builds, repairs, software, and music." />
+  <meta property="og:image" content="https://willockrudi.github.io/rudimakes/images/og.png" />
+  <meta property="og:url" content="https://willockrudi.github.io/rudimakes" />
+  <meta property="og:type" content="website" />
   <link rel="stylesheet" href="style.css" />
   <script>
     (function () {
@@ -124,17 +129,13 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 
-  <!-- Theme toggle -->
   <script>
     (function () {
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
       const key = "theme";
-
       function setTheme(mode) {
         if (mode === "light") {
           root.setAttribute("data-theme", "light");
@@ -144,11 +145,9 @@
           if (btn) btn.textContent = "☀️ Light";
         }
       }
-
       let saved = null;
       try { saved = localStorage.getItem(key); } catch (e) {}
       setTheme(saved === "light" ? "light" : "dark");
-
       if (!btn) return;
       btn.addEventListener("click", () => {
         const isLight = root.getAttribute("data-theme") === "light";
@@ -159,19 +158,15 @@
     })();
   </script>
 
-  <!-- Mobile nav toggle -->
   <script>
     (function () {
       const toggle = document.getElementById("navToggle");
       const menu = document.getElementById("navMenu");
       if (!toggle || !menu) return;
-      toggle.addEventListener("click", () => {
-        menu.classList.toggle("is-open");
-      });
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
     })();
   </script>
 
-  <!-- Gallery expand/collapse -->
   <script>
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-gallery-toggle]");
@@ -184,22 +179,18 @@
     });
   </script>
 
-  <!-- Search + tag filtering -->
   <script>
     (function () {
       const search = document.getElementById("search");
       const tagWrap = document.getElementById("tagFilters");
       const cards = Array.from(document.querySelectorAll(".project-card"));
       if (!search || !tagWrap || cards.length === 0) return;
-
       const tagSet = new Set();
       for (const c of cards) {
         (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
       }
-
       const tags = ["all", ...Array.from(tagSet).sort()];
       let activeTag = "all";
-
       function renderTags() {
         tagWrap.innerHTML = "";
         for (const t of tags) {
@@ -211,7 +202,6 @@
           tagWrap.appendChild(btn);
         }
       }
-
       function apply() {
         const q = (search.value || "").trim().toLowerCase();
         for (const c of cards) {
@@ -221,7 +211,6 @@
           c.style.display = (textMatch && tagMatch) ? "" : "none";
         }
       }
-
       renderTags();
       apply();
       search.addEventListener("input", apply);
