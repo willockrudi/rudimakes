@@ -331,48 +331,316 @@ def resolve_image_input(image_value: str, title: str) -> str:
     return value
 
 
-def _web_layout(title: str, body: str, message: str = "") -> str:
+_ADMIN_CSS = """
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --border-light: #3a3a3a;
+  --text: #e8e4dc;
+  --text-muted: #7a7570;
+  --text-dim: #4a4540;
+  --accent: #d4a847;
+  --accent-dim: #a07830;
+  --accent-bg: rgba(212,168,71,0.08);
+  --red: #c0392b;
+  --red-bg: rgba(192,57,43,0.12);
+  --green: #2ecc71;
+  --green-bg: rgba(46,204,113,0.10);
+  --blue: #3b82f6;
+  --blue-bg: rgba(59,130,246,0.10);
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.4);
+  font-size: 15px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── HEADER ── */
+.admin-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.admin-logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.admin-logo span { color: var(--text-muted); font-weight: 400; }
+
+/* ── NAV TABS ── */
+.admin-nav { display: flex; gap: 2px; flex: 1; overflow-x: auto; }
+.nav-tab {
+  padding: 0 16px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+}
+.nav-tab:hover { color: var(--text); text-decoration: none; }
+.nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.header-actions { display: flex; gap: 8px; margin-left: auto; flex-shrink: 0; }
+
+/* ── LAYOUT ── */
+.admin-wrap { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--text); margin: 0 0 24px; letter-spacing: 0.02em; }
+.page-title small { font-size: 13px; color: var(--text-muted); font-weight: 400; margin-left: 10px; }
+
+/* ── TOAST ── */
+.toast {
+  background: var(--surface2);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.2s ease;
+}
+.toast.error { border-left-color: var(--red); }
+@keyframes slideIn { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: none; } }
+
+/* ── GRID ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── STAT CARDS ── */
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+@media (max-width: 700px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
+.stat-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+label { display: block; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+input[type=text], input[type=date], input[type=email], input[type=url], textarea, select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+textarea { min-height: 90px; resize: vertical; }
+select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a7570' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+.hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.btn:hover { opacity: 0.85; text-decoration: none; }
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--accent); color: #111; }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border-light); }
+.btn-danger { background: var(--red-bg); color: #e57373; border: 1px solid rgba(192,57,43,0.3); }
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 12px; font-size: 12px; }
+.btn-ghost:hover { color: var(--text); border-color: var(--border-light); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-publish { background: var(--green-bg); color: var(--green); border: 1px solid rgba(46,204,113,0.25); }
+.btn-rebuild { background: var(--blue-bg); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); }
+.actions-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+.publish-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.publish-row input { flex: 1; min-width: 200px; }
+
+/* ── ENTRY LIST ── */
+.entry-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.entry-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.entry-item:hover { border-color: var(--border-light); }
+.entry-num { font-size: 11px; color: var(--text-dim); width: 18px; flex-shrink: 0; text-align: right; }
+.entry-title { font-size: 14px; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.entry-meta { font-size: 11px; color: var(--text-dim); flex-shrink: 0; }
+.entry-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.tag-badge {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.status-badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.status-complete { background: var(--green-bg); color: var(--green); }
+.status-progress { background: var(--blue-bg); color: #93c5fd; }
+.status-fixed { background: var(--green-bg); color: var(--green); }
+.status-other { background: var(--surface2); color: var(--text-muted); }
+
+/* ── SECTION HEADER ── */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.empty-state { padding: 24px; text-align: center; color: var(--text-dim); font-size: 13px; border: 1px dashed var(--border); border-radius: var(--radius); }
+
+/* ── BACK LINK ── */
+.back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.back-link:hover { color: var(--text); text-decoration: none; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+"""
+
+_ADMIN_FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">'
+
+def _status_badge(status: str) -> str:
+    s = (status or "").strip()
+    sl = s.lower()
+    if "complete" in sl or "done" in sl:
+        cls = "status-complete"
+    elif "progress" in sl or "wip" in sl:
+        cls = "status-progress"
+    elif "fixed" in sl or "resolved" in sl:
+        cls = "status-fixed"
+    else:
+        cls = "status-other"
+    return f'<span class="status-badge {cls}">{html.escape(s)}</span>'
+
+
+def _web_layout(title: str, body: str, message: str = "", active_tab: str = "dashboard") -> str:
+    msg_is_error = any(w in message.lower() for w in ["fail", "error", "invalid", "required"])
     message_html = ""
     if message:
-        message_html = f'<p style="padding:10px;border-radius:8px;background:#eef6ff;border:1px solid #c7ddff;">{html.escape(message)}</p>'
+        cls = "toast error" if msg_is_error else "toast"
+        icon = "✗" if msg_is_error else "✓"
+        message_html = f'<div class="{cls}">{icon} {html.escape(message)}</div>'
 
-    return f"""
-<!doctype html>
+    tabs = [
+        ("dashboard", "/", "Dashboard"),
+        ("add-build", "/?tab=add-build", "Add Build"),
+        ("add-repair", "/?tab=add-repair", "Add Repair"),
+        ("site", "/?tab=site", "Site Settings"),
+    ]
+    nav_html = "\n".join(
+        f'<a href="{url}" class="nav-tab{" active" if key == active_tab else ""}">{label}</a>'
+        for key, url, label in tabs
+    )
+
+    return f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{html.escape(title)}</title>
-  <style>
-    body {{ font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f5f6f8; color: #1f2937; }}
-    .wrap {{ max-width: 1100px; margin: 0 auto; padding: 20px; }}
-    .grid {{ display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 16px; }}
-    .card {{ background: white; border-radius: 12px; padding: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); }}
-    h1,h2,h3 {{ margin: 0 0 12px; }}
-    label {{ display: block; margin: 8px 0 4px; font-size: 14px; color: #374151; }}
-    input,textarea,select {{ width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }}
-    textarea {{ min-height: 90px; }}
-    button {{ margin-top: 10px; border: none; background: #2563eb; color: white; padding: 10px 12px; border-radius: 8px; cursor: pointer; }}
-    button.alt {{ background: #4b5563; }}
-    button.warn {{ background: #dc2626; }}
-    .row {{ display: flex; gap: 8px; flex-wrap: wrap; }}
-    .row form {{ margin: 0; }}
-    .list {{ margin: 0; padding-left: 18px; }}
-    .muted {{ color: #6b7280; font-size: 13px; }}
-    a {{ color: #2563eb; text-decoration: none; }}
-    a:hover {{ text-decoration: underline; }}
-  </style>
+  <title>{html.escape(title)} — RudiMakes Admin</title>
+  {_ADMIN_FONTS}
+  <style>{_ADMIN_CSS}</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>RudiMakes Admin</h1>
-    <p class="muted">Web UI for projects, repairs, rebuild, and publish.</p>
+  <header class="admin-header">
+    <div class="admin-logo">RUDI<span>MAKES</span></div>
+    <nav class="admin-nav">{nav_html}</nav>
+  </header>
+  <div class="admin-wrap">
     {message_html}
     {body}
   </div>
+  <script>
+    // Auto-dismiss toast after 4s
+    const t = document.querySelector('.toast');
+    if (t) setTimeout(() => t.style.display='none', 4000);
+    // Tab switching via hash/query
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab) {{
+      document.querySelectorAll('.tab-panel').forEach(p => p.style.display='none');
+      const target = document.getElementById('tab-' + tab);
+      if (target) target.style.display='block';
+    }}
+  </script>
 </body>
-</html>
-""".strip()
+</html>"""
 
 
 def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
@@ -400,102 +668,280 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
             self.send_header("Location", target)
             self.end_headers()
 
-        def _render_home(self, message: str = ""):
+        def _render_home(self, message: str = "", active_tab: str = "dashboard"):
             projects = load_projects()
             repairs = load_repairs()
             site = load_site()
 
-            project_items = "\n".join([
-                f"<li><strong>{html.escape(p.get('title','Untitled'))}</strong> "
-                f"<span class='muted'>[{html.escape(p.get('status','Complete'))}]</span> "
-                f"<a href='/project/edit?idx={i}'>Edit</a> "
-                f"<a href='/story?idx={i}'>Story</a>"
-                f"<form method='post' action='/projects/delete' style='display:inline; margin-left:8px;'>"
-                f"<input type='hidden' name='idx' value='{i}' />"
-                f"<button class='warn' type='submit'>Delete</button></form></li>"
-                for i, p in enumerate(projects)
-            ]) or "<li class='muted'>No builds yet.</li>"
+            n_builds = len(projects)
+            n_repairs = len(repairs)
+            n_complete = sum(1 for p in projects if "complete" in (p.get("status") or "").lower())
+            n_fixed = sum(1 for r in repairs if "fixed" in (r.get("status") or "").lower())
 
-            repair_items = "\n".join([
-                f"<li><strong>{html.escape(r.get('title','Untitled Repair'))}</strong>"
-                f" <a href='/repair/edit?idx={i}'>Edit</a>"
-                f"<form method='post' action='/repairs/delete' style='display:inline; margin-left:8px;'>"
-                f"<input type='hidden' name='idx' value='{i}' />"
-                f"<button class='warn' type='submit'>Delete</button></form></li>"
-                for i, r in enumerate(repairs)
-            ]) or "<li class='muted'>No repairs yet.</li>"
+            if projects:
+                p_rows = []
+                for i, p in enumerate(projects):
+                    t = html.escape(p.get("title") or "Untitled")
+                    st = p.get("status", "")
+                    tags = " ".join(f'<span class="tag-badge">{html.escape(tg)}</span>' for tg in (p.get("tags") or [])[:3])
+                    p_rows.append(f"""<li class="entry-item">
+  <span class="entry-num">{i+1}</span>
+  <span class="entry-title">{t}</span>
+  {tags}
+  {_status_badge(st)}
+  <span class="entry-actions">
+    <a href="/project/edit?idx={i}" class="btn btn-ghost btn-sm">Edit</a>
+    <a href="/story?idx={i}" class="btn btn-ghost btn-sm">Story</a>
+    <form method="post" action="/projects/delete" style="margin:0">
+      <input type="hidden" name="idx" value="{i}" />
+      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this build?')">Del</button>
+    </form>
+  </span>
+</li>""")
+                project_list = f'<ul class="entry-list">{"".join(p_rows)}</ul>'
+            else:
+                project_list = '<div class="empty-state">No builds yet — add one in the Add Build tab.</div>'
+
+            if repairs:
+                r_rows = []
+                for i, r in enumerate(repairs):
+                    t = html.escape(r.get("title") or "Untitled Repair")
+                    date = html.escape(r.get("date") or "")
+                    st = r.get("status", "")
+                    device = html.escape(r.get("device") or "")
+                    r_rows.append(f"""<li class="entry-item">
+  <span class="entry-num">{i+1}</span>
+  <span class="entry-title">{t}</span>
+  <span class="entry-meta">{device}</span>
+  <span class="entry-meta">{date}</span>
+  {_status_badge(st)}
+  <span class="entry-actions">
+    <a href="/repair/edit?idx={i}" class="btn btn-ghost btn-sm">Edit</a>
+    <form method="post" action="/repairs/delete" style="margin:0">
+      <input type="hidden" name="idx" value="{i}" />
+      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this repair?')">Del</button>
+    </form>
+  </span>
+</li>""")
+                repair_list = f'<ul class="entry-list">{"".join(r_rows)}</ul>'
+            else:
+                repair_list = '<div class="empty-state">No repairs yet — add one in the Add Repair tab.</div>'
 
             body = f"""
-<div class='grid'>
-  <div class='card'>
-    <h2>Site Actions</h2>
-    <div class='row'>
-      <form method='post' action='/actions/rebuild'><button type='submit'>Rebuild Site</button></form>
-      <form method='post' action='/actions/publish'>
-        <input type='text' name='commit_message' placeholder='Commit message (optional)' />
-        <button type='submit'>Publish GitHub</button>
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Builds</div>
+    <div class="stat-value">{n_builds}</div>
+    <div class="stat-sub">{n_complete} complete</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Repairs</div>
+    <div class="stat-value">{n_repairs}</div>
+    <div class="stat-sub">{n_fixed} fixed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Site</div>
+    <div class="stat-value" style="font-size:18px;padding-top:4px">{html.escape(site.get('name') or 'RudiMakes')}</div>
+    <div class="stat-sub">{html.escape(site.get('tagline') or '—')}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Quick Actions</div>
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+      <form method="post" action="/actions/rebuild">
+        <button type="submit" class="btn btn-rebuild btn-sm" style="width:100%">⟳ Rebuild Site</button>
+      </form>
+      <form method="post" action="/actions/publish">
+        <input type="hidden" name="commit_message" value="site update" />
+        <button type="submit" class="btn btn-publish btn-sm" style="width:100%">↑ Publish GitHub</button>
       </form>
     </div>
   </div>
+</div>
 
-  <div class='card'>
-    <h2>Edit Site Info</h2>
-    <form method='post' action='/site/save'>
-      <label>Name</label><input name='name' value='{html.escape(site.get('name',''))}' />
-      <label>Tagline</label><input name='tagline' value='{html.escape(site.get('tagline',''))}' />
-      <label>Build Note</label><input name='build_log_note' value='{html.escape(site.get('build_log_note',''))}' />
-      <label>About</label><textarea name='about_text'>{html.escape(site.get('about_text',''))}</textarea>
-      <label>Email</label><input name='email' value='{html.escape(site.get('email',''))}' />
-      <label>Instagram URL</label><input name='instagram_url' value='{html.escape(site.get('instagram_url',''))}' />
-      <label>YouTube URL</label><input name='youtube_url' value='{html.escape(site.get('youtube_url',''))}' />
-      <label>About Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(site.get('tags') or []))}' />
-      <button type='submit'>Save Site</button>
+<div id="tab-dashboard" class="tab-panel">
+  <div class="two-col">
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0;border:none;padding:0">Builds ({n_builds})</div>
+        <a href="/?tab=add-build" class="btn btn-primary btn-sm">+ Add Build</a>
+      </div>
+      <hr class="divider" style="margin:12px 0" />
+      {project_list}
+    </div>
+    <div class="card">
+      <div class="section-header">
+        <div class="card-title" style="margin:0;border:none;padding:0">Repairs ({n_repairs})</div>
+        <a href="/?tab=add-repair" class="btn btn-primary btn-sm">+ Add Repair</a>
+      </div>
+      <hr class="divider" style="margin:12px 0" />
+      {repair_list}
+    </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">Publish Changes to GitHub</div>
+    <form method="post" action="/actions/publish">
+      <div class="publish-row">
+        <input type="text" name="commit_message" placeholder="Commit message (optional — leave blank for auto)" />
+        <button type="submit" class="btn btn-publish">↑ Publish</button>
+      </div>
     </form>
   </div>
+</div>
 
-  <div class='card'>
-    <h2>Add Build</h2>
-    <form method='post' action='/projects/add'>
-      <label>Title</label><input name='title' required />
-      <label>Status</label>
-      <select name='status'><option>Complete</option><option>In Progress</option><option>Archived</option></select>
-      <label>Description</label><textarea name='description'></textarea>
-      <label>Bullets (one per line)</label><textarea name='bullets'></textarea>
-      <label>Tags (comma-separated)</label><input name='tags' />
-      <label>Cover image path or URL</label><input name='image_path' placeholder='images/test-photo.svg or /full/path/img.jpg' />
-      <button type='submit'>Add Build</button>
+<div id="tab-add-build" class="tab-panel" style="display:none">
+  <div class="card" style="max-width:680px">
+    <div class="card-title">Add New Build</div>
+    <form method="post" action="/projects/add">
+      <div class="two-col">
+        <div class="form-group">
+          <label>Title *</label>
+          <input name="title" required placeholder="e.g. Fender Bassman Restoration" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option>Complete</option><option>In Progress</option><option>Archived</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" placeholder="Brief description of the build or project"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Bullets</label>
+        <textarea name="bullets" style="min-height:70px" placeholder="One bullet point per line&#10;Replaced output transformer&#10;Recapped power supply"></textarea>
+        <div class="hint">Each line becomes a bullet point on the project card.</div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Tags</label>
+          <input name="tags" placeholder="amp, fender, restoration" />
+          <div class="hint">Comma-separated</div>
+        </div>
+        <div class="form-group">
+          <label>Cover Image</label>
+          <input name="image_path" placeholder="images/photo.jpg or URL" />
+        </div>
+      </div>
+      <div class="actions-row" style="margin-top:18px">
+        <button type="submit" class="btn btn-primary">Add Build</button>
+        <a href="/" class="btn btn-secondary">Cancel</a>
+      </div>
     </form>
   </div>
+</div>
 
-  <div class='card'>
-    <h2>Add Repair</h2>
-    <form method='post' action='/repairs/add'>
-      <label>Title</label><input name='title' required />
-      <label>Date</label><input name='date' value='{datetime.now().strftime('%Y-%m-%d')}' />
-      <label>Status</label><input name='status' value='Fixed' />
-      <label>Device</label><input name='device' />
-      <label>Symptom</label><textarea name='symptom'></textarea>
-      <label>Diagnosis</label><textarea name='diagnosis'></textarea>
-      <label>Fix</label><textarea name='fix'></textarea>
-      <label>Notes</label><textarea name='notes'></textarea>
-      <label>Tags (comma-separated)</label><input name='tags' />
-      <label>Photo path or URL</label><input name='image_path' />
-      <button type='submit'>Add Repair</button>
+<div id="tab-add-repair" class="tab-panel" style="display:none">
+  <div class="card" style="max-width:680px">
+    <div class="card-title">Add Repair / Troubleshooting Log</div>
+    <form method="post" action="/repairs/add">
+      <div class="two-col">
+        <div class="form-group">
+          <label>Title *</label>
+          <input name="title" required placeholder="e.g. Moog Subsequent 37 — No Audio Output" />
+        </div>
+        <div class="form-group">
+          <label>Device / Board</label>
+          <input name="device" placeholder="e.g. Moog Subsequent 37" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" name="date" value="{datetime.now().strftime('%Y-%m-%d')}" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <input name="status" value="Fixed" placeholder="Fixed / In Progress / No Fault Found" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Symptom</label>
+        <textarea name="symptom" placeholder="What was the reported or observed problem?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Diagnosis</label>
+        <textarea name="diagnosis" placeholder="What did you find on the bench?"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Fix / What Worked</label>
+        <textarea name="fix" placeholder="What you replaced, adjusted, or reworked"></textarea>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Tags</label>
+          <input name="tags" placeholder="synth, moog, audio" />
+          <div class="hint">Comma-separated</div>
+        </div>
+        <div class="form-group">
+          <label>Photo</label>
+          <input name="image_path" placeholder="images/repair.jpg or URL" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Extra Notes</label>
+        <textarea name="notes" style="min-height:60px" placeholder="Anything else worth logging"></textarea>
+      </div>
+      <div class="actions-row" style="margin-top:18px">
+        <button type="submit" class="btn btn-primary">Add Repair Log</button>
+        <a href="/" class="btn btn-secondary">Cancel</a>
+      </div>
     </form>
   </div>
+</div>
 
-  <div class='card'>
-    <h2>Builds</h2>
-    <ol class='list'>{project_items}</ol>
-  </div>
-
-  <div class='card'>
-    <h2>Repairs</h2>
-    <ol class='list'>{repair_items}</ol>
+<div id="tab-site" class="tab-panel" style="display:none">
+  <div class="card" style="max-width:680px">
+    <div class="card-title">Site Settings</div>
+    <form method="post" action="/site/save">
+      <div class="two-col">
+        <div class="form-group">
+          <label>Name</label>
+          <input name="name" value="{html.escape(site.get('name',''))}" />
+        </div>
+        <div class="form-group">
+          <label>Tagline</label>
+          <input name="tagline" value="{html.escape(site.get('tagline',''))}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>About Text</label>
+        <textarea name="about_text">{html.escape(site.get('about_text',''))}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Build Log Note</label>
+        <input name="build_log_note" value="{html.escape(site.get('build_log_note',''))}" />
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Email</label>
+          <input name="email" value="{html.escape(site.get('email',''))}" />
+        </div>
+        <div class="form-group">
+          <label>About Tags</label>
+          <input name="tags" value="{html.escape(', '.join(site.get('tags') or []))}" />
+          <div class="hint">Comma-separated</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Instagram URL</label>
+          <input name="instagram_url" value="{html.escape(site.get('instagram_url',''))}" />
+        </div>
+        <div class="form-group">
+          <label>YouTube URL</label>
+          <input name="youtube_url" value="{html.escape(site.get('youtube_url',''))}" />
+        </div>
+      </div>
+      <div class="actions-row" style="margin-top:18px">
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </div>
+    </form>
   </div>
 </div>
 """
-            self._send_html(_web_layout("RudiMakes Admin", body, message))
+            self._send_html(_web_layout("Dashboard", body, message, active_tab))
 
         def _render_story(self, idx: int, message: str = ""):
             projects = load_projects()
@@ -505,40 +951,72 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 
             project = projects[idx]
             steps = project.get("steps") or []
-            section_items = "\n".join([
-                f"<li><strong>{i+1}. {html.escape(s.get('title','Part'))}</strong>"
-                f" <a href='/story/edit?idx={idx}&step_idx={i}'>Edit</a>"
-                f"<form method='post' action='/story/delete' style='display:inline; margin-left:8px;'>"
-                f"<input type='hidden' name='idx' value='{idx}' />"
-                f"<input type='hidden' name='step_idx' value='{i}' />"
-                f"<button class='warn' type='submit'>Delete</button></form></li>"
-                for i, s in enumerate(steps)
-            ]) or "<li class='muted'>No story sections yet.</li>"
+
+            if steps:
+                s_rows = []
+                for i, s in enumerate(steps):
+                    t = html.escape(s.get("title") or f"Part {i+1}")
+                    preview = html.escape((s.get("text") or "")[:80])
+                    s_rows.append(f"""<li class="entry-item">
+  <span class="entry-num">{i+1}</span>
+  <span class="entry-title">{t}</span>
+  <span class="entry-meta" style="font-size:12px;color:var(--text-dim)">{preview}{"…" if len(s.get("text",""))>80 else ""}</span>
+  <span class="entry-actions">
+    <a href="/story/edit?idx={idx}&step_idx={i}" class="btn btn-ghost btn-sm">Edit</a>
+    <form method="post" action="/story/delete" style="margin:0">
+      <input type="hidden" name="idx" value="{idx}" />
+      <input type="hidden" name="step_idx" value="{i}" />
+      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete section?')">Del</button>
+    </form>
+  </span>
+</li>""")
+                section_list = f'<ul class="entry-list">{"".join(s_rows)}</ul>'
+            else:
+                section_list = '<div class="empty-state">No story sections yet — add one below.</div>'
 
             body = f"""
-<div class='card'>
-  <h2>Build Story: {html.escape(project.get('title','Untitled'))}</h2>
-  <p><a href='/'>← Back to dashboard</a></p>
-  <ol class='list'>{section_items}</ol>
-  <form method='post' action='/story/clear'>
-    <input type='hidden' name='idx' value='{idx}' />
-    <button class='warn' type='submit'>Clear All Sections</button>
-  </form>
-</div>
+<a href="/" class="back-link">← Dashboard</a>
+<div class="two-col">
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0;border:none;padding:0">Build Story: {html.escape(project.get('title','Untitled'))}</div>
+      <form method="post" action="/story/clear" style="margin:0">
+        <input type="hidden" name="idx" value="{idx}" />
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Clear all sections?')">Clear All</button>
+      </form>
+    </div>
+    <hr class="divider" style="margin:12px 0" />
+    {section_list}
+  </div>
 
-<div class='card'>
-  <h3>Add Story Section</h3>
-  <form method='post' action='/story/add'>
-    <input type='hidden' name='idx' value='{idx}' />
-    <label>Section title</label><input name='title' placeholder='Part {len(steps)+1}' />
-    <label>Section text</label><textarea name='text'></textarea>
-    <label>Image path or URL</label><input name='image_path' />
-    <label>Image alt text</label><input name='alt' />
-    <button type='submit'>Add Section</button>
-  </form>
+  <div class="card">
+    <div class="card-title">Add Story Section</div>
+    <form method="post" action="/story/add">
+      <input type="hidden" name="idx" value="{idx}" />
+      <div class="form-group">
+        <label>Section Title</label>
+        <input name="title" placeholder="Part {len(steps)+1}" />
+      </div>
+      <div class="form-group">
+        <label>Section Text</label>
+        <textarea name="text" placeholder="Describe what happened in this part of the build..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Image Path or URL</label>
+        <input name="image_path" placeholder="images/build-step.jpg or URL" />
+      </div>
+      <div class="form-group">
+        <label>Image Alt Text</label>
+        <input name="alt" placeholder="Description of the image" />
+      </div>
+      <div class="actions-row" style="margin-top:14px">
+        <button type="submit" class="btn btn-primary">Add Section</button>
+      </div>
+    </form>
+  </div>
 </div>
 """
-            self._send_html(_web_layout("Build Story", body, message))
+            self._send_html(_web_layout(f"Story — {project.get('title','Build')}", body, message))
 
         def _render_project_edit(self, idx: int, message: str = ""):
             projects = load_projects()
@@ -554,25 +1032,64 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
             ])
 
             body = f"""
-<div class='card'>
-    <h2>Edit Build: {html.escape(p.get('title','Untitled'))}</h2>
-    <p><a href='/'>← Back to dashboard</a></p>
-    <form method='post' action='/projects/save'>
-        <input type='hidden' name='idx' value='{idx}' />
-        <label>Title</label><input name='title' value='{html.escape(p.get('title',''))}' required />
-        <label>Status</label><select name='status'>{status_opts}</select>
-        <label>Description</label><textarea name='description'>{html.escape(p.get('description',''))}</textarea>
-        <label>Bullets (one per line)</label><textarea name='bullets'>{html.escape(chr(10).join(p.get('bullets') or []))}</textarea>
-        <label>Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(p.get('tags') or []))}' />
-        <label>Cover image path or URL</label><input name='cover_image' value='{html.escape(p.get('cover_image') or p.get('image') or '')}' />
-        <label>Alt text</label><input name='alt' value='{html.escape(p.get('alt') or p.get('title') or '')}' />
-        <label>Gallery image paths/URLs (one per line)</label><textarea name='images'>{html.escape(chr(10).join(p.get('images') or []))}</textarea>
-        <label>Links (one per line: label|url)</label><textarea name='links'>{html.escape(_links_to_lines(p.get('links') or []))}</textarea>
-        <button type='submit'>Save Build</button>
-    </form>
+<a href="/" class="back-link">← Dashboard</a>
+<div class="card" style="max-width:720px">
+  <div class="card-title">Edit Build: {html.escape(p.get('title','Untitled'))}</div>
+  <form method="post" action="/projects/save">
+    <input type="hidden" name="idx" value="{idx}" />
+    <div class="two-col">
+      <div class="form-group">
+        <label>Title *</label>
+        <input name="title" value="{html.escape(p.get('title',''))}" required />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">{status_opts}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description">{html.escape(p.get('description',''))}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Bullets</label>
+      <textarea name="bullets">{html.escape(chr(10).join(p.get('bullets') or []))}</textarea>
+      <div class="hint">One bullet per line</div>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Tags</label>
+        <input name="tags" value="{html.escape(', '.join(p.get('tags') or []))}" />
+        <div class="hint">Comma-separated</div>
+      </div>
+      <div class="form-group">
+        <label>Cover Image</label>
+        <input name="cover_image" value="{html.escape(p.get('cover_image') or p.get('image') or '')}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Alt Text</label>
+      <input name="alt" value="{html.escape(p.get('alt') or p.get('title') or '')}" />
+    </div>
+    <div class="form-group">
+      <label>Gallery Images</label>
+      <textarea name="images">{html.escape(chr(10).join(p.get('images') or []))}</textarea>
+      <div class="hint">One path or URL per line</div>
+    </div>
+    <div class="form-group">
+      <label>Links</label>
+      <textarea name="links">{html.escape(_links_to_lines(p.get('links') or []))}</textarea>
+      <div class="hint">One per line: Label|https://url</div>
+    </div>
+    <div class="actions-row" style="margin-top:18px">
+      <button type="submit" class="btn btn-primary">Save Build</button>
+      <a href="/story?idx={idx}" class="btn btn-secondary">Edit Story Sections</a>
+      <a href="/" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
 </div>
 """
-            self._send_html(_web_layout("Edit Build", body, message))
+            self._send_html(_web_layout(f"Edit Build — {p.get('title','')}", body, message))
 
         def _render_repair_edit(self, idx: int, message: str = ""):
             repairs = load_repairs()
@@ -582,27 +1099,70 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 
             r = repairs[idx]
             body = f"""
-<div class='card'>
-    <h2>Edit Repair: {html.escape(r.get('title','Untitled Repair'))}</h2>
-    <p><a href='/'>← Back to dashboard</a></p>
-    <form method='post' action='/repairs/save'>
-        <input type='hidden' name='idx' value='{idx}' />
-        <label>Title</label><input name='title' value='{html.escape(r.get('title',''))}' required />
-        <label>Date</label><input name='date' value='{html.escape(r.get('date',''))}' />
-        <label>Status</label><input name='status' value='{html.escape(r.get('status',''))}' />
-        <label>Device</label><input name='device' value='{html.escape(r.get('device',''))}' />
-        <label>Symptom</label><textarea name='symptom'>{html.escape(r.get('symptom',''))}</textarea>
-        <label>Diagnosis</label><textarea name='diagnosis'>{html.escape(r.get('diagnosis',''))}</textarea>
-        <label>Fix</label><textarea name='fix'>{html.escape(r.get('fix',''))}</textarea>
-        <label>Notes</label><textarea name='notes'>{html.escape(r.get('notes',''))}</textarea>
-        <label>Tags (comma-separated)</label><input name='tags' value='{html.escape(', '.join(r.get('tags') or []))}' />
-        <label>Photo path or URL</label><input name='image' value='{html.escape(r.get('image') or '')}' />
-        <label>Alt text</label><input name='alt' value='{html.escape(r.get('alt') or r.get('title') or '')}' />
-        <button type='submit'>Save Repair</button>
-    </form>
+<a href="/" class="back-link">← Dashboard</a>
+<div class="card" style="max-width:720px">
+  <div class="card-title">Edit Repair: {html.escape(r.get('title','Untitled Repair'))}</div>
+  <form method="post" action="/repairs/save">
+    <input type="hidden" name="idx" value="{idx}" />
+    <div class="two-col">
+      <div class="form-group">
+        <label>Title *</label>
+        <input name="title" value="{html.escape(r.get('title',''))}" required />
+      </div>
+      <div class="form-group">
+        <label>Device / Board</label>
+        <input name="device" value="{html.escape(r.get('device',''))}" />
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{html.escape(r.get('date',''))}" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <input name="status" value="{html.escape(r.get('status',''))}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Symptom</label>
+      <textarea name="symptom">{html.escape(r.get('symptom',''))}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Diagnosis</label>
+      <textarea name="diagnosis">{html.escape(r.get('diagnosis',''))}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Fix / What Worked</label>
+      <textarea name="fix">{html.escape(r.get('fix',''))}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes">{html.escape(r.get('notes',''))}</textarea>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Tags</label>
+        <input name="tags" value="{html.escape(', '.join(r.get('tags') or []))}" />
+        <div class="hint">Comma-separated</div>
+      </div>
+      <div class="form-group">
+        <label>Photo</label>
+        <input name="image" value="{html.escape(r.get('image') or '')}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Alt Text</label>
+      <input name="alt" value="{html.escape(r.get('alt') or r.get('title') or '')}" />
+    </div>
+    <div class="actions-row" style="margin-top:18px">
+      <button type="submit" class="btn btn-primary">Save Repair</button>
+      <a href="/" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
 </div>
 """
-            self._send_html(_web_layout("Edit Repair", body, message))
+            self._send_html(_web_layout(f"Edit Repair — {r.get('title','')}", body, message))
 
         def _render_story_edit(self, idx: int, step_idx: int, message: str = ""):
             projects = load_projects()
@@ -615,19 +1175,37 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 return
 
             s = steps[step_idx]
+            proj_title = html.escape(projects[idx].get("title", "Untitled"))
             body = f"""
-<div class='card'>
-    <h2>Edit Story Section: {html.escape(projects[idx].get('title','Untitled'))}</h2>
-    <p><a href='/story?idx={idx}'>← Back to story</a></p>
-    <form method='post' action='/story/save'>
-        <input type='hidden' name='idx' value='{idx}' />
-        <input type='hidden' name='step_idx' value='{step_idx}' />
-        <label>Section title</label><input name='title' value='{html.escape(s.get('title',''))}' />
-        <label>Section text</label><textarea name='text'>{html.escape(s.get('text',''))}</textarea>
-        <label>Image path or URL</label><input name='image' value='{html.escape(s.get('image',''))}' />
-        <label>Alt text</label><input name='alt' value='{html.escape(s.get('alt',''))}' />
-        <button type='submit'>Save Section</button>
-    </form>
+<a href="/story?idx={idx}" class="back-link">← Story: {proj_title}</a>
+<div class="card" style="max-width:680px">
+  <div class="card-title">Edit Section {step_idx+1}: {html.escape(s.get('title',''))}</div>
+  <form method="post" action="/story/save">
+    <input type="hidden" name="idx" value="{idx}" />
+    <input type="hidden" name="step_idx" value="{step_idx}" />
+    <div class="form-group">
+      <label>Section Title</label>
+      <input name="title" value="{html.escape(s.get('title',''))}" />
+    </div>
+    <div class="form-group">
+      <label>Section Text</label>
+      <textarea name="text" style="min-height:140px">{html.escape(s.get('text',''))}</textarea>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Image Path or URL</label>
+        <input name="image" value="{html.escape(s.get('image',''))}" />
+      </div>
+      <div class="form-group">
+        <label>Alt Text</label>
+        <input name="alt" value="{html.escape(s.get('alt',''))}" />
+      </div>
+    </div>
+    <div class="actions-row" style="margin-top:18px">
+      <button type="submit" class="btn btn-primary">Save Section</button>
+      <a href="/story?idx={idx}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
 </div>
 """
             self._send_html(_web_layout("Edit Story Section", body, message))
@@ -638,7 +1216,8 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
             message = (query.get("msg") or [""])[0]
 
             if parsed.path == "/":
-                self._render_home(message)
+                active_tab = (query.get("tab") or ["dashboard"])[0]
+                self._render_home(message, active_tab)
                 return
 
             if parsed.path == "/story":

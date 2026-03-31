@@ -1,0 +1,116 @@
+[
+  {
+    "title": "37-Key 555 Polyphonic Synthesizer",
+    "slug": "555-polyphonic-synth",
+    "status": "In Progress",
+    "cover_image": "",
+    "image": "",
+    "images": [],
+    "alt": "37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators",
+    "description": "A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me as a learning project — and a real instrument.",
+    "bullets": [
+      "37 semi-weighted keys salvaged from an M-Audio Axiom 61",
+      "12 × 555 timer oscillators, each tuned with a trim pot (one full chromatic octave)",
+      "CD4024 binary counter per oscillator — 7 octaves each, 84 tones total",
+      "Squarewave output + low-pass filtered 'sine-ish' output with blend knob",
+      "White noise generator on every key via shared membrane switch rail",
+      "LM386 amplification throughout — no split supply needed, runs on 9V",
+      "LFO vibrato via 555 monostable circuit on each oscillator",
+      "Fuzz stage: LM386-based with power sag control for weirder tones",
+      "PT2399 delay module (dual chip) with depth and rate controls",
+      "Transformer saturation stage — audio driven backwards through an AC transformer",
+      "Output stage: passive compressor + 1/4\" jack"
+    ],
+    "tags": [
+      "synth",
+      "555",
+      "analog",
+      "build",
+      "polyphonic",
+      "from-scratch"
+    ],
+    "links": [],
+    "created": "2026-03-30T00:00:00",
+    "steps": [
+      {
+        "title": "Ideation — Designing the Instrument",
+        "text": "Started by mapping out what I actually wanted to build: a 37-note polyphonic analog synth, designed and wired entirely by hand. The signal chain I landed on runs from the keybed through tone generation, mixing, and a full effects chain before hitting the output stage.\n\nEach key triggers both a squarewave oscillator signal and a white noise source. The oscillator output splits into a raw squarewave path and a filtered 'sine-ish' path — blended with a knob. Effects chain: fuzz (LM386-based with power sag), PT2399 delay, transformer saturation, then a final output amp with passive compression.",
+        "image": "",
+        "alt": "Signal chain diagram for the 555 polyphonic synth"
+      },
+      {
+        "title": "Step 1 — Salvaging the Keybed",
+        "text": "Pulled the keybed from a broken M-Audio Axiom 61 — the MIDI calibration had died and a few keys were cracked, but the keybed mechanism itself was solid. Semi-weighted keys, decent feel.\n\nUsed a Dremel to cut out the usable 37-key section. The tricky part would come next: modifying the membrane switch PCB underneath without destroying the traces.",
+        "image": "",
+        "alt": "Salvaged M-Audio Axiom 61 keybed"
+      },
+      {
+        "title": "Step 2 — Modifying the Membrane Switches",
+        "text": "The membrane switch PCB needed serious surgery. Cut all the traces to separate the top and bottom button contacts, then tied all the bottom contacts together into a single rail — that becomes the white noise bus, playing on every key.\n\nFor each individual note, I scraped back the PCB mask to expose the copper trace and soldered a wire to each side of the button. This was the most frustrating part of the whole build. Too much movement and the trace lifts right off. Ended up making a 12-wire harness first, zip-tying it to the board, then soldering — much easier than fighting loose wires.\n\nWhere traces got damaged, I verified continuity and superglued the wire down to lock it in place. Labeled every wire (C1, C#1, D1…) and checked everything with a multimeter before moving on. Wiring resistance came in over 100k ohms — which actually works in my favor, since the passive mixer uses 100k resistors anyway. Just needs an amp stage to recover the level.",
+        "image": "",
+        "alt": "Membrane switch PCB with modified traces and wiring harness"
+      },
+      {
+        "title": "Step 3 — Amplification",
+        "text": "Chose the LM386 as the main amplifier throughout the project. The reason is simple: it runs on a single positive supply. The whole synth is powered from 9V, so I don't want to deal with split rails. The LM386 handles amp duties at the mixer output, the sine filter output, and the white noise channel.",
+        "image": "",
+        "alt": "LM386 amplifier circuit on breadboard"
+      },
+      {
+        "title": "Step 4 — Tone Generator",
+        "text": "The tone generator is the heart of the instrument. 12 × 555 timers, each configured as a squarewave oscillator — one per semitone, covering a full chromatic octave. Each has its own RC values and a trim pot for fine tuning.\n\nEach 555 feeds into a CD4024 binary ripple counter, which divides the frequency down through 7 binary stages — giving 7 octaves per oscillator, 84 total pitches from a single board. To tune the synth, you only need to tune 12 oscillators. The 37 notes for the keybed are selected from those 84 available outputs.",
+        "image": "",
+        "alt": "555 timer oscillator board with CD4024 binary counters"
+      },
+      {
+        "title": "Step 5 — The Mixer",
+        "text": "The mixer takes all 37 squarewave signals through a passive resistor network, then splits into two paths: raw squarewave and a low-pass filtered output run through 4 cascaded filter stages and re-amplified to match level. These two outputs go either side of a blend knob.\n\nI wanted to filter each note individually for a true polyphonic sine, but the component count made that impractical. Running the summed output through the filter instead means it's more of a 'filtered output' than a true sine — but it should still sound interesting and very different from the raw square.\n\nThe mixer board also handles white noise (its own LM386 amp channel) and a line-in jack. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.",
+        "image": "",
+        "alt": "Mixer board with passive summing network and filter stages"
+      },
+      {
+        "title": "Step 6 — Effects Chain",
+        "text": "Three effect stages after the mixer:\n\n1. Fuzz — LM386-based fuzz circuit with a 'power sag' feature that starves the supply and produces unusual, collapsing tones. Controls: bypass switch, power sag knob, gain knob.\n\n2. PT2399 Delay — dual PT2399 chip delay module for longer delay times and more headroom. Controls: depth, rate.\n\n3. Transformer Saturation — audio signal driven backwards through a small AC transformer. The transformer charges and clips the signal on the way through, adding vintage harmonic saturation. Controls: sat bypass switch, input level, output level.\n\nAlso planned: a 555 monostable LFO circuit connected to each oscillator for vibrato effect.",
+        "image": "",
+        "alt": "Effects chain boards: fuzz, delay, transformer saturation"
+      },
+      {
+        "title": "Step 7 — Output Stage",
+        "text": "Final stage: a small amplifier circuit with volume and tone controls, followed by a passive compressor to tame peaks before hitting the 1/4\" output jack. The passive compressor keeps things from getting too spiky when playing lots of notes at once.",
+        "image": "",
+        "alt": "Output stage with passive compressor and 1/4 inch jack"
+      }
+    ],
+    "updated": "2026-03-30T00:00:00"
+  },
+  {
+    "title": "test",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "test",
+    "description": "testy test",
+    "bullets": [
+      "still cool"
+    ],
+    "tags": [
+      "marine",
+      "build"
+    ],
+    "links": [],
+    "created": "2026-03-01T18:45:34",
+    "updated": "2026-03-01T18:59:22",
+    "slug": "test",
+    "steps": [
+      {
+        "title": "Part 1",
+        "text": "Photo placement test section.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ]
+  }
+]

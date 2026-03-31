@@ -1,0 +1,156 @@
+[
+  {
+    "title": "d",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "d",
+    "description": "dfg",
+    "bullets": [
+      "dfg"
+    ],
+    "tags": [
+      "prototype"
+    ],
+    "links": [],
+    "created": "2026-03-01T20:45:58",
+    "slug": "d",
+    "steps": [
+      {
+        "title": "Step 1 - Overview",
+        "text": "First test step text.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ],
+    "updated": "2026-03-15T22:58:15"
+  },
+  {
+    "title": "a",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "a",
+    "description": "a",
+    "bullets": [
+      "a"
+    ],
+    "tags": [
+      "fabrication"
+    ],
+    "links": [],
+    "created": "2026-03-01T20:42:31",
+    "slug": "a",
+    "steps": [
+      {
+        "title": "Part 1",
+        "text": "Photo placement test section.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ]
+  },
+  {
+    "title": "test",
+    "status": "Complete",
+    "cover_image": "images/test-photo.svg",
+    "image": "images/test-photo.svg",
+    "images": [
+      "images/test-photo.svg"
+    ],
+    "alt": "test",
+    "description": "testy test",
+    "bullets": [
+      "still cool"
+    ],
+    "tags": [
+      "marine",
+      "build"
+    ],
+    "links": [],
+    "created": "2026-03-01T18:45:34",
+    "updated": "2026-03-01T18:59:22",
+    "slug": "test",
+    "steps": [
+      {
+        "title": "Part 1",
+        "text": "Photo placement test section.",
+        "image": "images/test-photo.svg",
+        "alt": "Test photo"
+      }
+    ]
+  }
+{
+  "title": "37-Key Polyphonic Synth",
+  "status": "In Progress",
+  "cover_image": "images/synth-build-cover.jpg",
+  "image": "images/synth-build-cover.jpg",
+  "images": [],
+  "alt": "Work-in-progress 37-key polyphonic synthesizer build",
+  "description": "A from-scratch polyphonic synthesizer built around a salvaged keybed, discrete 555-based tone generation, and a signal chain full of things I wanted to try — fuzz, delay, transformer saturation, and a vibrato LFO. Designed and built by me as a learning project. It is not finished yet.",
+  "bullets": [
+    "37 polyphonic keys from a salvaged M-Audio Axiom keybed",
+    "12 × 555 oscillators covering one full octave, each divided by a CD4024 to produce 7 octaves",
+    "Square wave and filtered pseudo-sine outputs with blend knob",
+    "White noise generator on every key via a shared passive mix bus",
+    "LM386-based signal recovery and amplification throughout",
+    "Effects chain: fuzz (LM386, power sag), PT2399 delay, transformer saturation stage",
+    "555 monostable vibrato LFO on each oscillator",
+    "Output stage with passive compressor and ¼\" jack"
+  ],
+  "tags": ["synth", "build", "electronics", "in-progress"],
+  "links": [],
+  "created": "2026-03-30T00:00:00",
+  "slug": "37-key-polyphonic-synth",
+  "steps": [
+    {
+      "title": "Step 1 — Salvage the Keybed",
+      "text": "I pulled the keybed from a broken M-Audio Axiom 61. The MIDI calibration was shot and a few keys were cracked, but the keybed itself was usable. I cut out the section I needed with a Dremel — 37 keys, semi-weighted, decent feel.",
+      "image": "",
+      "alt": "Salvaged M-Audio Axiom keybed"
+    },
+    {
+      "title": "Step 2 — Modify the Membrane Switches",
+      "text": "I cut the PCB traces to separate the top and bottom contacts on each key. All the bottom contacts got tied together — that's the white noise bus, so noise plays on every key. For the note wires, I scraped the trace on each key, soldered a labeled wire (C1, C#1, D1...), and zip-tied the wiring harness to the board before soldering to keep things from pulling up. Where traces got damaged, I locked the wire down with super glue. Checked every connection with a multimeter before moving on.",
+      "image": "",
+      "alt": "Modified membrane switch PCB with individual key wires"
+    },
+    {
+      "title": "Step 3 — Signal Recovery Amp",
+      "text": "With all 37 wires summed through a passive 100k resistor mixer, the output was extremely quiet — over 100k resistance in the wiring alone. I was planning to use 100k resistors for the mix anyway, so the LM386 was a natural fit here for signal recovery. It runs on a single +9V supply, which is the only rail in this whole build.",
+      "image": "",
+      "alt": "LM386 amplifier circuit for signal recovery"
+    },
+    {
+      "title": "Step 4 — Tone Generator Board",
+      "text": "Twelve 555 timers, each tuned to one note of the chromatic scale. Each one feeds a CD4024 binary counter that divides the frequency down across 7 octaves — giving 84 available tones total. I select 37 of them to wire up the keyboard range I want. Tune 12 oscillators, get the whole thing in pitch.",
+      "image": "",
+      "alt": "555-based tone generator board with CD4024 dividers"
+    },
+    {
+      "title": "Step 5 — The Mixer",
+      "text": "The mixer sums all the square wave outputs from the keyboard matrix and amplifies them. A copy of that summed signal also runs through four cascaded filters and gets amplified back up — this is the 'sine' output. It won't be a true sine when multiple notes are played, but a filtered version of the mix. Both outputs feed opposite sides of a blend knob. White noise and a line-in jack are on this board too. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.",
+      "image": "",
+      "alt": "Mixer board with blend, volume, and noise controls"
+    },
+    {
+      "title": "Step 6 — Effects Chain",
+      "text": "Fuzz first: an LM386-based fuzz with a power sag feature that produces some deliberately unstable tones. Then a PT2399 delay — possibly two chips for longer times. After that, a transformer saturation stage where I'm driving a small AC transformer backwards to get harmonic saturation; controls for saturation bypass, input level, and output level. A 555 monostable LFO is connected to each oscillator for vibrato — that's the theory, anyway.",
+      "image": "",
+      "alt": "Effects chain: fuzz, PT2399 delay, transformer saturation"
+    },
+    {
+      "title": "Step 7 — Output Stage",
+      "text": "Final amplification with volume and tone controls, followed by a passive compressor, into a ¼\" output jack. This stage is still being planned.",
+      "image": "",
+      "alt": "Output stage schematic"
+    }
+  ]
+}
+]
