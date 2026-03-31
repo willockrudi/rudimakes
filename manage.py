@@ -31,6 +31,9 @@ SITE_PATH = os.path.join(ROOT, "site.json")
 IMAGES_DIR = os.path.join(ROOT, "images")
 BACKUPS_DIR = os.path.join(ROOT, ".backups")
 
+# Site URL (used for canonical URLs, OG tags, structured data)
+SITE_URL = "https://www.rudimakes.com"
+
 # Markers
 PROJECTS_START = "<!-- PROJECTS_START -->"
 PROJECTS_END = "<!-- PROJECTS_END -->"
@@ -2031,6 +2034,12 @@ def project_detail_html(p: dict, site: dict, template: str) -> str:
         </div>
 """.strip()
 
+    # SEO: build meta description from plain text of description
+    slug = p.get("slug") or slugify(raw_title)
+    plain_desc = re.sub(r"<[^>]+>", "", p.get("description", "")).strip()
+    meta_desc = html.escape((plain_desc[:157] + "...") if len(plain_desc) > 160 else plain_desc, quote=True)
+    og_image = f"{SITE_URL}/{cover}" if cover else f"{SITE_URL}/images/og.png"
+
     content = replace_placeholders(template, site)
     mapping = {
         "{{PROJECT_TITLE}}": title,
@@ -2042,6 +2051,9 @@ def project_detail_html(p: dict, site: dict, template: str) -> str:
         "{{PROJECT_CARD_TAGS}}": tags_html,
         "{{PROJECT_BULLETS}}": bullets_html,
         "{{PROJECT_LINKS}}": links_html,
+        "{{PROJECT_META_DESCRIPTION}}": meta_desc,
+        "{{PROJECT_OG_IMAGE}}": og_image,
+        "{{PROJECT_SLUG}}": html.escape(slug, quote=True),
     }
     for key, value in mapping.items():
         content = content.replace(key, value)
