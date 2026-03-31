@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Willock Bench OS | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        Willock Bench OS
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Willock Bench OS
+        <span class="status-badge status-progress">🛠 In Progress</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">software</span>
+            <span class="tag-chip">python</span>
+            <span class="tag-chip">sqlite</span>
+            <span class="tag-chip">repair</span>
+            <span class="tag-chip">tools</span>
+            <span class="tag-chip">local-first</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>Full customer → unit → job → history data model with structured diagnostics per equipment type</li>
+          <li>Real workflow states: NEW → INTAKE → DIAGNOSING → AWAITING APPROVAL → REPAIRING → TESTING → READY → COMPLETED</li>
+          <li>SQLite FTS5 full-text search across jobs, customers, units, knowledge base, and inventory</li>
+          <li>Structured diagnostic forms per equipment category — tube amps, synths, pedals each get different fields</li>
+          <li>Every status transition logged with timestamp — complete audit trail on every job</li>
+          <li>Local-first: runs on shop hardware, works without internet, data stays mine</li>
+          <li>Phone-optimized wallboard — big text, current job counts by status, auto-refreshes every 60 seconds</li>
+          <li>Built-in knowledge base: every interesting failure mode becomes searchable history</li>
+          <li>Automated rotating backups: 7 daily, 4 weekly, 12 monthly</li>
+          <li>CLI interface built before UI — fast, scriptable, testable from day one</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="Local-first repair shop management software built for electronics and instrument repair">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. The Problem With Every Other Option</h3>
+      <p>I run a repair shop. Tube amps, synthesizers, guitar electronics, pedals, studio gear. For a while I managed it the way most small shops do: paper intake forms, text files, spreadsheets, and memory. It works until it doesn&#x27;t. A repair note gets lost. You forget what you already tried on a unit six months ago. A job sits at the back of the bench for three weeks and nobody notices.<br>The commercial shop management tools are built for car shops and phone kiosks. None of them understand that diagnosing a vintage Fender amp is different from replacing a cracked phone screen. None of them track voltage readings. None of them have a knowledge base for failure modes on a Juno-106. And they all require a subscription and a live internet connection.<br>So I decided to build my own.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. Designing the Data Model</h3>
+      <p>The core structure is: Customer → Unit (the piece of gear) → Job (the repair event). A job contains intake, diagnostics, work performed, parts used, estimate, invoice, payments, notes, file attachments, and an optional knowledge base entry.<br>A customer can have multiple units. A unit can have a full service history across multiple jobs over the years. That history is searchable, structured, and permanently mine.<br>Diagnostics are structured JSON templates per equipment category. When I open a tube amp job I get a tube amp diagnostic form — bias readings, B+ voltage, power rail checks. When I open a synth job I get a synth diagnostic form. That makes the data actually queryable later.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. The Status System</h3>
+      <p>Not just open or closed. The actual states a job passes through:<br>NEW → INTAKE → QUEUED → DIAGNOSING → AWAITING APPROVAL → APPROVED → REPAIRING → TESTING → READY FOR PICKUP → COMPLETED<br>With branches for WAITING PARTS, ON HOLD, CALLBACK, and SCRAP. Every transition is logged with a timestamp. You can see exactly where every job is and how long it&#x27;s been there.<br>This is the thing that prevents jobs from disappearing into the back of the bench.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. The Build Plan</h3>
+      <p>Built in deliberate phases.<br>Phase 1 — SQLite schema with FTS5. Customers, units, jobs, diagnostics, parts, estimates, invoices, inventory, knowledge base, status history. Foreign keys and indexes correct from day one.<br>Phase 2 — Pure Python data access layer. No Flask yet. Clean separation between the database and everything above it.<br>Phase 3 — Business logic. Job workflow validation, status transition enforcement, estimate and invoice calculations, backup automation.<br>Phase 4 — CLI first. new_job, update_status, add_note, add_part, today, search. Fast, scriptable, testable before there&#x27;s any UI.<br>Phase 5 — Flask web UI. Dashboard, job list, job detail, new intake, customers, inventory, knowledge base, search, settings. Dark theme.<br>Phase 6 — Dashboard with real operational metrics: open jobs, on bench, waiting parts, awaiting approval, overdue, due this week.<br>Phase 7 — Phone wallboard. Single page, big text, auto-refreshes every 60 seconds. Designed to be glanced at from across the room.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>5. The Long Game</h3>
+      <p>If I use this system consistently — and I will, because I&#x27;m building it to be faster than not using it — then after a few years I&#x27;ll have something most repair shops don&#x27;t have: a complete, structured, searchable history of every job I&#x27;ve ever worked. Every failure mode. Every part. Every voltage reading. Every callback.<br>That&#x27;s the real product. Not the software. The data the software accumulates.<br>At that point AI integration becomes genuinely useful. Not a chatbot. A system that can say: you&#x27;ve seen this symptom on this model four times, here&#x27;s what it turned out to be each time, here are the parts you used. That&#x27;s a real tool for a real bench technician.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

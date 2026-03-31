@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>30-Port iPad Charging Rack | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        30-Port iPad Charging Rack
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        30-Port iPad Charging Rack
+        <span class="status-badge status-progress">🛠 In Progress</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A custom 2U rack system that delivers USB-C Power Delivery charging to 30 iPads over 50-foot cable runs. 24V distribution, per-port PD conversion, 7-pin XLR interconnects, 4-pin XLR tablet outputs. Designed to actually work at distance — not just on a workbench.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">hardware</span>
+            <span class="tag-chip">electronics</span>
+            <span class="tag-chip">power</span>
+            <span class="tag-chip">rack</span>
+            <span class="tag-chip">usb-c</span>
+            <span class="tag-chip">build</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>30 iPad ports in a 2U rack chassis — 5×6 grid of 4-pin XLR front panel outputs</li>
+          <li>24V distribution bus → 30 individual USB-C PD modules, one per port</li>
+          <li>50-foot cable spec: 14 AWG VBUS/GND, 22 AWG twisted CC1/CC2, overall shield</li>
+          <li>7-pin XLR internal harness — 15 connectors, each carrying 2 tablet ports</li>
+          <li>4-pin XLR tablet cables: Pin 1 GND, Pin 2 CC1, Pin 3 CC2, Pin 4 VBUS</li>
+          <li>Mean Well RSP-1000-24 (24V, 40A, 960W) main power supply</li>
+          <li>Per-port 2A fusing — 30-circuit fuse block</li>
+          <li>CC lines twisted and shielded — single-point grounding to prevent ground loops</li>
+          <li>Single-port validation test before committing to all 30 ports</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="Custom 30-port USB-C Power Delivery charging rack for iPads over 50-foot cable runs">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. The Problem</h3>
+      <p>USB-C Power Delivery over 50 feet is not something the standard was designed for. The CC lines — the small signal wires that carry the PD negotiation handshake — are extremely sensitive to noise, impedance, and ground reference issues. Most DIY attempts fail because the cables aren&#x27;t built right, the grounds aren&#x27;t bonded correctly, or the PD module doesn&#x27;t expose the CC pins externally.<br>The architecture that actually works: distribute 24V over heavy wire the full distance, convert to USB-C PD at each port. Keep the sensitive signaling short.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. Cable Specification</h3>
+      <p>The 50-foot tablet cables are built to a specific spec: 4-conductor shielded control cable. 14 AWG power pair (VBUS and GND). 22 AWG twisted signal pair (CC1 and CC2). Overall foil or braid shield.<br>Why 14 AWG: at 50 feet round-trip that&#x27;s 100 feet of conductor. At 2.5Ω per 1000 ft, voltage drop at iPad charge current (~2.2A at 9V) is about 0.25V — within PD tolerance. Smaller wire causes renegotiation loops and charging instability.<br>CC lines twisted to reduce EMI pickup. Shield tied to ground at the rack end only — grounding both ends creates a ground loop that corrupts the PD signal.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. The Connector System</h3>
+      <p>Internal interconnect: 7-pin XLR. Each connector carries two tablet ports — VBUS-A, CC1-A, CC2-A, VBUS-B, CC1-B, CC2-B, and a shared GND. 15 harnesses total for 30 ports.<br>Front panel: 4-pin XLR per tablet output. Neutrik connectors throughout — cheap connectors add 20–50 milliohms of resistance on the CC lines, which is enough to break PD negotiation.<br>Panel layout: 5 rows × 6 columns, ports 1–30 left-to-right, top-to-bottom. Power switch and LED on the left margin.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. Validate One Port Before Building Thirty</h3>
+      <p>Before committing to 30 ports, build one and prove the design. The test: one PD module, one 50-foot cable, one iPad. Success means the iPad negotiates PD (not 5V fallback), voltage at the tablet end reads 8.7–9.3V, power stabilizes at 18–20W, and the system runs stable for 30 minutes.<br>A $25 inline USB-C PD meter shows negotiated voltage, current, and profile in real time. Without one you&#x27;re guessing. With one you can see exactly whether the handshake happened and how much voltage dropped across the cable.<br>If the single-port test passes, the design scales.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>5. The Build</h3>
+      <p>Mean Well RSP-1000-24 feeding a 40A DC breaker into positive and negative bus bars. 30 PD modules fused at 2A each from a 30-circuit fuse block. 18–20 AWG leads from fuse to module, 22 AWG for CC wiring kept short inside the rack. 2× 80mm fans for cooling.<br>The critical rule that makes it work: all grounds stay common throughout the system. Power ground and CC reference ground are the same ground. Splitting them at any point — even with a thin separate wire to a different terminal — breaks PD negotiation. Every ground in the rack ties to the same bar.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

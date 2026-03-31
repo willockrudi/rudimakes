@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python Web Scraper | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        Python Web Scraper
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Python Web Scraper
+        <span class="status-badge status-complete">✅ Complete</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on disk, and never download the same file twice. This is the story of building it and what I learned along the way.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">python</span>
+            <span class="tag-chip">scraper</span>
+            <span class="tag-chip">tools</span>
+            <span class="tag-chip">learning</span>
+            <span class="tag-chip">automation</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>Reads a structured JSON database and systematically fetches every URL in it</li>
+          <li>10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess</li>
+          <li>SHA256 deduplication — hashes every file before saving, skips anything already seen</li>
+          <li>PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents</li>
+          <li>BFS crawler with configurable depth — follows links without running forever</li>
+          <li>Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler</li>
+          <li>argparse CLI — target a single manufacturer or the entire database</li>
+          <li>Simultaneous terminal and file logging with timestamps</li>
+          <li>Runs on a Raspberry Pi without modification</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. Starting From Zero</h3>
+      <p>I didn&#x27;t learn Python by reading a book. I learned it by having a problem that needed solving. I needed a tool that could pull technical documents from hundreds of websites, save them in an organized way, and never download the same thing twice. A real tool, not a tutorial exercise.<br>The early wins were small. Getting a script to read a JSON file. Getting it to make an HTTP request and save the response to disk. Each one felt like a real step forward.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. Files, Paths, and Being Defensive</h3>
+      <p>Working with files and paths was the first real lesson. Python&#x27;s pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists — then watching your script crash when it doesn&#x27;t — teaches you to be defensive fast.<br>JSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. The 10-Method Waterfall</h3>
+      <p>HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.<br>I built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python&#x27;s module ecosystem in a very practical way — what each tool actually does and when to reach for a heavier one.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. SHA256 Deduplication</h3>
+      <p>If you run the scraper twice, you don&#x27;t want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.<br>I&#x27;d never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data — and that a dictionary makes a fast lookup table — felt like real computer science knowledge, not just Python trivia.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>5. Classes, PDFs, and Finishing It</h3>
+      <p>PDFs are a binary format that hides text in surprisingly difficult ways. I worked through pdfminer.six for text extraction, pymupdf for faster processing, and pytesseract for OCR on scanned documents. Checking raw_bytes[:4] == b&quot;%PDF&quot; to detect a PDF by magic bytes rather than file extension felt like a real programmer move.<br>Class design was the biggest conceptual jump. The scraper grew into HashRegistry, ScrapeLog, UrlProcessor, and ManufacturerCrawler. Learning when to use a class versus a function clicked not by reading about it but by needing it to keep the code manageable.<br>The scraper works. It handles HTML, PDFs, binary files, redirects, failures, retries, and restarts gracefully. It runs on a Raspberry Pi. None of that was obvious when I started.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

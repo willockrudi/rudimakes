@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keystone — Arena Board Game | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        Keystone — Arena Board Game
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Keystone — Arena Board Game
+        <span class="status-badge status-complete">✅ Complete</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A fast-paced arena game of movement, pressure, and permanent construction. Players move across a 12×12 black-and-white grid, drawing cards based on where they land. Health is both life and currency. Towers change the map. Nothing you build protects you from the system itself.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">game</span>
+            <span class="tag-chip">board-game</span>
+            <span class="tag-chip">design</span>
+            <span class="tag-chip">tabletop</span>
+            <span class="tag-chip">arena</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>12×12 checkerboard grid — black squares draw Yin cards, white squares draw Yang cards</li>
+          <li>Health is both life and currency — spent to build towers, lost to threats and combat</li>
+          <li>Towers are permanent — stack 7 tiles and win immediately</li>
+          <li>Dual 52-card deck system: Yin deck (pressure, damage) and Yang deck (recovery, momentum)</li>
+          <li>Card types: Threat, Supply, Shift, Equipment, Exit</li>
+          <li>1–4 players, solo to competitive to cooperative</li>
+          <li>PvP: both players roll d6, loser takes damage equal to the difference</li>
+          <li>Ranged shooting: d6 range, orthogonal or diagonal, blocked by towers</li>
+          <li>Optional modes: Capture the Flag, Team Score with respawn</li>
+          <li>20–30 minute play time</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. The Concept</h3>
+      <p>Keystone is about movement, pressure, and commitment. The board never remembers what happened. Cards resolve immediately and get discarded. The arena has no memory of you. Only Towers persist — and building them costs the same resource that keeps you alive.<br>Health is your fuel. Spend it to build. Lose it to threats. The tension is in that tradeoff the whole game.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. The Grid and the Cards</h3>
+      <p>The board is a 12×12 checkerboard. Black squares draw from the Yin deck — pressure, damage, disruption. White squares draw from the Yang deck — recovery, momentum, opportunity.<br>You never know what you&#x27;re drawing until you land. The Yin deck is heavy with Threats (29 of 52 cards). The Yang deck is heavy with Supplies (20 of 52). The asymmetry rewards navigating toward white squares when you need to recover and punishes you when you get trapped on black.<br>Cards resolve immediately and are discarded. No board state. No memory. The arena doesn&#x27;t know you were here.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. Towers</h3>
+      <p>Towers are the only permanent things in Keystone. You place tiles by ending your movement on a square and spending 1 Health per tile — up to 2 tiles per turn. Stack 7 upright tiles and you win immediately with the Capstone.<br>A sideways tile caps a tower. Capped towers can&#x27;t grow, can&#x27;t be recaptured, but are still landable and PvP can happen on them.<br>Building costs Health you might need to survive. That&#x27;s the whole game.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. Combat and Movement</h3>
+      <p>PvP triggers when you land on another player. Both roll d6. Higher roll wins. Loser takes damage equal to the difference. Ties deal nothing. The winner can move 1 additional square.<br>Shooting: roll 1d6 for range, pick direction, first opposing player in the line takes 1 damage. Can&#x27;t shoot through towers.<br>Movement is 1d6 per turn. Stop early if you want — unused MP is lost. Passing through squares does nothing. Cards only trigger on landing.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>5. Win Conditions and Game Modes</h3>
+      <p>Win immediately if: you land on an Exit with Health ≥ 1, your opponent dies, or you complete a Tower with 7 tiles.<br>Cooperative: all players must escape. If any player hits 0, everyone loses.<br>Capture the Flag: team play, objective-based, Exits removed, flag carrier can&#x27;t use Equipment or Momentum Supplies.<br>Team Score: PvP kills earn VP (1 per win, 2 for KO), defeated players respawn at Start with 10 Health.<br>Game length 20–30 minutes.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

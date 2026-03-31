@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MT7902 Linux Wi-Fi Driver Patch | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        MT7902 Linux Wi-Fi Driver Patch
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        MT7902 Linux Wi-Fi Driver Patch
+        <span class="status-badge status-progress">🛠 In Progress</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">linux</span>
+            <span class="tag-chip">driver</span>
+            <span class="tag-chip">kernel</span>
+            <span class="tag-chip">hardware</span>
+            <span class="tag-chip">debugging</span>
+            <span class="tag-chip">wifi</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)</li>
+          <li>Symptom: firmware uploads but version field reads ____000000 — handshake never completes</li>
+          <li>Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17</li>
+          <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source</li>
+          <li>Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump</li>
+          <li>Fix: two-file patch — regs.h constant + pci.c interrupt enable mask</li>
+          <li>Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. The Machine and the Symptom</h3>
+      <p>ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support — Windows driver only.<br>The driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000 — placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. Mapping the Hardware</h3>
+      <p>Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.<br>MT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring — how the host sends firmware commands — is hardware ring 15.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. Reading the Windows Driver and Firmware Blobs</h3>
+      <p>Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.<br>Cross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn&#x27;t fire on interrupt bit 15 or bit 2 — it fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That&#x27;s just what this chip does.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. The Root Cause</h3>
+      <p>The Linux driver base was written for the MT7921. That chip uses HOST_TX_DONE_INT_ENA13 = BIT(27) for its command ring interrupt. MT7902 requires BIT(17) in the same position.<br>The mask was wrong. When the firmware finished initializing and fired the CMD TX done interrupt on bit 17, the driver&#x27;s interrupt handler was masked against bit 27 and saw nothing. The handshake never completed. Hence: ____000000.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>5. The Patch and Verification</h3>
+      <p>Two files needed fixing: regs.h to correct the constant, and pci.c to fix the interrupt enable mask written to WF_WFDMA_HOST_DMA0_HOST_INT_ENA_ADDR. Recompiled with make -j$(nproc).<br>Verification in progress: confirm the patch in the binary via objdump, then read the hardware register at 0xe0302204 with devmem2 to verify the mask programs correctly into silicon. Then rmmod the old module, insmod the new one, and watch dmesg to see whether the CMD TX done interrupt arrives and the firmware version field shows real digits.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

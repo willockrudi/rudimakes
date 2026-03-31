@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BASIL — Cinematic Narrative Game | Rudi Willock</title>
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../aria.html">ARIA</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../index.html#builds">Builds</a>
+        <span>→</span>
+        BASIL — Cinematic Narrative Game
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        BASIL — Cinematic Narrative Game
+        <span class="status-badge status-progress">🛠 In Progress</span>
+      </h1>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A short cinematic narrative game built in Unity 2022 HDRP. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. 45–90 minutes. Bittersweet, restrained, quiet. Not a power fantasy. Nobody wins, but they don&#x27;t lose each other.</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">game</span>
+            <span class="tag-chip">unity</span>
+            <span class="tag-chip">narrative</span>
+            <span class="tag-chip">indie</span>
+            <span class="tag-chip">hdrp</span>
+            <span class="tag-chip">from-scratch</span>
+          </div>
+      <ul class="bullets project-bullets">
+          <li>Built in Unity 2022 HDRP — full cinematic lighting pipeline</li>
+          <li>19-phase production plan, fully documented with AI-assisted coding prompts at every step</li>
+          <li>Entire narrative locked into a master canon document before any code was written</li>
+          <li>Mog threat AI: patrol, detection, alert, hunt state machine</li>
+          <li>RoomProgressionManager gates story beats so they unfold in the right emotional order</li>
+          <li>Full movement controller: walk, run, crouch, climb, carry, squeeze through gaps</li>
+          <li>Every mechanic has a symbolic purpose before it has a technical one</li>
+          <li>Greybox-first — game plays beginning to end in rough geometry before any art begins</li>
+          <li>Planning and design phase complete — active Unity build is next</li>
+        </ul>
+      
+
+      <img class="project-detail-hero" src="" alt="BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <h2>Build Story</h2>
+        <!-- PROJECT_STEPS_START -->
+
+    <article class="project-step">
+      <h3>1. What BASIL Is</h3>
+      <p>BASIL is a short cinematic narrative game. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. It begins in warmth — a dollhouse, a chess game, afternoon light, tea. It ends in survival. Not triumph.<br>The emotional core: nobody wins, but they don&#x27;t lose each other.<br>The tone is bittersweet, restrained, cinematic. No dialogue-heavy exposition. No power fantasy. Just a small creature trying to get back to someone.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>2. Story Architecture Drives Everything</h3>
+      <p>BASIL is unusual because the story was fully locked before a single line of code was written. Every system, every room, every trigger exists to serve the emotional truth of the narrative.<br>The white pawn means something. The grass hat means something. The moment Mog says &#x27;Colder&#x27; is a taunt, a warning, and a game all at once. Every mechanic has a symbolic purpose before it has a technical one.<br>The question driving every technical decision: does the coded game still follow the story exactly?</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>3. The Production Plan</h3>
+      <p>19 phases, fully documented.<br>Phases 0–3: Unity HDRP setup, Bas&#x27;s full movement controller (walk, run, crouch, climb, carry, squeeze through gaps), opening cinematic.<br>Phases 4–5: Greybox of the full house interior at mouse scale. Every room has a narrative purpose before it has geometry.<br>Phases 6–7: Mog&#x27;s threat AI (patrol, detection, alert, hunt), checkpoint/save system, RoomProgressionManager.<br>Phases 8–11: Every authored moment — dialogue, silence, clue discovery, the terrarium reveal, the shatter, the ending walk.<br>Phases 12–18: Character models, environment models, art pass, animation, audio, narrative continuity review.<br>Phase 19: Trailer, PC build, itch.io release.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>4. Where It Stands</h3>
+      <p>The project is in the planning and documentation phase — fully designed, fully spec&#x27;d, ready for active build. Every room, every scene, every system, and every AI prompt needed to build it has been written.<br>What exists: a locked master canon document, a complete 19-phase implementation roadmap, scene-by-scene specs for every authored moment, system design docs for the Bas controller, Mog AI, progression gating, checkpoint system, and scene transitions.<br>The build is next.</p>
+    </article>
+<!-- PROJECT_STEPS_END -->
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>
