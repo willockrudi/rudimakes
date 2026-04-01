@@ -91,8 +91,7 @@
       </button>
       <ul id="navMenu">
         <li><a href="#services" class="active">Services</a></li>
-        <li><a href="repairs.html">Repair Log</a></li>
-        <li><a href="#builds">Builds</a></li>
+        <li><a href="#repairs">Repair Log</a></li>
         <li><a href="music.html">Music</a></li>
         <li><a href="aria.html">ARIA</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -265,7 +264,7 @@
         <div class="section-header">
           <p class="section-label">Build Log</p>
           <h2 class="section-title">Things I've Built</h2>
-          <p class="section-note">A running collection of things I&#x27;ve built, repaired, and engineered — from electronics to mechanical systems.</p>
+          <p class="section-note">A running collection of things I've built, repaired, and engineered — from electronics to mechanical systems.</p>
         </div>
 
         <!-- Filters -->
@@ -427,14 +426,14 @@
     var overlay=document.getElementById("buildOverlay");
     var detailEl=document.getElementById("buildDetail");
 
-    fetch("projects.json").then(function(r){return r.json();}).then(function(data){
+    fetch("repairs.json").then(function(r){return r.json();}).then(function(data){
       all=data;buildTags();applyFilters();
       if(location.hash)openByHash(location.hash.slice(1));
-    }).catch(function(){grid.innerHTML='<p style="color:var(--text-muted);">Could not load projects.</p>';});
+    }).catch(function(){grid.innerHTML='<p style="color:var(--text-muted);">Could not load repairs.</p>';});
 
     function buildTags(){
       var ts=new Set();
-      all.forEach(function(p){(p.tags||[]).forEach(function(t){ts.add(t);});});
+      all.forEach(function(r){(r.tags||[]).forEach(function(t){ts.add(t);});});
       var tags=["all"].concat(Array.from(ts).sort());
       tagWrap.innerHTML="";
       tags.forEach(function(t){
@@ -448,41 +447,39 @@
 
     function applyFilters(){
       var q=(search?search.value:"").trim().toLowerCase();
-      filtered=all.filter(function(p){
-        var text=(p.title+" "+p.description+" "+(p.tags||[]).join(" ")).toLowerCase();
-        return(!q||text.indexOf(q)!==-1)&&(activeTag==="all"||(p.tags||[]).indexOf(activeTag)!==-1);
+      filtered=all.filter(function(r){
+        var text=(r.title+" "+r.device+" "+r.summary+" "+(r.tags||[]).join(" ")).toLowerCase();
+        return(!q||text.indexOf(q)!==-1)&&(activeTag==="all"||(r.tags||[]).indexOf(activeTag)!==-1);
       });
       shown=0;grid.innerHTML="";showMore();
     }
 
     function showMore(){
       var batch=filtered.slice(shown,shown+BATCH);
-      batch.forEach(function(p){grid.appendChild(createCard(p));});
+      batch.forEach(function(r){grid.appendChild(createCard(r));});
       shown+=batch.length;
       loadBtn.style.display=shown<filtered.length?"":"none";
-      countEl.textContent="Showing "+Math.min(shown,filtered.length)+" of "+filtered.length+" projects";
+      countEl.textContent="Showing "+Math.min(shown,filtered.length)+" of "+filtered.length+" repairs";
     }
 
-    function createCard(p){
+    function createCard(r){
       var card=document.createElement("div");
       card.className="repair-card-compact";
-      var img=p.cover_image||p.image||"";
-      var sc=p.status==="Complete"?"status-complete":"status-progress";
-      var si=p.status==="Complete"?"\u2705":"\ud83d\udee0";
       var h="";
-      if(img)h+='<img class="card-thumb" src="'+img+'" alt="'+esc(p.alt||p.title)+'" loading="lazy">';
+      if(r.image)h+='<img class="card-thumb" src="'+r.image+'" alt="'+esc(r.title)+'" loading="lazy">';
       h+='<div class="card-body">';
-      h+='<h3>'+esc(p.title)+' <span class="status-badge '+sc+'">'+si+" "+esc(p.status)+'</span></h3>';
-      h+='<p class="card-summary">'+esc(p.description).substring(0,160)+(p.description.length>160?"...":"")+'</p>';
-      if(p.tags&&p.tags.length){h+='<div class="card-tags">';p.tags.slice(0,4).forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});h+='</div>';}
+      h+='<h3>'+esc(r.title)+'</h3>';
+      h+='<p class="card-meta">'+esc(r.date)+' &middot; '+esc(r.device||"")+'</p>';
+      h+='<p class="card-summary">'+esc(r.summary)+'</p>';
+      if(r.tags&&r.tags.length){h+='<div class="card-tags">';r.tags.slice(0,4).forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});h+='</div>';}
       h+='</div>';
       card.innerHTML=h;
-      card.addEventListener("click",function(){openProject(p);});
+      card.addEventListener("click",function(){openRepair(r);});
       return card;
     }
 
-    function openProject(p){
-      history.pushState(null,"","#"+p.slug);renderDetail(p);
+    function openRepair(r){
+      history.pushState(null,"","#"+r.slug);renderDetail(r);
       overlay.classList.add("is-open");document.body.classList.add("overlay-open");overlay.scrollTop=0;
     }
     function closeOverlay(){
@@ -490,38 +487,38 @@
       history.pushState(null,"",location.pathname+location.search);
     }
     function openByHash(slug){
-      var p=all.find(function(x){return x.slug===slug;});
-      if(p){renderDetail(p);overlay.classList.add("is-open");document.body.classList.add("overlay-open");overlay.scrollTop=0;}
+      var r=all.find(function(x){return x.slug===slug;});
+      if(r){renderDetail(r);overlay.classList.add("is-open");document.body.classList.add("overlay-open");overlay.scrollTop=0;}
     }
 
-    function renderDetail(p){
-      var img=p.cover_image||p.image||"";
-      var sc=p.status==="Complete"?"status-complete":"status-progress";
-      var si=p.status==="Complete"?"\u2705":"\ud83d\udee0";
+    function renderDetail(r){
+      var sections=[
+        {label:"What Came In",text:r.symptom},
+        {label:"What I Found",text:r.diagnosis},
+        {label:"What I Did",text:r.fix},
+        {label:"Notes",text:r.notes}
+      ].filter(function(s){return s.text;});
+      var extra=(r.images||[]).filter(function(img){return img&&img!==r.image;});
       var h='<div class="detail-close">';
-      h+='<a href="javascript:void(0)" id="detailBack">&larr; Back to Builds</a>';
+      h+='<a href="javascript:void(0)" id="detailBack">&larr; Back to Repair Log</a>';
       h+='<button id="detailClose" aria-label="Close">&times;</button></div>';
-      if(img)h+='<img class="detail-hero" src="'+img+'" alt="'+esc(p.alt||p.title)+'">';
+      if(r.image)h+='<img class="detail-hero" src="'+r.image+'" alt="'+esc(r.title)+'">';
       h+='<div class="detail-content">';
-      h+='<h1>'+esc(p.title)+' <span class="status-badge '+sc+'">'+si+" "+esc(p.status)+'</span></h1>';
-      if(p.created)h+='<p class="detail-meta">'+esc(p.created.split("T")[0])+'</p>';
-      h+='<p class="detail-device">'+esc(p.description)+'</p>';
-      if(p.bullets&&p.bullets.length){
-        h+='<div class="detail-section"><p class="detail-section-label">Key Features</p><ul class="detail-bullets">';
-        p.bullets.forEach(function(b){h+='<li>'+esc(b)+'</li>';});
-        h+='</ul></div>';
-      }
-      if(p.steps&&p.steps.length){
-        p.steps.forEach(function(s){
-          h+='<div class="detail-section"><p class="detail-section-label">'+esc(s.title)+'</p>';
-          h+='<p>'+formatText(s.text)+'</p>';
-          if(s.image)h+='<img class="detail-inline-img" src="'+s.image+'" alt="'+esc(s.alt||s.title)+'" loading="lazy">';
-          h+='</div>';
-        });
-      }
-      if(p.tags&&p.tags.length){
+      h+='<h1>'+esc(r.title)+'</h1>';
+      h+='<p class="detail-meta">'+esc(r.date)+' &middot; '+esc(r.status||"Fixed")+'</p>';
+      if(r.device)h+='<p class="detail-device">'+esc(r.device)+'</p>';
+      var imgIdx=0;
+      sections.forEach(function(s,i){
+        h+='<div class="detail-section"><p class="detail-section-label">'+s.label+'</p>';
+        h+='<p>'+formatText(s.text)+'</p></div>';
+        if(extra.length>0&&imgIdx<extra.length&&i<sections.length-1){
+          h+='<img class="detail-inline-img" src="'+extra[imgIdx]+'" alt="Repair photo" loading="lazy">';
+          imgIdx++;
+        }
+      });
+      if(r.tags&&r.tags.length){
         h+='<div class="detail-tags"><div class="card-tags">';
-        p.tags.forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});
+        r.tags.forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});
         h+='</div></div>';
       }
       h+='</div>';
