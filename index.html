@@ -3,22 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rudi Makes | Amp & Synth Repair | Indianapolis</title>
-  <meta name="description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics. Diagnosed and fixed on a real bench by a working tech." />
-  <meta property="og:title" content="Rudi Makes | Amp & Synth Repair | Indianapolis" />
-  <meta property="og:description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics. Diagnosed and fixed on a real bench by a working tech." />
-  <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
-  <meta property="og:url" content="https://www.rudimakes.com" />
+  <title>Rudi Makes | Amp & Synth Repair — Indianapolis</title>
+  <meta name="description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics — diagnosed and fixed on a real bench by a working tech." />
+  <meta property="og:title" content="Rudi Makes | Amp & Synth Repair — Indianapolis" />
+  <meta property="og:description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics — diagnosed and fixed on a real bench by a working tech." />
+  <meta property="og:image" content="https://willockrudi.github.io/rudimakes/images/og.png" />
+  <meta property="og:url" content="https://willockrudi.github.io/rudimakes" />
   <meta property="og:type" content="website" />
-  <link rel="canonical" href="https://www.rudimakes.com/" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .repair-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;}
+    @media(max-width:768px){.repair-grid{grid-template-columns:1fr;}}
+    .repair-card-compact{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:var(--transition);}
+    .repair-card-compact:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(230,57,70,0.15);background:var(--bg-card-hover);}
+    .repair-card-compact .card-thumb{width:100%;height:200px;object-fit:cover;display:block;}
+    .repair-card-compact .card-body{padding:1.25rem 1.5rem;}
+    .repair-card-compact .card-body h3{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:0.35rem;line-height:1.3;}
+    .repair-card-compact .card-meta{font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;}
+    .repair-card-compact .card-summary{font-size:0.9rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.75rem;}
+    .load-more-wrap{text-align:center;margin-top:2.5rem;}
+    .load-more-wrap p{color:var(--text-muted);font-size:0.85rem;margin-top:0.75rem;}
+    .repair-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+    .repair-overlay.is-open{display:block;}
+    .repair-detail-panel{max-width:820px;margin:2rem auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);min-height:calc(100vh - 4rem);position:relative;}
+    @media(max-width:860px){.repair-detail-panel{margin:0;border-radius:0;border:none;min-height:100vh;}}
+    .detail-close{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:var(--bg);border-bottom:1px solid var(--border);}
+    .detail-close a{color:var(--text-muted);font-size:0.85rem;font-weight:500;text-decoration:none;transition:var(--transition);}
+    .detail-close a:hover{color:var(--accent);}
+    .detail-close button{background:none;border:1px solid var(--border);color:var(--text-muted);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+    .detail-close button:hover{border-color:var(--accent);color:var(--accent);}
+    .detail-hero{width:100%;max-height:420px;object-fit:cover;display:block;}
+    .detail-content{padding:2rem 2rem 3rem;}
+    @media(max-width:600px){.detail-content{padding:1.5rem 1.25rem 2rem;}}
+    .detail-content h1{font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:0.5rem;}
+    .detail-content .detail-meta{color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;}
+    .detail-content .detail-device{font-size:1rem;color:var(--text);font-weight:600;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+    .detail-section{margin-bottom:2rem;}
+    .detail-section-label{font-size:0.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem;}
+    .detail-section p{color:var(--text-muted);font-size:0.95rem;line-height:1.75;}
+    .detail-inline-img{width:100%;max-height:380px;object-fit:cover;border-radius:8px;border:1px solid var(--border);margin:1.25rem 0;}
+    .detail-tags{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+    .detail-bullets{list-style:none;margin:1rem 0;padding:0;}
+    .detail-bullets li{color:var(--text-muted);padding:0.25rem 0;font-size:0.93rem;}
+    .detail-bullets li::before{content:"→ ";color:var(--accent);}
+    body.overlay-open{overflow:hidden;}
+  </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Rudi Makes",
-    "description": "Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics. Diagnosed and fixed on a real bench.",
-    "url": "https://www.rudimakes.com",
+    "description": "Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics — diagnosed and fixed on a real bench.",
+    "url": "https://willockrudi.github.io/rudimakes",
     "email": "rudiwillockmakes@gmail.com",
     "address": {
       "@type": "PostalAddress",
@@ -74,7 +110,7 @@
       <h1 class="hero-title">Amp & Synth<br>Repair</h1>
       <p class="hero-subtitle">Rudi Makes &nbsp;·&nbsp; Bench Service &nbsp;·&nbsp; Diagnostics &nbsp;·&nbsp; Restoration</p>
       <p class="hero-bio">
-        I'm Rudi. Repair technician and builder based in Indianapolis. I fix tube amplifiers,
+        I'm Rudi — a repair technician and builder based in Indianapolis. I fix tube amplifiers,
         synthesizers, pedals, and music electronics. Every repair gets real diagnostics on a real bench.
         No guesswork, no runaround. You deal directly with the tech doing the work.
       </p>
@@ -99,7 +135,7 @@
           <div class="feature-card">
             <div class="feature-icon">🔥</div>
             <h3>Tube Amplifiers</h3>
-            <p>Retube, bias, recap, hum diagnosis, intermittent faults, and full restoration. Fender, Marshall, Vox, Mesa, boutique. All makes and eras.</p>
+            <p>Retube, bias, recap, hum diagnosis, intermittent faults, and full restoration. Fender, Marshall, Vox, Mesa, boutique — all makes and eras.</p>
           </div>
           <div class="feature-card">
             <div class="feature-icon">🎛️</div>
@@ -144,7 +180,7 @@
           <div class="trust-item">
             <span class="trust-marker">01</span>
             <h3>Real Diagnostics</h3>
-            <p>Every repair starts with proper diagnosis, not parts-swapping. I trace the actual fault before I touch anything.</p>
+            <p>Every repair starts with proper diagnosis — not parts-swapping. I trace the actual fault before I touch anything.</p>
           </div>
           <div class="trust-item">
             <span class="trust-marker">02</span>
@@ -154,7 +190,7 @@
           <div class="trust-item">
             <span class="trust-marker">03</span>
             <h3>Documented Work</h3>
-            <p>Every repair is logged. Diagnosis, fix, parts used. You get a clear record of what was done and why.</p>
+            <p>Every repair is logged — diagnosis, fix, parts used. You get a clear record of what was done and why.</p>
           </div>
           <div class="trust-item">
             <span class="trust-marker">04</span>
@@ -169,7 +205,7 @@
           <div class="trust-item">
             <span class="trust-marker">06</span>
             <h3>Working Tech, Not a Reseller</h3>
-            <p>I'm a bench technician and backline tech, not a shop that farms out work. Your gear stays on my bench from start to finish.</p>
+            <p>I'm a bench technician and backline tech — not a shop that farms out work. Your gear stays on my bench from start to finish.</p>
           </div>
         </div>
       </div>
@@ -181,7 +217,7 @@
         <div class="section-header">
           <p class="section-label">How It Works</p>
           <h2 class="section-title">The Repair Process</h2>
-          <p class="section-note">From first contact to finished repair. Here's what to expect.</p>
+          <p class="section-note">From first contact to finished repair — here's what to expect.</p>
         </div>
         <div class="process-steps">
           <div class="process-step">
@@ -229,307 +265,28 @@
         <div class="section-header">
           <p class="section-label">Build Log</p>
           <h2 class="section-title">Things I've Built</h2>
-          <p class="section-note">A running collection of things I&#x27;ve built, repaired, and engineered. From electronics to mechanical systems.</p>
+          <p class="section-note">A running collection of things I&#x27;ve built, repaired, and engineered — from electronics to mechanical systems.</p>
         </div>
 
         <!-- Filters -->
         <div class="filter-bar">
-          <input id="search" class="search" type="search" placeholder="Search builds..." />
-          <div id="tagFilters" class="tag-filters"></div>
+          <input id="buildSearch" class="search" type="search" placeholder="Search builds..." />
+          <div id="buildTagFilters" class="tag-filters"></div>
         </div>
 
-        <!-- PROJECTS_START -->
-
-      <div class="project-card" data-tags="synth,555,analog,build,polyphonic,from-scratch">
-        <img class="project-thumb" src="images/projects/555-polyphonic-synth.jpg" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
-        <div class="project-info">
-          <h3>37-Key 555 Polyphonic Synthesizer <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me — as a learning project, and a real instrument.</p>
-          <div class="card-tags">
-            <span class="tag-chip">synth</span>
-            <span class="tag-chip">555</span>
-            <span class="tag-chip">analog</span>
-            <span class="tag-chip">build</span>
-            <span class="tag-chip">polyphonic</span>
-            <span class="tag-chip">from-scratch</span>
-          </div>
-          <a class="project-open" href="projects/555-polyphonic-synth.html">Open project</a>
-          <ul class="bullets">
-            <li>37 semi-weighted keys salvaged from a broken M-Audio Axiom 61</li>
-            <li>12 × 555 timer oscillators, each tuned with a trim pot — one full chromatic octave</li>
-            <li>CD4024 binary ripple counter per oscillator — 7 octaves each, 84 tones total</li>
-            <li>Squarewave output + low-pass filtered sine-ish output with blend knob</li>
-            <li>White noise on every key via shared membrane switch rail</li>
-            <li>LM386 amplification throughout — runs entirely on 9V, no split supply</li>
-            <li>555 monostable LFO vibrato circuit on each oscillator</li>
-            <li>LM386 fuzz stage with power sag control for unstable, collapsing tones</li>
-            <li>Dual PT2399 delay module with depth and rate controls</li>
-            <li>Transformer saturation stage — audio driven backwards through an AC transformer</li>
-            <li>Output stage: passive compressor + 1/4&quot; jack</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-37-key-555-polyphonic-synthesizer-73545">More photos</button>
-          <div class="gallery" id="gallery-37-key-555-polyphonic-synthesizer-73545">
-            <img src="images/projects/555-polyphonic-synth.jpg" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
-          </div>
+        <div id="buildGrid" class="repair-grid"></div>
+        <div class="load-more-wrap">
+          <button id="buildLoadMore" class="btn btn-outline" style="display:none;">Load More</button>
+          <p id="buildCount"></p>
         </div>
-      </div>
 
-      <div class="project-card" data-tags="software,python,sqlite,repair,tools,local-first">
-        <img class="project-thumb" src="images/projects/bench-os.jpg" alt="Local-first repair shop management software built for electronics and instrument repair">
-        <div class="project-info">
-          <h3>Willock Bench OS <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
-          <div class="card-tags">
-            <span class="tag-chip">software</span>
-            <span class="tag-chip">python</span>
-            <span class="tag-chip">sqlite</span>
-            <span class="tag-chip">repair</span>
-            <span class="tag-chip">tools</span>
-            <span class="tag-chip">local-first</span>
-          </div>
-          <a class="project-open" href="projects/bench-os.html">Open project</a>
-          <ul class="bullets">
-            <li>Full customer → unit → job → history data model with structured diagnostics per equipment type</li>
-            <li>Real workflow states: NEW → INTAKE → DIAGNOSING → AWAITING APPROVAL → REPAIRING → TESTING → READY → COMPLETED</li>
-            <li>SQLite FTS5 full-text search across jobs, customers, units, knowledge base, and inventory</li>
-            <li>Structured diagnostic forms per equipment category — tube amps, synths, pedals each get different fields</li>
-            <li>Every status transition logged with timestamp — complete audit trail on every job</li>
-            <li>Local-first: runs on shop hardware, works without internet, data stays mine</li>
-            <li>Phone-optimized wallboard — big text, current job counts by status, auto-refreshes every 60 seconds</li>
-            <li>Built-in knowledge base: every interesting failure mode becomes searchable history</li>
-            <li>Automated rotating backups: 7 daily, 4 weekly, 12 monthly</li>
-            <li>CLI interface built before UI — fast, scriptable, testable from day one</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-willock-bench-os-98067">More photos</button>
-          <div class="gallery" id="gallery-willock-bench-os-98067">
-            <img src="images/projects/bench-os.jpg" alt="Local-first repair shop management software built for electronics and instrument repair">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="compiler,language,c,x86,linux,from-scratch">
-        <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu — a compiled programming language written from scratch, targeting x86-64 Linux">
-        <div class="project-info">
-          <h3>Blu — A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn&#x27;t exist yet.</p>
-          <div class="card-tags">
-            <span class="tag-chip">compiler</span>
-            <span class="tag-chip">language</span>
-            <span class="tag-chip">c++</span>
-            <span class="tag-chip">x86</span>
-            <span class="tag-chip">linux</span>
-            <span class="tag-chip">from-scratch</span>
-          </div>
-          <a class="project-open" href="projects/blu-language.html">Open project</a>
-          <ul class="bullets">
-            <li>Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen</li>
-            <li>Compiles to native x86-64 assembly, runs on Linux</li>
-            <li>Forms — record-like structures with named fields and type inference from usage</li>
-            <li>Closures with proper environment capture across stack frames</li>
-            <li>File I/O, JSON, CSV, process spawning, environment variables in stdlib</li>
-            <li>400+ regression tests — all required green before any phase closes</li>
-            <li>18-phase development plan — 5 phases complete</li>
-            <li>Keywords: give (return), show (print), when (if) — the language has its own voice</li>
-            <li>Style guide, development guide, phase tracker, and audit log</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-blu-a-compiled-programming-language-16857">More photos</button>
-          <div class="gallery" id="gallery-blu-a-compiled-programming-language-16857">
-            <img src="images/projects/blu-language.jpg" alt="Blu — a compiled programming language written from scratch, targeting x86-64 Linux">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="game,unity,narrative,indie,hdrp,from-scratch">
-        <img class="project-thumb" src="images/projects/basil-game.jpg" alt="BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
-        <div class="project-info">
-          <h3>BASIL — Cinematic Narrative Game <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A short cinematic narrative game built in Unity 2022 HDRP. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. 45–90 minutes. Bittersweet, restrained, quiet. Not a power fantasy. Nobody wins, but they don&#x27;t lose each other.</p>
-          <div class="card-tags">
-            <span class="tag-chip">game</span>
-            <span class="tag-chip">unity</span>
-            <span class="tag-chip">narrative</span>
-            <span class="tag-chip">indie</span>
-            <span class="tag-chip">hdrp</span>
-            <span class="tag-chip">from-scratch</span>
-          </div>
-          <a class="project-open" href="projects/basil-game.html">Open project</a>
-          <ul class="bullets">
-            <li>Built in Unity 2022 HDRP — full cinematic lighting pipeline</li>
-            <li>19-phase production plan, fully documented with AI-assisted coding prompts at every step</li>
-            <li>Entire narrative locked into a master canon document before any code was written</li>
-            <li>Mog threat AI: patrol, detection, alert, hunt state machine</li>
-            <li>RoomProgressionManager gates story beats so they unfold in the right emotional order</li>
-            <li>Full movement controller: walk, run, crouch, climb, carry, squeeze through gaps</li>
-            <li>Every mechanic has a symbolic purpose before it has a technical one</li>
-            <li>Greybox-first — game plays beginning to end in rough geometry before any art begins</li>
-            <li>Planning and design phase complete — active Unity build is next</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-basil-cinematic-narrative-game-52647">More photos</button>
-          <div class="gallery" id="gallery-basil-cinematic-narrative-game-52647">
-            <img src="images/projects/basil-game.jpg" alt="BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="game,card-game,design,solitaire,tabletop">
-        <img class="project-thumb" src="images/projects/glorb-card-game.jpg" alt="Glorb — a 64-card solitaire dungeon crawl card game">
-        <div class="project-info">
-          <h3>Glorb — A Solo Card Game <span class="status-badge status-complete">✅ Complete</span></h3>
-          <p>A single-player card game. You&#x27;re trapped in the Temple of Glorb, navigating rooms, collecting four keys in order, and fighting your way through an army of Gleebs to escape. 64 cards, designed and balanced from scratch.</p>
-          <div class="card-tags">
-            <span class="tag-chip">game</span>
-            <span class="tag-chip">card-game</span>
-            <span class="tag-chip">design</span>
-            <span class="tag-chip">solitaire</span>
-            <span class="tag-chip">tabletop</span>
-          </div>
-          <a class="project-open" href="projects/glorb-card-game.html">Open project</a>
-          <ul class="bullets">
-            <li>64-card standalone deck — swords, chi, gleebs, keys, armor, candles, special cards</li>
-            <li>Solitaire dungeon crawl — four directional decks represent rooms of the temple</li>
-            <li>Collect keys 1–4 in order to unlock the escape condition</li>
-            <li>Combat system: fight gleebs barehanded or with equipped weapon</li>
-            <li>Weapon degradation — gleebs cap your sword&#x27;s reach against weaker enemies</li>
-            <li>Special cards: The Moon, The Sun, The King, The Magus</li>
-            <li>Gleeb Princes can&#x27;t be killed until the boss battle (except by special cards)</li>
-            <li>Boss battle triggers when two decks remain — defeat Glorb (power 15) to escape</li>
-            <li>Glorb can be equipped as a weapon for 2 chi — costs 2 per scene to keep</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-glorb-a-solo-card-game-93870">More photos</button>
-          <div class="gallery" id="gallery-glorb-a-solo-card-game-93870">
-            <img src="images/projects/glorb-card-game.jpg" alt="Glorb — a 64-card solitaire dungeon crawl card game">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="game,board-game,design,tabletop,arena">
-        <img class="project-thumb" src="images/projects/keystone-board-game.jpg" alt="Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
-        <div class="project-info">
-          <h3>Keystone — Arena Board Game <span class="status-badge status-complete">✅ Complete</span></h3>
-          <p>A fast-paced arena game of movement, pressure, and permanent construction. Players move across a 12×12 black-and-white grid, drawing cards based on where they land. Health is both life and currency. Towers change the map. Nothing you build protects you from the system itself.</p>
-          <div class="card-tags">
-            <span class="tag-chip">game</span>
-            <span class="tag-chip">board-game</span>
-            <span class="tag-chip">design</span>
-            <span class="tag-chip">tabletop</span>
-            <span class="tag-chip">arena</span>
-          </div>
-          <a class="project-open" href="projects/keystone-board-game.html">Open project</a>
-          <ul class="bullets">
-            <li>12×12 checkerboard grid — black squares draw Yin cards, white squares draw Yang cards</li>
-            <li>Health is both life and currency — spent to build towers, lost to threats and combat</li>
-            <li>Towers are permanent — stack 7 tiles and win immediately</li>
-            <li>Dual 52-card deck system: Yin deck (pressure, damage) and Yang deck (recovery, momentum)</li>
-            <li>Card types: Threat, Supply, Shift, Equipment, Exit</li>
-            <li>1–4 players, solo to competitive to cooperative</li>
-            <li>PvP: both players roll d6, loser takes damage equal to the difference</li>
-            <li>Ranged shooting: d6 range, orthogonal or diagonal, blocked by towers</li>
-            <li>Optional modes: Capture the Flag, Team Score with respawn</li>
-            <li>20–30 minute play time</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-keystone-arena-board-game-43187">More photos</button>
-          <div class="gallery" id="gallery-keystone-arena-board-game-43187">
-            <img src="images/projects/keystone-board-game.jpg" alt="Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="linux,driver,kernel,hardware,debugging,wifi">
-        <img class="project-thumb" src="images/projects/linux-wifi-driver-patch.jpg" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
-        <div class="project-info">
-          <h3>MT7902 Linux Wi-Fi Driver Patch <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
-          <div class="card-tags">
-            <span class="tag-chip">linux</span>
-            <span class="tag-chip">driver</span>
-            <span class="tag-chip">kernel</span>
-            <span class="tag-chip">hardware</span>
-            <span class="tag-chip">debugging</span>
-            <span class="tag-chip">wifi</span>
-          </div>
-          <a class="project-open" href="projects/linux-wifi-driver-patch.html">Open project</a>
-          <ul class="bullets">
-            <li>Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)</li>
-            <li>Symptom: firmware uploads but version field reads ____000000 — handshake never completes</li>
-            <li>Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17</li>
-            <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source</li>
-            <li>Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump</li>
-            <li>Fix: two-file patch — regs.h constant + pci.c interrupt enable mask</li>
-            <li>Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-mt7902-linux-wi-fi-driver-patch-4425">More photos</button>
-          <div class="gallery" id="gallery-mt7902-linux-wi-fi-driver-patch-4425">
-            <img src="images/projects/linux-wifi-driver-patch.jpg" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="python,scraper,tools,learning,automation">
-        <img class="project-thumb" src="images/projects/python-web-scraper.jpg" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
-        <div class="project-info">
-          <h3>Python Web Scraper <span class="status-badge status-complete">✅ Complete</span></h3>
-          <p>I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on disk, and never download the same file twice. This is the story of building it and what I learned along the way.</p>
-          <div class="card-tags">
-            <span class="tag-chip">python</span>
-            <span class="tag-chip">scraper</span>
-            <span class="tag-chip">tools</span>
-            <span class="tag-chip">learning</span>
-            <span class="tag-chip">automation</span>
-          </div>
-          <a class="project-open" href="projects/python-web-scraper.html">Open project</a>
-          <ul class="bullets">
-            <li>Reads a structured JSON database and systematically fetches every URL in it</li>
-            <li>10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess</li>
-            <li>SHA256 deduplication — hashes every file before saving, skips anything already seen</li>
-            <li>PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents</li>
-            <li>BFS crawler with configurable depth — follows links without running forever</li>
-            <li>Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler</li>
-            <li>argparse CLI — target a single manufacturer or the entire database</li>
-            <li>Simultaneous terminal and file logging with timestamps</li>
-            <li>Runs on a Raspberry Pi without modification</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-python-web-scraper-9614">More photos</button>
-          <div class="gallery" id="gallery-python-web-scraper-9614">
-            <img src="images/projects/python-web-scraper.jpg" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
-          </div>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="raspberry-pi,software,hardware,broadcast,atmel,from-scratch">
-        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
-        <div class="project-info">
-          <h3>TBX Home Broadcast Station <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
-          <div class="card-tags">
-            <span class="tag-chip">raspberry-pi</span>
-            <span class="tag-chip">software</span>
-            <span class="tag-chip">hardware</span>
-            <span class="tag-chip">broadcast</span>
-            <span class="tag-chip">atmel</span>
-            <span class="tag-chip">from-scratch</span>
-          </div>
-          <a class="project-open" href="projects/tbx-home-broadcast.html">Open project</a>
-          <ul class="bullets">
-            <li>Raspberry Pi 5 with 16GB RAM — boots straight to playback</li>
-            <li>FastAPI backend + mpv playback engine via Unix socket</li>
-            <li>Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network</li>
-            <li>React web UI — dark, amber, gunmetal — surfed with a handheld IR remote</li>
-            <li>7-segment front panel display, breathing power LED, amber activity LED during imports</li>
-            <li>Channel 99: hidden game console with 6 original games sharing a universe and lore</li>
-            <li>Cloud tier, Stripe integration, OTA update system, 48 setup wizards</li>
-            <li>30 CLI commands, SD card image build pipeline, Kickstarter and manufacturing plan</li>
-            <li>ATtiny85 power controller: OFF / STARTING / RUNNING / SHUTTING DOWN state machine in 8KB flash</li>
-            <li>360 files, 320 passing tests, 17 software phases complete</li>
-          </ul>
-          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-tbx-home-broadcast-station-48078">More photos</button>
-          <div class="gallery" id="gallery-tbx-home-broadcast-station-48078">
-            <img src="images/projects/tbx-home-broadcast.jpg" alt="TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
-          </div>
-        </div>
-      </div>
-<!-- PROJECTS_END -->
       </div>
     </section>
+
+    <!-- BUILD DETAIL OVERLAY -->
+    <div id="buildOverlay" class="repair-overlay">
+      <div class="repair-detail-panel" id="buildDetail"></div>
+    </div>
 
     <!-- FAQ -->
     <section id="faq" class="section faq-section">
@@ -545,11 +302,11 @@
           </details>
           <details class="faq-item">
             <summary>How long does a repair take?</summary>
-            <p>Most repairs are completed in 3–7 business days. Complex jobs or parts-dependent repairs may take longer. I'll give you a timeline estimate at diagnosis. Rush service (48-hour turnaround) is available for an additional $35.</p>
+            <p>Most repairs are completed in 3–7 business days. Complex jobs or parts-dependent repairs may take longer — I'll give you a timeline estimate at diagnosis. Rush service (48-hour turnaround) is available for an additional $35.</p>
           </details>
           <details class="faq-item">
             <summary>What brands do you work on?</summary>
-            <p>All of them. Fender, Marshall, Vox, Mesa/Boogie, Orange, Peavey, Ampeg, and boutique or vintage amps of any make. For synths: Moog, Roland, Korg, Sequential, Yamaha, Oberheim. If it has circuits, bring it in.</p>
+            <p>All of them. Fender, Marshall, Vox, Mesa/Boogie, Orange, Peavey, Ampeg — and boutique or vintage amps of any make. For synths: Moog, Roland, Korg, Sequential, Yamaha, Oberheim, and more. If it has circuits, bring it in.</p>
           </details>
           <details class="faq-item">
             <summary>Do you work on solid-state amps?</summary>
@@ -574,7 +331,7 @@
           <p class="section-label">About</p>
           <h2 class="section-title">Who I Am</h2>
         </div>
-        <p>I&#x27;m a repair technician, backline tech, and builder based in Indianapolis. I fix amps, synths, and electronics. I also build custom projects from circuit design through final assembly. I&#x27;m comfortable taking something broken or half-formed and turning it into something that works well and lasts.</p>
+        <p>I&#x27;m a repair technician, backline tech, and builder based in Indianapolis. I fix amps, synths, and electronics — and I build custom projects from circuit design through final assembly. I&#x27;m comfortable taking something broken or half-formed and turning it into something that works well and lasts.</p>
         <div class="tags">
           <!-- TAGS_START -->
 
@@ -592,8 +349,8 @@
         </div>
         <p class="contact-lead">Ready to get your amp, synth, or pedal repaired? Email me with the make, model, and what's going on. I'll get back to you with next steps.</p>
         <div class="contact-cta-block">
-          <a href="mailto:rudiwillockmakes@gmail.com" class="btn btn-primary btn-lg">Email Me for a Repair</a>
-          <p class="contact-email-sub">rudiwillockmakes@gmail.com</p>
+          <a href="/cdn-cgi/l/email-protection#87f5f2e3eef0eeebebe8e4eceae6ece2f4c7e0eae6eeeba9e4e8ea" class="btn btn-primary btn-lg">Email Me for a Repair</a>
+          <p class="contact-email-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0c2c5d4d9c7d9dcdcdfd3dbddd1dbd5c3f0d7ddd1d9dc9ed3dfdd">[email&#160;protected]</a></p>
         </div>
         <p class="contact-also">Also open to consulting, custom builds, and conversations about music technology.</p>
         <div class="social-links">
@@ -621,7 +378,7 @@
     </div>
   </footer>
 
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 
   <script>
     (function () {
@@ -660,53 +417,131 @@
   </script>
 
   <script>
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-gallery-toggle]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-gallery-toggle");
-      const gallery = document.getElementById(id);
-      if (!gallery) return;
-      const open = gallery.classList.toggle("is-open");
-      btn.textContent = open ? "Hide photos" : "More photos";
-    });
-  </script>
+  (function(){
+    var BATCH=12, all=[], filtered=[], shown=0, activeTag="all";
+    var grid=document.getElementById("buildGrid");
+    var search=document.getElementById("buildSearch");
+    var tagWrap=document.getElementById("buildTagFilters");
+    var loadBtn=document.getElementById("buildLoadMore");
+    var countEl=document.getElementById("buildCount");
+    var overlay=document.getElementById("buildOverlay");
+    var detailEl=document.getElementById("buildDetail");
 
-  <script>
-    (function () {
-      const search = document.getElementById("search");
-      const tagWrap = document.getElementById("tagFilters");
-      const cards = Array.from(document.querySelectorAll(".project-card"));
-      if (!search || !tagWrap || cards.length === 0) return;
-      const tagSet = new Set();
-      for (const c of cards) {
-        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
+    fetch("projects.json").then(function(r){return r.json();}).then(function(data){
+      all=data;buildTags();applyFilters();
+      if(location.hash)openByHash(location.hash.slice(1));
+    }).catch(function(){grid.innerHTML='<p style="color:var(--text-muted);">Could not load projects.</p>';});
+
+    function buildTags(){
+      var ts=new Set();
+      all.forEach(function(p){(p.tags||[]).forEach(function(t){ts.add(t);});});
+      var tags=["all"].concat(Array.from(ts).sort());
+      tagWrap.innerHTML="";
+      tags.forEach(function(t){
+        var b=document.createElement("button");b.type="button";
+        b.className="tag-filter"+(t===activeTag?" is-active":"");
+        b.textContent=t==="all"?"All":t;
+        b.addEventListener("click",function(){activeTag=t;buildTags();applyFilters();});
+        tagWrap.appendChild(b);
+      });
+    }
+
+    function applyFilters(){
+      var q=(search?search.value:"").trim().toLowerCase();
+      filtered=all.filter(function(p){
+        var text=(p.title+" "+p.description+" "+(p.tags||[]).join(" ")).toLowerCase();
+        return(!q||text.indexOf(q)!==-1)&&(activeTag==="all"||(p.tags||[]).indexOf(activeTag)!==-1);
+      });
+      shown=0;grid.innerHTML="";showMore();
+    }
+
+    function showMore(){
+      var batch=filtered.slice(shown,shown+BATCH);
+      batch.forEach(function(p){grid.appendChild(createCard(p));});
+      shown+=batch.length;
+      loadBtn.style.display=shown<filtered.length?"":"none";
+      countEl.textContent="Showing "+Math.min(shown,filtered.length)+" of "+filtered.length+" projects";
+    }
+
+    function createCard(p){
+      var card=document.createElement("div");
+      card.className="repair-card-compact";
+      var img=p.cover_image||p.image||"";
+      var sc=p.status==="Complete"?"status-complete":"status-progress";
+      var si=p.status==="Complete"?"\u2705":"\ud83d\udee0";
+      var h="";
+      if(img)h+='<img class="card-thumb" src="'+img+'" alt="'+esc(p.alt||p.title)+'" loading="lazy">';
+      h+='<div class="card-body">';
+      h+='<h3>'+esc(p.title)+' <span class="status-badge '+sc+'">'+si+" "+esc(p.status)+'</span></h3>';
+      h+='<p class="card-summary">'+esc(p.description).substring(0,160)+(p.description.length>160?"...":"")+'</p>';
+      if(p.tags&&p.tags.length){h+='<div class="card-tags">';p.tags.slice(0,4).forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});h+='</div>';}
+      h+='</div>';
+      card.innerHTML=h;
+      card.addEventListener("click",function(){openProject(p);});
+      return card;
+    }
+
+    function openProject(p){
+      history.pushState(null,"","#"+p.slug);renderDetail(p);
+      overlay.classList.add("is-open");document.body.classList.add("overlay-open");overlay.scrollTop=0;
+    }
+    function closeOverlay(){
+      overlay.classList.remove("is-open");document.body.classList.remove("overlay-open");
+      history.pushState(null,"",location.pathname+location.search);
+    }
+    function openByHash(slug){
+      var p=all.find(function(x){return x.slug===slug;});
+      if(p){renderDetail(p);overlay.classList.add("is-open");document.body.classList.add("overlay-open");overlay.scrollTop=0;}
+    }
+
+    function renderDetail(p){
+      var img=p.cover_image||p.image||"";
+      var sc=p.status==="Complete"?"status-complete":"status-progress";
+      var si=p.status==="Complete"?"\u2705":"\ud83d\udee0";
+      var h='<div class="detail-close">';
+      h+='<a href="javascript:void(0)" id="detailBack">&larr; Back to Builds</a>';
+      h+='<button id="detailClose" aria-label="Close">&times;</button></div>';
+      if(img)h+='<img class="detail-hero" src="'+img+'" alt="'+esc(p.alt||p.title)+'">';
+      h+='<div class="detail-content">';
+      h+='<h1>'+esc(p.title)+' <span class="status-badge '+sc+'">'+si+" "+esc(p.status)+'</span></h1>';
+      if(p.created)h+='<p class="detail-meta">'+esc(p.created.split("T")[0])+'</p>';
+      h+='<p class="detail-device">'+esc(p.description)+'</p>';
+      if(p.bullets&&p.bullets.length){
+        h+='<div class="detail-section"><p class="detail-section-label">Key Features</p><ul class="detail-bullets">';
+        p.bullets.forEach(function(b){h+='<li>'+esc(b)+'</li>';});
+        h+='</ul></div>';
       }
-      const tags = ["all", ...Array.from(tagSet).sort()];
-      let activeTag = "all";
-      function renderTags() {
-        tagWrap.innerHTML = "";
-        for (const t of tags) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
-          btn.textContent = t === "all" ? "All" : t;
-          btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
-          tagWrap.appendChild(btn);
-        }
+      if(p.steps&&p.steps.length){
+        p.steps.forEach(function(s){
+          h+='<div class="detail-section"><p class="detail-section-label">'+esc(s.title)+'</p>';
+          h+='<p>'+formatText(s.text)+'</p>';
+          if(s.image)h+='<img class="detail-inline-img" src="'+s.image+'" alt="'+esc(s.alt||s.title)+'" loading="lazy">';
+          h+='</div>';
+        });
       }
-      function apply() {
-        const q = (search.value || "").trim().toLowerCase();
-        for (const c of cards) {
-          const textMatch = c.textContent.toLowerCase().includes(q);
-          const cardTags = (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean);
-          const tagMatch = activeTag === "all" ? true : cardTags.includes(activeTag);
-          c.style.display = (textMatch && tagMatch) ? "" : "none";
-        }
+      if(p.tags&&p.tags.length){
+        h+='<div class="detail-tags"><div class="card-tags">';
+        p.tags.forEach(function(t){h+='<span class="tag-chip">'+esc(t)+'</span> ';});
+        h+='</div></div>';
       }
-      renderTags();
-      apply();
-      search.addEventListener("input", apply);
-    })();
+      h+='</div>';
+      detailEl.innerHTML=h;
+      document.getElementById("detailBack").addEventListener("click",closeOverlay);
+      document.getElementById("detailClose").addEventListener("click",closeOverlay);
+    }
+
+    function formatText(t){return t?esc(t).replace(/\n/g,"<br>"):"";}
+    function esc(s){if(!s)return"";var d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+    if(search)search.addEventListener("input",applyFilters);
+    if(loadBtn)loadBtn.addEventListener("click",showMore);
+    overlay.addEventListener("click",function(e){if(e.target===overlay)closeOverlay();});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape"&&overlay.classList.contains("is-open"))closeOverlay();});
+    window.addEventListener("popstate",function(){
+      if(location.hash){openByHash(location.hash.slice(1));}
+      else{overlay.classList.remove("is-open");document.body.classList.remove("overlay-open");}
+    });
+  })();
   </script>
 
 </body>
