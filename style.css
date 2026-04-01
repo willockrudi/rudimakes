@@ -1,7 +1,7 @@
 /*
   RudiMakes Editorial Dark Theme
   Author: Rudi Willock
-  Bold, cinematic, editorial — dark by default
+  Bold, cinematic, editorial. Dark by default
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap');
@@ -896,7 +896,7 @@ nav ul li a.active {
 }
 
 .inquiry-info-card li::before {
-  content: "—";
+  content: "·";
   position: absolute;
   left: 0;
   color: var(--accent);

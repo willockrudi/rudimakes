@@ -1,4 +1,4 @@
-# WILLOCK BENCH — SERVICE RECORD CARD
+# WILLOCK BENCH | SERVICE RECORD CARD
 
 **Filled by:** Bench Tech AI (from repair conversation)
 **Lives:** Inside the unit (taped to chassis, tucked in cabinet, etc.)
@@ -10,7 +10,7 @@
 
 ```
 ══════════════════════════════════════════
- WILLOCK BENCH — SERVICE RECORD
+ WILLOCK BENCH | SERVICE RECORD
 ══════════════════════════════════════════
 
  Job:          _______________
@@ -60,7 +60,7 @@
 
 ---
 
-## WRITING GUIDE — SERVICE PERFORMED
+## WRITING GUIDE: SERVICE PERFORMED
 
 Keep it short. Use standard phrases:
 
@@ -72,17 +72,17 @@ Keep it short. Use standard phrases:
 | Output section | Output transistors replaced |
 | Jack repair | Input/output jack replaced |
 | Pot cleaning | Pots cleaned + exercised |
-| Noise fix | Noise issue repaired — [detail] |
+| Noise fix | Noise issue repaired, [detail] |
 | Intermittent fix | Intermittent connection repaired |
 | Full service | Full service + test |
 | Restoration | Partial/full restoration |
 | Mod | [Mod name] installed/removed |
 | Recap | Full/partial recap |
-| No fault found | Tested OK — no fault found |
+| No fault found | Tested OK, no fault found |
 
 ---
 
-## WRITING GUIDE — NOTES
+## WRITING GUIDE: NOTES
 
 Use this section for things a future tech needs to know:
 
@@ -97,7 +97,7 @@ Use this section for things a future tech needs to know:
 
 ## WHY THIS MATTERS
 
-When this unit comes back — whether in 6 months or 6 years — this card tells you or any other tech:
+When this unit comes back, whether in 6 months or 6 years, this card tells you or any other tech:
 
 - What was done last time
 - When it was done

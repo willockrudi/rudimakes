@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blu — A Compiled Programming Language | Rudi Willock</title>
+  <title>Blu: A Compiled Programming Language | Rudi Willock</title>
   <meta name="description" content="A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures..." />
-  <meta property="og:title" content="Blu — A Compiled Programming Language | Rudi Makes" />
+  <meta property="og:title" content="Blu: A Compiled Programming Language | Rudi Makes" />
   <meta property="og:description" content="A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures..." />
   <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
   <meta property="og:url" content="https://www.rudimakes.com/projects/blu-language.html" />
@@ -51,11 +51,11 @@
         <span>→</span>
         <a href="../index.html#builds">Builds</a>
         <span>→</span>
-        Blu — A Compiled Programming Language
+        Blu: A Compiled Programming Language
       </div>
 
       <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
-        Blu — A Compiled Programming Language
+        Blu: A Compiled Programming Language
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
@@ -72,17 +72,17 @@
       <ul class="bullets project-bullets">
           <li>Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen</li>
           <li>Compiles to native x86-64 assembly, runs on Linux</li>
-          <li>Forms — record-like structures with named fields and type inference from usage</li>
+          <li>Forms: record-like structures with named fields and type inference from usage</li>
           <li>Closures with proper environment capture across stack frames</li>
           <li>File I/O, JSON, CSV, process spawning, environment variables in stdlib</li>
-          <li>400+ regression tests — all required green before any phase closes</li>
-          <li>18-phase development plan — 5 phases complete</li>
-          <li>Keywords: give (return), show (print), when (if) — the language has its own voice</li>
+          <li>400+ regression tests. All required green before any phase closes</li>
+          <li>18-phase development plan. 5 phases complete</li>
+          <li>Keywords: give (return), show (print), when (if). The language has its own voice</li>
           <li>Style guide, development guide, phase tracker, and audit log</li>
         </ul>
       
 
-      <img class="project-detail-hero" src="" alt="Blu — a compiled programming language written from scratch, targeting x86-64 Linux">
+      <img class="project-detail-hero" src="" alt="Blu: a compiled programming language written from scratch, targeting x86-64 Linux">
 
     </div>
 
@@ -98,25 +98,25 @@
 
 
     <article class="project-step">
-      <h3>2. Phases 1–3 — The Foundation</h3>
-      <p>The early work was clean and methodical. Lexer first — make it deterministic. Parser next — make it reliable. Then semantic analysis: catch undefined variables, wrong argument counts, duplicate declarations. The kind of work nobody sees but everybody feels when it&#x27;s missing.<br>Then freeze the semantics. Decide what the language actually is. Forms instead of structs. give instead of return. show instead of print. when instead of if. Small choices, but they add up to a voice. Blu began to sound like itself.<br>Then the standard library: JSON, CSV, databases as key-value arrays, binary encoding. The things you need the moment you try to do anything real.</p>
+      <h3>2. Phases 1–3: The Foundation</h3>
+      <p>The early work was clean and methodical. Lexer first. Make it deterministic. Parser next. Make it reliable. Then semantic analysis: catch undefined variables, wrong argument counts, duplicate declarations. The kind of work nobody sees but everybody feels when it&#x27;s missing.<br>Then freeze the semantics. Decide what the language actually is. Forms instead of structs. give instead of return. show instead of print. when instead of if. Small choices, but they add up to a voice. Blu began to sound like itself.<br>Then the standard library: JSON, CSV, databases as key-value arrays, binary encoding. The things you need the moment you try to do anything real.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>3. Phase 4 — Regression Infrastructure</h3>
-      <p>By phase 4 Blu had opinions. It had a style guide. It had regression tests — hundreds of them, organized by category, run by shell scripts that report pass rates. No phase closes until every test is green. This discipline is what keeps the language from quietly breaking while new features go in.</p>
+      <h3>3. Phase 4: Regression Infrastructure</h3>
+      <p>By phase 4 Blu had opinions. It had a style guide. It had regression tests, hundreds of them, organized by category, run by shell scripts that report pass rates. No phase closes until every test is green. This discipline is what keeps the language from quietly breaking while new features go in.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>4. Phase 5 — Closures, Forms, and a Namespace War</h3>
-      <p>Phase 5 is where the ambition showed its teeth. Closures — nested functions that capture variables from their enclosing scope — required environment objects, closure allocation, and a whole new family of IR instructions. Forms required type inference from usage patterns across the entire call graph.<br>Then the build broke. A cascade of errors. The cause: #include directives had been placed after the namespace blu { opening brace. The namespace had swallowed the standard library.<br>The fix was to delete ir_builder.cpp and rewrite it from scratch — pulling out layers of accumulated corruption, duplicate function bodies, orphaned copy-paste blocks. Each fix revealed the next problem. Each problem was small. Together they were a wall.<br>Forms edge cases: 113/113. Closure regression: 10/10. Phase 5 closed.</p>
+      <h3>4. Phase 5: Closures, Forms, and a Namespace War</h3>
+      <p>Phase 5 is where the ambition showed its teeth. Closures (nested functions that capture variables from their enclosing scope) required environment objects, closure allocation, and a whole new family of IR instructions. Forms required type inference from usage patterns across the entire call graph.<br>Then the build broke. A cascade of errors. The cause: #include directives had been placed after the namespace blu { opening brace. The namespace had swallowed the standard library.<br>The fix was to delete ir_builder.cpp and rewrite it from scratch, pulling out layers of accumulated corruption, duplicate function bodies, orphaned copy-paste blocks. Each fix revealed the next problem. Each problem was small. Together they were a wall.<br>Forms edge cases: 113/113. Closure regression: 10/10. Phase 5 closed.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>5. Phase 6 — File I/O and What Comes Next</h3>
+      <h3>5. Phase 6: File I/O and What Comes Next</h3>
       <p>Phase 6 started with the obvious gap: Blu couldn&#x27;t touch the filesystem. file.read, file.write, file.append, file.exists. Four C symbols, four arity checks, four codegen entries. The test program wrote a file, read it back, and confirmed it existed. Small thing. Not a small thing.<br>What comes next: a map type, a garbage collector, better error messages with line numbers, a formatter, a REPL, a module system, a C FFI bridge, and eventually a platform layer. Eighteen phases in the plan. Five complete.<br>The tests are green. The compiler compiles. The binary runs.</p>
     </article>
 <!-- PROJECT_STEPS_END -->

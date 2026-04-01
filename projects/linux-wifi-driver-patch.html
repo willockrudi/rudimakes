@@ -59,7 +59,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage. The handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
 
       <div class="card-tags">
             <span class="tag-chip">linux</span>
@@ -71,16 +71,16 @@
           </div>
       <ul class="bullets project-bullets">
           <li>Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)</li>
-          <li>Symptom: firmware uploads but version field reads ____000000 — handshake never completes</li>
+          <li>Symptom: firmware uploads but version field reads ____000000. Handshake never completes</li>
           <li>Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17</li>
-          <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source</li>
+          <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17, a chip-specific quirk buried in vendor source</li>
           <li>Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump</li>
-          <li>Fix: two-file patch — regs.h constant + pci.c interrupt enable mask</li>
+          <li>Fix: two-file patch: regs.h constant + pci.c interrupt enable mask</li>
           <li>Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon</li>
         </ul>
       
 
-      <img class="project-detail-hero" src="" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
+      <img class="project-detail-hero" src="" alt="MediaTek MT7902 Linux Wi-Fi enablement: finding and patching a wrong interrupt bit mask">
 
     </div>
 
@@ -91,19 +91,19 @@
 
     <article class="project-step">
       <h3>1. The Machine and the Symptom</h3>
-      <p>ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support — Windows driver only.<br>The driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000 — placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.</p>
+      <p>ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support. Windows driver only.<br>The driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000, placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.</p>
     </article>
 
 
     <article class="project-step">
       <h3>2. Mapping the Hardware</h3>
-      <p>Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.<br>MT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring — how the host sends firmware commands — is hardware ring 15.</p>
+      <p>Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.<br>MT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring (how the host sends firmware commands) is hardware ring 15.</p>
     </article>
 
 
     <article class="project-step">
       <h3>3. Reading the Windows Driver and Firmware Blobs</h3>
-      <p>Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.<br>Cross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn&#x27;t fire on interrupt bit 15 or bit 2 — it fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That&#x27;s just what this chip does.</p>
+      <p>Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.<br>Cross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn&#x27;t fire on interrupt bit 15 or bit 2. It fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That&#x27;s just what this chip does.</p>
     </article>
 
 

@@ -7,18 +7,18 @@
     "image": "",
     "images": [],
     "alt": "37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators",
-    "description": "A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me — as a learning project, and a real instrument.",
+    "description": "A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me. A learning project, and a real instrument.",
     "bullets": [
       "37 semi-weighted keys salvaged from a broken M-Audio Axiom 61",
-      "12 × 555 timer oscillators, each tuned with a trim pot — one full chromatic octave",
-      "CD4024 binary ripple counter per oscillator — 7 octaves each, 84 tones total",
+      "12 × 555 timer oscillators, each tuned with a trim pot. One full chromatic octave",
+      "CD4024 binary ripple counter per oscillator. 7 octaves each, 84 tones total",
       "Squarewave output + low-pass filtered sine-ish output with blend knob",
       "White noise on every key via shared membrane switch rail",
-      "LM386 amplification throughout — runs entirely on 9V, no split supply",
+      "LM386 amplification throughout. Runs entirely on 9V, no split supply",
       "555 monostable LFO vibrato circuit on each oscillator",
       "LM386 fuzz stage with power sag control for unstable, collapsing tones",
       "Dual PT2399 delay module with depth and rate controls",
-      "Transformer saturation stage — audio driven backwards through an AC transformer",
+      "Transformer saturation stage. Audio driven backwards through an AC transformer",
       "Output stage: passive compressor + 1/4\" jack"
     ],
     "tags": ["synth", "555", "analog", "build", "polyphonic", "from-scratch"],
@@ -27,48 +27,48 @@
     "steps": [
       {
         "title": "Designing the Instrument",
-        "text": "Before touching any hardware I mapped out the full signal chain. Each key would trigger both a squarewave oscillator tone and a white noise source. The oscillator output splits into two paths — raw squarewave and a cascaded low-pass filtered output — with a blend knob between them. Then a full effects chain: fuzz with power sag, PT2399 delay, transformer saturation, and a final output amp with passive compression before the 1/4\" jack.\n\nRunning the whole thing off a single 9V supply was a design constraint from day one. That's why LM386 ended up as the amplifier everywhere — it doesn't need a split rail.",
+        "text": "Before touching any hardware I mapped out the full signal chain. Each key would trigger both a squarewave oscillator tone and a white noise source. The oscillator output splits into two paths: raw squarewave and a cascaded low-pass filtered output, with a blend knob between them. Then a full effects chain: fuzz with power sag, PT2399 delay, transformer saturation, and a final output amp with passive compression before the 1/4\" jack.\n\nRunning the whole thing off a single 9V supply was a design constraint from day one. That's why LM386 ended up as the amplifier everywhere. It doesn't need a split rail.",
         "image": "",
         "alt": "Signal chain sketch for the 555 polyphonic synth"
       },
       {
-        "title": "Step 1 — Salvaging the Keybed",
-        "text": "Found a broken M-Audio Axiom 61 — the MIDI calibration had died permanently and a few keys were cracked. Didn't matter for my purposes. Pulled the keybed out of the chassis and used a Dremel to cut out the 37-key section I needed. Semi-weighted action, feels good under your hands. The tricky part was going to be the membrane switch PCB underneath it.",
+        "title": "Step 1: Salvaging the Keybed",
+        "text": "Found a broken M-Audio Axiom 61. The MIDI calibration had died permanently and a few keys were cracked. Didn't matter for my purposes. Pulled the keybed out of the chassis and used a Dremel to cut out the 37-key section I needed. Semi-weighted action, feels good under your hands. The tricky part was going to be the membrane switch PCB underneath it.",
         "image": "",
         "alt": "Salvaged M-Audio Axiom 61 keybed cut to 37 keys"
       },
       {
-        "title": "Step 2 — Modifying the Membrane Switches",
-        "text": "The membrane switch PCB needed serious surgery. I cut all the traces to separate the top and bottom button contacts, then tied all the bottom contacts together into one shared rail — that becomes the white noise bus, active on every single key.\n\nFor each individual note I scraped back the PCB mask to expose the copper trace and soldered a wire to each side of the button. This was the most frustrating part of the whole build. The traces lift off easily if you move the wire around too much. The fix was to build a 12-wire harness first, zip-tie it to the board so it can't fight you, then solder. Where traces got damaged I checked continuity and superglued the wire down to lock it.\n\nLabeled every wire (C1, C#1, D1...) and verified every connection with a multimeter before moving on. Wiring resistance came in over 100k ohms — which actually works out, since the passive mixer uses 100k resistors anyway. Just needs an amp stage to recover level.",
+        "title": "Step 2: Modifying the Membrane Switches",
+        "text": "The membrane switch PCB needed serious surgery. I cut all the traces to separate the top and bottom button contacts, then tied all the bottom contacts together into one shared rail. That becomes the white noise bus, active on every single key.\n\nFor each individual note I scraped back the PCB mask to expose the copper trace and soldered a wire to each side of the button. This was the most frustrating part of the whole build. The traces lift off easily if you move the wire around too much. The fix was to build a 12-wire harness first, zip-tie it to the board so it can't fight you, then solder. Where traces got damaged I checked continuity and superglued the wire down to lock it.\n\nLabeled every wire (C1, C#1, D1...) and verified every connection with a multimeter before moving on. Wiring resistance came in over 100k ohms, which actually works out, since the passive mixer uses 100k resistors anyway. Just needs an amp stage to recover level.",
         "image": "",
         "alt": "Membrane switch PCB with modified traces and labeled wiring harness"
       },
       {
-        "title": "Step 3 — Amplification",
+        "title": "Step 3: Amplification",
         "text": "The LM386 is the workhorse of this whole build. It runs on a single positive supply, handles the signal levels I'm working with, and is dirt cheap. I'm using it at the mixer output, the filtered sine channel, and the white noise channel. No split rails, no drama.",
         "image": "",
         "alt": "LM386 amplifier circuit on breadboard"
       },
       {
-        "title": "Step 4 — Tone Generator",
-        "text": "The tone generator is 12 × 555 timers configured as squarewave oscillators — one per semitone, covering a full chromatic octave. Each one has its own RC values and a trim pot for fine tuning.\n\nEach 555 feeds a CD4024 binary ripple counter, which divides the frequency down through 7 binary stages. That gives 7 octaves per oscillator, 84 total pitches from one board. To tune the synth you only need to tune 12 oscillators. The 37 notes for the keybed get selected from those 84 available outputs.",
+        "title": "Step 4: Tone Generator",
+        "text": "The tone generator is 12 × 555 timers configured as squarewave oscillators, one per semitone, covering a full chromatic octave. Each one has its own RC values and a trim pot for fine tuning.\n\nEach 555 feeds a CD4024 binary ripple counter, which divides the frequency down through 7 binary stages. That gives 7 octaves per oscillator, 84 total pitches from one board. To tune the synth you only need to tune 12 oscillators. The 37 notes for the keybed get selected from those 84 available outputs.",
         "image": "",
         "alt": "555 oscillator board with CD4024 binary counters"
       },
       {
-        "title": "Step 5 — The Mixer",
-        "text": "All 37 squarewave signals come into a passive resistor network, then split into two paths: raw squarewave, and a low-pass filtered output run through 4 cascaded filter stages and re-amplified to match level. Those two outputs go either side of a blend knob.\n\nI wanted to filter each note individually for true polyphonic sine waves, but the component count made it impractical. Running the summed output through the filter instead means it's more of a filtered output than a true sine — but it should sound interesting, and very different from the raw square.\n\nThe mixer board also handles white noise (its own LM386 channel) and a line-in jack. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.",
+        "title": "Step 5: The Mixer",
+        "text": "All 37 squarewave signals come into a passive resistor network, then split into two paths: raw squarewave, and a low-pass filtered output run through 4 cascaded filter stages and re-amplified to match level. Those two outputs go either side of a blend knob.\n\nI wanted to filter each note individually for true polyphonic sine waves, but the component count made it impractical. Running the summed output through the filter instead means it's more of a filtered output than a true sine, but it should sound interesting, and very different from the raw square.\n\nThe mixer board also handles white noise (its own LM386 channel) and a line-in jack. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.",
         "image": "",
         "alt": "Mixer board with passive summing network and filter stages"
       },
       {
-        "title": "Step 6 — Effects Chain",
-        "text": "Three effect stages after the mixer.\n\nFuzz — LM386-based with a power sag feature that starves the supply voltage and produces collapsing, unstable fuzz tones. Controls: bypass switch, power sag knob, gain knob.\n\nDelay — dual PT2399 chip module for longer delay times and more headroom. Controls: depth, rate.\n\nTransformer Saturation — the signal is driven backwards through a small AC transformer. The transformer charges and clips on the way through, adding harmonic saturation. Controls: bypass switch, input level, output level.\n\nAlso planned: a 555 monostable LFO on each oscillator for vibrato.",
+        "title": "Step 6: Effects Chain",
+        "text": "Three effect stages after the mixer.\n\nFuzz: LM386-based with a power sag feature that starves the supply voltage and produces collapsing, unstable fuzz tones. Controls: bypass switch, power sag knob, gain knob.\n\nDelay: dual PT2399 chip module for longer delay times and more headroom. Controls: depth, rate.\n\nTransformer Saturation: the signal is driven backwards through a small AC transformer. The transformer charges and clips on the way through, adding harmonic saturation. Controls: bypass switch, input level, output level.\n\nAlso planned: a 555 monostable LFO on each oscillator for vibrato.",
         "image": "",
-        "alt": "Effects boards — fuzz, delay, transformer saturation"
+        "alt": "Effects boards: fuzz, delay, transformer saturation"
       },
       {
-        "title": "Step 7 — Output Stage",
+        "title": "Step 7: Output Stage",
         "text": "Final stage is a small amp with volume and tone controls, followed by a passive compressor to tame peaks before the 1/4\" output jack. The passive compressor keeps things from getting too spiky when multiple notes are playing at once.",
         "image": "",
         "alt": "Output stage with passive compressor and 1/4 inch jack"
@@ -85,18 +85,18 @@
     "image": "",
     "images": [],
     "alt": "Local-first repair shop management software built for electronics and instrument repair",
-    "description": "A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.",
+    "description": "A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware. No cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.",
     "bullets": [
       "Full customer → unit → job → history data model with structured diagnostics per equipment type",
       "Real workflow states: NEW → INTAKE → DIAGNOSING → AWAITING APPROVAL → REPAIRING → TESTING → READY → COMPLETED",
       "SQLite FTS5 full-text search across jobs, customers, units, knowledge base, and inventory",
-      "Structured diagnostic forms per equipment category — tube amps, synths, pedals each get different fields",
-      "Every status transition logged with timestamp — complete audit trail on every job",
+      "Structured diagnostic forms per equipment category. Tube amps, synths, pedals each get different fields",
+      "Every status transition logged with timestamp. Complete audit trail on every job",
       "Local-first: runs on shop hardware, works without internet, data stays mine",
-      "Phone-optimized wallboard — big text, current job counts by status, auto-refreshes every 60 seconds",
+      "Phone-optimized wallboard. Big text, current job counts by status, auto-refreshes every 60 seconds",
       "Built-in knowledge base: every interesting failure mode becomes searchable history",
       "Automated rotating backups: 7 daily, 4 weekly, 12 monthly",
-      "CLI interface built before UI — fast, scriptable, testable from day one"
+      "CLI interface built before UI. Fast, scriptable, testable from day one"
     ],
     "tags": ["software", "python", "sqlite", "repair", "tools", "local-first"],
     "links": [],
@@ -110,7 +110,7 @@
       },
       {
         "title": "Designing the Data Model",
-        "text": "The core structure is: Customer → Unit (the piece of gear) → Job (the repair event). A job contains intake, diagnostics, work performed, parts used, estimate, invoice, payments, notes, file attachments, and an optional knowledge base entry.\n\nA customer can have multiple units. A unit can have a full service history across multiple jobs over the years. That history is searchable, structured, and permanently mine.\n\nDiagnostics are structured JSON templates per equipment category. When I open a tube amp job I get a tube amp diagnostic form — bias readings, B+ voltage, power rail checks. When I open a synth job I get a synth diagnostic form. That makes the data actually queryable later.",
+        "text": "The core structure is: Customer → Unit (the piece of gear) → Job (the repair event). A job contains intake, diagnostics, work performed, parts used, estimate, invoice, payments, notes, file attachments, and an optional knowledge base entry.\n\nA customer can have multiple units. A unit can have a full service history across multiple jobs over the years. That history is searchable, structured, and permanently mine.\n\nDiagnostics are structured JSON templates per equipment category. When I open a tube amp job I get a tube amp diagnostic form: bias readings, B+ voltage, power rail checks. When I open a synth job I get a synth diagnostic form. That makes the data actually queryable later.",
         "image": "",
         "alt": "Bench OS data model diagram"
       },
@@ -122,13 +122,13 @@
       },
       {
         "title": "The Build Plan",
-        "text": "Built in deliberate phases.\n\nPhase 1 — SQLite schema with FTS5. Customers, units, jobs, diagnostics, parts, estimates, invoices, inventory, knowledge base, status history. Foreign keys and indexes correct from day one.\n\nPhase 2 — Pure Python data access layer. No Flask yet. Clean separation between the database and everything above it.\n\nPhase 3 — Business logic. Job workflow validation, status transition enforcement, estimate and invoice calculations, backup automation.\n\nPhase 4 — CLI first. new_job, update_status, add_note, add_part, today, search. Fast, scriptable, testable before there's any UI.\n\nPhase 5 — Flask web UI. Dashboard, job list, job detail, new intake, customers, inventory, knowledge base, search, settings. Dark theme.\n\nPhase 6 — Dashboard with real operational metrics: open jobs, on bench, waiting parts, awaiting approval, overdue, due this week.\n\nPhase 7 — Phone wallboard. Single page, big text, auto-refreshes every 60 seconds. Designed to be glanced at from across the room.",
+        "text": "Built in deliberate phases.\n\nPhase 1: SQLite schema with FTS5. Customers, units, jobs, diagnostics, parts, estimates, invoices, inventory, knowledge base, status history. Foreign keys and indexes correct from day one.\n\nPhase 2: Pure Python data access layer. No Flask yet. Clean separation between the database and everything above it.\n\nPhase 3: Business logic. Job workflow validation, status transition enforcement, estimate and invoice calculations, backup automation.\n\nPhase 4: CLI first. new_job, update_status, add_note, add_part, today, search. Fast, scriptable, testable before there's any UI.\n\nPhase 5: Flask web UI. Dashboard, job list, job detail, new intake, customers, inventory, knowledge base, search, settings. Dark theme.\n\nPhase 6: Dashboard with real operational metrics: open jobs, on bench, waiting parts, awaiting approval, overdue, due this week.\n\nPhase 7: Phone wallboard. Single page, big text, auto-refreshes every 60 seconds. Designed to be glanced at from across the room.",
         "image": "",
         "alt": "Bench OS dashboard wireframe"
       },
       {
         "title": "The Long Game",
-        "text": "If I use this system consistently — and I will, because I'm building it to be faster than not using it — then after a few years I'll have something most repair shops don't have: a complete, structured, searchable history of every job I've ever worked. Every failure mode. Every part. Every voltage reading. Every callback.\n\nThat's the real product. Not the software. The data the software accumulates.\n\nAt that point AI integration becomes genuinely useful. Not a chatbot. A system that can say: you've seen this symptom on this model four times, here's what it turned out to be each time, here are the parts you used. That's a real tool for a real bench technician.",
+        "text": "If I use this system consistently (and I will, because I'm building it to be faster than not using it) then after a few years I'll have something most repair shops don't have: a complete, structured, searchable history of every job I've ever worked. Every failure mode. Every part. Every voltage reading. Every callback.\n\nThat's the real product. Not the software. The data the software accumulates.\n\nAt that point the data starts working for you. A system that can tell you: you've seen this symptom on this model four times, here's what it turned out to be each time, here are the parts you used. That's a real tool for a real bench technician.",
         "image": "",
         "alt": "Knowledge base search results in Bench OS"
       }
@@ -137,23 +137,23 @@
   },
 
   {
-    "title": "Blu — A Compiled Programming Language",
+    "title": "Blu: A Compiled Programming Language",
     "slug": "blu-language",
     "status": "In Progress",
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "Blu — a compiled programming language written from scratch, targeting x86-64 Linux",
+    "alt": "Blu: a compiled programming language written from scratch, targeting x86-64 Linux",
     "description": "A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn't exist yet.",
     "bullets": [
       "Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen",
       "Compiles to native x86-64 assembly, runs on Linux",
-      "Forms — record-like structures with named fields and type inference from usage",
+      "Forms: record-like structures with named fields and type inference from usage",
       "Closures with proper environment capture across stack frames",
       "File I/O, JSON, CSV, process spawning, environment variables in stdlib",
-      "400+ regression tests — all required green before any phase closes",
-      "18-phase development plan — 5 phases complete",
-      "Keywords: give (return), show (print), when (if) — the language has its own voice",
+      "400+ regression tests. All required green before any phase closes",
+      "18-phase development plan. 5 phases complete",
+      "Keywords: give (return), show (print), when (if). The language has its own voice",
       "Style guide, development guide, phase tracker, and audit log"
     ],
     "tags": ["compiler", "language", "c++", "x86", "linux", "from-scratch"],
@@ -167,25 +167,25 @@
         "alt": "Early Blu source code on screen"
       },
       {
-        "title": "Phases 1–3 — The Foundation",
-        "text": "The early work was clean and methodical. Lexer first — make it deterministic. Parser next — make it reliable. Then semantic analysis: catch undefined variables, wrong argument counts, duplicate declarations. The kind of work nobody sees but everybody feels when it's missing.\n\nThen freeze the semantics. Decide what the language actually is. Forms instead of structs. give instead of return. show instead of print. when instead of if. Small choices, but they add up to a voice. Blu began to sound like itself.\n\nThen the standard library: JSON, CSV, databases as key-value arrays, binary encoding. The things you need the moment you try to do anything real.",
+        "title": "Phases 1–3: The Foundation",
+        "text": "The early work was clean and methodical. Lexer first. Make it deterministic. Parser next. Make it reliable. Then semantic analysis: catch undefined variables, wrong argument counts, duplicate declarations. The kind of work nobody sees but everybody feels when it's missing.\n\nThen freeze the semantics. Decide what the language actually is. Forms instead of structs. give instead of return. show instead of print. when instead of if. Small choices, but they add up to a voice. Blu began to sound like itself.\n\nThen the standard library: JSON, CSV, databases as key-value arrays, binary encoding. The things you need the moment you try to do anything real.",
         "image": "",
         "alt": "Blu compiler pipeline diagram"
       },
       {
-        "title": "Phase 4 — Regression Infrastructure",
-        "text": "By phase 4 Blu had opinions. It had a style guide. It had regression tests — hundreds of them, organized by category, run by shell scripts that report pass rates. No phase closes until every test is green. This discipline is what keeps the language from quietly breaking while new features go in.",
+        "title": "Phase 4: Regression Infrastructure",
+        "text": "By phase 4 Blu had opinions. It had a style guide. It had regression tests, hundreds of them, organized by category, run by shell scripts that report pass rates. No phase closes until every test is green. This discipline is what keeps the language from quietly breaking while new features go in.",
         "image": "",
         "alt": "Blu regression test output showing green suite"
       },
       {
-        "title": "Phase 5 — Closures, Forms, and a Namespace War",
-        "text": "Phase 5 is where the ambition showed its teeth. Closures — nested functions that capture variables from their enclosing scope — required environment objects, closure allocation, and a whole new family of IR instructions. Forms required type inference from usage patterns across the entire call graph.\n\nThen the build broke. A cascade of errors. The cause: #include directives had been placed after the namespace blu { opening brace. The namespace had swallowed the standard library.\n\nThe fix was to delete ir_builder.cpp and rewrite it from scratch — pulling out layers of accumulated corruption, duplicate function bodies, orphaned copy-paste blocks. Each fix revealed the next problem. Each problem was small. Together they were a wall.\n\nForms edge cases: 113/113. Closure regression: 10/10. Phase 5 closed.",
+        "title": "Phase 5: Closures, Forms, and a Namespace War",
+        "text": "Phase 5 is where the ambition showed its teeth. Closures (nested functions that capture variables from their enclosing scope) required environment objects, closure allocation, and a whole new family of IR instructions. Forms required type inference from usage patterns across the entire call graph.\n\nThen the build broke. A cascade of errors. The cause: #include directives had been placed after the namespace blu { opening brace. The namespace had swallowed the standard library.\n\nThe fix was to delete ir_builder.cpp and rewrite it from scratch, pulling out layers of accumulated corruption, duplicate function bodies, orphaned copy-paste blocks. Each fix revealed the next problem. Each problem was small. Together they were a wall.\n\nForms edge cases: 113/113. Closure regression: 10/10. Phase 5 closed.",
         "image": "",
         "alt": "Terminal output showing all regression tests green after Phase 5"
       },
       {
-        "title": "Phase 6 — File I/O and What Comes Next",
+        "title": "Phase 6: File I/O and What Comes Next",
         "text": "Phase 6 started with the obvious gap: Blu couldn't touch the filesystem. file.read, file.write, file.append, file.exists. Four C symbols, four arity checks, four codegen entries. The test program wrote a file, read it back, and confirmed it existed. Small thing. Not a small thing.\n\nWhat comes next: a map type, a garbage collector, better error messages with line numbers, a formatter, a REPL, a module system, a C FFI bridge, and eventually a platform layer. Eighteen phases in the plan. Five complete.\n\nThe tests are green. The compiler compiles. The binary runs.",
         "image": "",
         "alt": "Blu example program output in terminal"
@@ -195,24 +195,24 @@
   },
 
   {
-    "title": "BASIL — Cinematic Narrative Game",
+    "title": "BASIL: Cinematic Narrative Game",
     "slug": "basil-game",
     "status": "In Progress",
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister",
+    "alt": "BASIL: a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister",
     "description": "A short cinematic narrative game built in Unity 2022 HDRP. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. 45–90 minutes. Bittersweet, restrained, quiet. Not a power fantasy. Nobody wins, but they don't lose each other.",
     "bullets": [
-      "Built in Unity 2022 HDRP — full cinematic lighting pipeline",
-      "19-phase production plan, fully documented with AI-assisted coding prompts at every step",
+      "Built in Unity 2022 HDRP. Full cinematic lighting pipeline",
+      "19-phase production plan, fully documented with implementation specs at every step",
       "Entire narrative locked into a master canon document before any code was written",
       "Mog threat AI: patrol, detection, alert, hunt state machine",
       "RoomProgressionManager gates story beats so they unfold in the right emotional order",
       "Full movement controller: walk, run, crouch, climb, carry, squeeze through gaps",
       "Every mechanic has a symbolic purpose before it has a technical one",
-      "Greybox-first — game plays beginning to end in rough geometry before any art begins",
-      "Planning and design phase complete — active Unity build is next"
+      "Greybox-first. Game plays beginning to end in rough geometry before any art begins",
+      "Planning and design phase complete. Active Unity build is next"
     ],
     "tags": ["game", "unity", "narrative", "indie", "hdrp", "from-scratch"],
     "links": [],
@@ -220,9 +220,9 @@
     "steps": [
       {
         "title": "What BASIL Is",
-        "text": "BASIL is a short cinematic narrative game. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. It begins in warmth — a dollhouse, a chess game, afternoon light, tea. It ends in survival. Not triumph.\n\nThe emotional core: nobody wins, but they don't lose each other.\n\nThe tone is bittersweet, restrained, cinematic. No dialogue-heavy exposition. No power fantasy. Just a small creature trying to get back to someone.",
+        "text": "BASIL is a short cinematic narrative game. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. It begins in warmth. A dollhouse, a chess game, afternoon light, tea. It ends in survival. Not triumph.\n\nThe emotional core: nobody wins, but they don't lose each other.\n\nThe tone is bittersweet, restrained, cinematic. No dialogue-heavy exposition. No power fantasy. Just a small creature trying to get back to someone.",
         "image": "",
-        "alt": "BASIL concept — Bas the mouse in a dollhouse"
+        "alt": "BASIL concept: Bas the mouse in a dollhouse"
       },
       {
         "title": "Story Architecture Drives Everything",
@@ -232,13 +232,13 @@
       },
       {
         "title": "The Production Plan",
-        "text": "19 phases, fully documented.\n\nPhases 0–3: Unity HDRP setup, Bas's full movement controller (walk, run, crouch, climb, carry, squeeze through gaps), opening cinematic.\n\nPhases 4–5: Greybox of the full house interior at mouse scale. Every room has a narrative purpose before it has geometry.\n\nPhases 6–7: Mog's threat AI (patrol, detection, alert, hunt), checkpoint/save system, RoomProgressionManager.\n\nPhases 8–11: Every authored moment — dialogue, silence, clue discovery, the terrarium reveal, the shatter, the ending walk.\n\nPhases 12–18: Character models, environment models, art pass, animation, audio, narrative continuity review.\n\nPhase 19: Trailer, PC build, itch.io release.",
+        "text": "19 phases, fully documented.\n\nPhases 0–3: Unity HDRP setup, Bas's full movement controller (walk, run, crouch, climb, carry, squeeze through gaps), opening cinematic.\n\nPhases 4–5: Greybox of the full house interior at mouse scale. Every room has a narrative purpose before it has geometry.\n\nPhases 6–7: Mog's threat AI (patrol, detection, alert, hunt), checkpoint/save system, RoomProgressionManager.\n\nPhases 8–11: Every authored moment: dialogue, silence, clue discovery, the terrarium reveal, the shatter, the ending walk.\n\nPhases 12–18: Character models, environment models, art pass, animation, audio, narrative continuity review.\n\nPhase 19: Trailer, PC build, itch.io release.",
         "image": "",
         "alt": "BASIL 19-phase production roadmap"
       },
       {
         "title": "Where It Stands",
-        "text": "The project is in the planning and documentation phase — fully designed, fully spec'd, ready for active build. Every room, every scene, every system, and every AI prompt needed to build it has been written.\n\nWhat exists: a locked master canon document, a complete 19-phase implementation roadmap, scene-by-scene specs for every authored moment, system design docs for the Bas controller, Mog AI, progression gating, checkpoint system, and scene transitions.\n\nThe build is next.",
+        "text": "The project is in the planning and documentation phase. Fully designed, fully spec'd, ready for active build. Every room, every scene, every system, and every implementation spec needed to build it has been written.\n\nWhat exists: a locked master canon document, a complete 19-phase implementation roadmap, scene-by-scene specs for every authored moment, system design docs for the Bas controller, Mog AI, progression gating, checkpoint system, and scene transitions.\n\nThe build is next.",
         "image": "",
         "alt": "BASIL scene specification document"
       }
@@ -247,24 +247,24 @@
   },
 
   {
-    "title": "Glorb — A Solo Card Game",
+    "title": "Glorb: A Solo Card Game",
     "slug": "glorb-card-game",
     "status": "Complete",
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "Glorb — a 64-card solitaire dungeon crawl card game",
+    "alt": "Glorb: a 64-card solitaire dungeon crawl card game",
     "description": "A single-player card game. You're trapped in the Temple of Glorb, navigating rooms, collecting four keys in order, and fighting your way through an army of Gleebs to escape. 64 cards, designed and balanced from scratch.",
     "bullets": [
-      "64-card standalone deck — swords, chi, gleebs, keys, armor, candles, special cards",
-      "Solitaire dungeon crawl — four directional decks represent rooms of the temple",
+      "64-card standalone deck. Swords, chi, gleebs, keys, armor, candles, special cards",
+      "Solitaire dungeon crawl. Four directional decks represent rooms of the temple",
       "Collect keys 1–4 in order to unlock the escape condition",
       "Combat system: fight gleebs barehanded or with equipped weapon",
-      "Weapon degradation — gleebs cap your sword's reach against weaker enemies",
+      "Weapon degradation: gleebs cap your sword's reach against weaker enemies",
       "Special cards: The Moon, The Sun, The King, The Magus",
       "Gleeb Princes can't be killed until the boss battle (except by special cards)",
-      "Boss battle triggers when two decks remain — defeat Glorb (power 15) to escape",
-      "Glorb can be equipped as a weapon for 2 chi — costs 2 per scene to keep"
+      "Boss battle triggers when two decks remain. Defeat Glorb (power 15) to escape",
+      "Glorb can be equipped as a weapon for 2 chi. Costs 2 per scene to keep"
     ],
     "tags": ["game", "card-game", "design", "solitaire", "tabletop"],
     "links": [],
@@ -272,19 +272,19 @@
     "steps": [
       {
         "title": "The Premise",
-        "text": "You became trapped in the Temple of Glorb. He's not exactly friendly, and neither is his conglomerate army of Gleebs. The goal: collect the four keys in order and defeat Glorb himself.\n\nGlorb is a single-player card game — no opponent required. Just you, a shuffled deck, and a temple that gets harder to escape the longer you're in it.",
+        "text": "You became trapped in the Temple of Glorb. He's not exactly friendly, and neither is his conglomerate army of Gleebs. The goal: collect the four keys in order and defeat Glorb himself.\n\nGlorb is a single-player card game. No opponent required. Just you, a shuffled deck, and a temple that gets harder to escape the longer you're in it.",
         "image": "",
-        "alt": "Glorb card game setup — four room decks in corners"
+        "alt": "Glorb card game setup: four room decks in corners"
       },
       {
         "title": "How the Temple Works",
-        "text": "Shuffle the 64-card deck and divide it into 4 piles of 13. Place them at the four corners — each pile is a direction in the temple.\n\nPlace 4 cards clockwise in a diamond to form a scene. You can avoid a scene by scooping all four cards to the bottom of that room's deck, but you can't avoid two scenes in a row. If you face the scene, you resolve 3 of the 4 cards one at a time. The remaining card carries over and becomes part of the next scene — its position tells you which room you move to next.",
+        "text": "Shuffle the 64-card deck and divide it into 4 piles of 13. Place them at the four corners. Each pile is a direction in the temple.\n\nPlace 4 cards clockwise in a diamond to form a scene. You can avoid a scene by scooping all four cards to the bottom of that room's deck, but you can't avoid two scenes in a row. If you face the scene, you resolve 3 of the 4 cards one at a time. The remaining card carries over and becomes part of the next scene. Its position tells you which room you move to next.",
         "image": "",
-        "alt": "Glorb scene layout — four cards in diamond formation"
+        "alt": "Glorb scene layout: four cards in diamond formation"
       },
       {
         "title": "Combat",
-        "text": "When you encounter a Gleeb you can fight barehanded (subtract its full value from your health) or with an equipped weapon.\n\nWeapon combat has a twist: the Gleeb's power limits your sword's reach. Fight a 5-power Gleeb with a 12-power sword and that sword can now only kill things below power 5 — until you clear it. Armor prevents this degradation. The math keeps you managing your equipment carefully throughout the run.\n\nGleeb Princes are a special problem. They can't be killed until the boss battle — they just keep going back to the bottom of their room's deck. Unless you have The Magus, The King, or The Sun. Those can send Princes to the graveyard at any point in the game.",
+        "text": "When you encounter a Gleeb you can fight barehanded (subtract its full value from your health) or with an equipped weapon.\n\nWeapon combat has a twist: the Gleeb's power limits your sword's reach. Fight a 5-power Gleeb with a 12-power sword and that sword can now only kill things below power 5 until you clear it. Armor prevents this degradation. The math keeps you managing your equipment carefully throughout the run.\n\nGleeb Princes are a special problem. They can't be killed until the boss battle. They just keep going back to the bottom of their room's deck. Unless you have The Magus, The King, or The Sun. Those can send Princes to the graveyard at any point in the game.",
         "image": "",
         "alt": "Glorb combat showing weapon degradation mechanic"
       },
@@ -292,31 +292,31 @@
         "title": "The Special Cards",
         "text": "Four special cards change the texture of play.\n\nThe Moon: +1 health per scene it stays in play. Lets you scry one non-Gleeb card from its room.\n\nThe Sun: +1 health per scene. Can clear the entire scene including your equipped weapon. Stays 3 rounds and your health replenishes.\n\nThe King: Scry the top 6 cards of his room. Buy any card for 6 chi, or send any card to discard for 6.\n\nThe Magus: Draw the top 3 cards of his room. All Gleebs including Princes go to discard. Any Gleeb drawn can be equipped as a weapon.",
         "image": "",
-        "alt": "Glorb special cards — Moon, Sun, King, Magus"
+        "alt": "Glorb special cards: Moon, Sun, King, Magus"
       },
       {
         "title": "The Boss Battle",
-        "text": "When you're down to two room decks, the boss battle begins. Scenes expand to 4 cards. Princes can now be killed normally. Candles act as regular chi.\n\nGlorb is the 14th Prince of Gleeb, power 15. Fight him straight, or spend 2 chi to equip him as a weapon — paying 2 chi at the start of each scene to keep him armed. Glorb attacks anything you ask for 2.\n\nCollect all four keys. Defeat Glorb. Escape the temple.",
+        "text": "When you're down to two room decks, the boss battle begins. Scenes expand to 4 cards. Princes can now be killed normally. Candles act as regular chi.\n\nGlorb is the 14th Prince of Gleeb, power 15. Fight him straight, or spend 2 chi to equip him as a weapon, paying 2 chi at the start of each scene to keep him armed. Glorb attacks anything you ask for 2.\n\nCollect all four keys. Defeat Glorb. Escape the temple.",
         "image": "",
-        "alt": "Glorb boss battle setup — two remaining room decks"
+        "alt": "Glorb boss battle setup: two remaining room decks"
       }
     ],
     "updated": "2026-03-30T00:00:00"
   },
 
   {
-    "title": "Keystone — Arena Board Game",
+    "title": "Keystone: Arena Board Game",
     "slug": "keystone-board-game",
     "status": "Complete",
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid",
+    "alt": "Keystone: a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid",
     "description": "A fast-paced arena game of movement, pressure, and permanent construction. Players move across a 12×12 black-and-white grid, drawing cards based on where they land. Health is both life and currency. Towers change the map. Nothing you build protects you from the system itself.",
     "bullets": [
-      "12×12 checkerboard grid — black squares draw Yin cards, white squares draw Yang cards",
-      "Health is both life and currency — spent to build towers, lost to threats and combat",
-      "Towers are permanent — stack 7 tiles and win immediately",
+      "12×12 checkerboard grid. Black squares draw Yin cards, white squares draw Yang cards",
+      "Health is both life and currency. Spent to build towers, lost to threats and combat",
+      "Towers are permanent. Stack 7 tiles and win immediately",
       "Dual 52-card deck system: Yin deck (pressure, damage) and Yang deck (recovery, momentum)",
       "Card types: Threat, Supply, Shift, Equipment, Exit",
       "1–4 players, solo to competitive to cooperative",
@@ -331,25 +331,25 @@
     "steps": [
       {
         "title": "The Concept",
-        "text": "Keystone is about movement, pressure, and commitment. The board never remembers what happened. Cards resolve immediately and get discarded. The arena has no memory of you. Only Towers persist — and building them costs the same resource that keeps you alive.\n\nHealth is your fuel. Spend it to build. Lose it to threats. The tension is in that tradeoff the whole game.",
+        "text": "Keystone is about movement, pressure, and commitment. The board never remembers what happened. Cards resolve immediately and get discarded. The arena has no memory of you. Only Towers persist, and building them costs the same resource that keeps you alive.\n\nHealth is your fuel. Spend it to build. Lose it to threats. The tension is in that tradeoff the whole game.",
         "image": "",
         "alt": "Keystone 12x12 grid board at start of play"
       },
       {
         "title": "The Grid and the Cards",
-        "text": "The board is a 12×12 checkerboard. Black squares draw from the Yin deck — pressure, damage, disruption. White squares draw from the Yang deck — recovery, momentum, opportunity.\n\nYou never know what you're drawing until you land. The Yin deck is heavy with Threats (29 of 52 cards). The Yang deck is heavy with Supplies (20 of 52). The asymmetry rewards navigating toward white squares when you need to recover and punishes you when you get trapped on black.\n\nCards resolve immediately and are discarded. No board state. No memory. The arena doesn't know you were here.",
+        "text": "The board is a 12×12 checkerboard. Black squares draw from the Yin deck: pressure, damage, disruption. White squares draw from the Yang deck: recovery, momentum, opportunity.\n\nYou never know what you're drawing until you land. The Yin deck is heavy with Threats (29 of 52 cards). The Yang deck is heavy with Supplies (20 of 52). The asymmetry rewards navigating toward white squares when you need to recover and punishes you when you get trapped on black.\n\nCards resolve immediately and are discarded. No board state. No memory. The arena doesn't know you were here.",
         "image": "",
         "alt": "Yin and Yang decks with composition breakdown"
       },
       {
         "title": "Towers",
-        "text": "Towers are the only permanent things in Keystone. You place tiles by ending your movement on a square and spending 1 Health per tile — up to 2 tiles per turn. Stack 7 upright tiles and you win immediately with the Capstone.\n\nA sideways tile caps a tower. Capped towers can't grow, can't be recaptured, but are still landable and PvP can happen on them.\n\nBuilding costs Health you might need to survive. That's the whole game.",
+        "text": "Towers are the only permanent things in Keystone. You place tiles by ending your movement on a square and spending 1 Health per tile, up to 2 tiles per turn. Stack 7 upright tiles and you win immediately with the Capstone.\n\nA sideways tile caps a tower. Capped towers can't grow, can't be recaptured, but are still landable and PvP can happen on them.\n\nBuilding costs Health you might need to survive. That's the whole game.",
         "image": "",
         "alt": "Tower stack with Keystone and Capstone tiles"
       },
       {
         "title": "Combat and Movement",
-        "text": "PvP triggers when you land on another player. Both roll d6. Higher roll wins. Loser takes damage equal to the difference. Ties deal nothing. The winner can move 1 additional square.\n\nShooting: roll 1d6 for range, pick direction, first opposing player in the line takes 1 damage. Can't shoot through towers.\n\nMovement is 1d6 per turn. Stop early if you want — unused MP is lost. Passing through squares does nothing. Cards only trigger on landing.",
+        "text": "PvP triggers when you land on another player. Both roll d6. Higher roll wins. Loser takes damage equal to the difference. Ties deal nothing. The winner can move 1 additional square.\n\nShooting: roll 1d6 for range, pick direction, first opposing player in the line takes 1 damage. Can't shoot through towers.\n\nMovement is 1d6 per turn. Stop early if you want. Unused MP is lost. Passing through squares does nothing. Cards only trigger on landing.",
         "image": "",
         "alt": "Combat and shooting resolution examples"
       },
@@ -370,15 +370,15 @@
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask",
-    "description": "An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.",
+    "alt": "MediaTek MT7902 Linux Wi-Fi enablement: finding and patching a wrong interrupt bit mask",
+    "description": "An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage. The handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.",
     "bullets": [
       "Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)",
-      "Symptom: firmware uploads but version field reads ____000000 — handshake never completes",
+      "Symptom: firmware uploads but version field reads ____000000. Handshake never completes",
       "Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17",
-      "MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source",
+      "MT7902 CMD TX ring fires on wfdma0_tx_done_17, a chip-specific quirk buried in vendor source",
       "Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump",
-      "Fix: two-file patch — regs.h constant + pci.c interrupt enable mask",
+      "Fix: two-file patch: regs.h constant + pci.c interrupt enable mask",
       "Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon"
     ],
     "tags": ["linux", "driver", "kernel", "hardware", "debugging", "wifi"],
@@ -387,19 +387,19 @@
     "steps": [
       {
         "title": "The Machine and the Symptom",
-        "text": "ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support — Windows driver only.\n\nThe driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000 — placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.",
+        "text": "ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support. Windows driver only.\n\nThe driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000, placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.",
         "image": "",
         "alt": "dmesg output showing MT7902 firmware version placeholder garbage"
       },
       {
         "title": "Mapping the Hardware",
-        "text": "Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.\n\nMT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring — how the host sends firmware commands — is hardware ring 15.",
+        "text": "Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.\n\nMT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring (how the host sends firmware commands) is hardware ring 15.",
         "image": "",
         "alt": "MT7902 WFDMA ring layout diagram"
       },
       {
         "title": "Reading the Windows Driver and Firmware Blobs",
-        "text": "Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.\n\nCross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn't fire on interrupt bit 15 or bit 2 — it fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That's just what this chip does.",
+        "text": "Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.\n\nCross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn't fire on interrupt bit 15 or bit 2. It fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That's just what this chip does.",
         "image": "",
         "alt": "Vendor driver source comment showing MT7902 interrupt bit 17 quirk"
       },
@@ -426,16 +426,16 @@
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "A Python web scraper built from scratch as a real project — not a tutorial exercise",
+    "alt": "A Python web scraper built from scratch as a real project, not a tutorial exercise",
     "description": "I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on disk, and never download the same file twice. This is the story of building it and what I learned along the way.",
     "bullets": [
       "Reads a structured JSON database and systematically fetches every URL in it",
       "10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess",
-      "SHA256 deduplication — hashes every file before saving, skips anything already seen",
+      "SHA256 deduplication. Hashes every file before saving, skips anything already seen",
       "PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents",
-      "BFS crawler with configurable depth — follows links without running forever",
+      "BFS crawler with configurable depth. Follows links without running forever",
       "Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler",
-      "argparse CLI — target a single manufacturer or the entire database",
+      "argparse CLI. Target a single manufacturer or the entire database",
       "Simultaneous terminal and file logging with timestamps",
       "Runs on a Raspberry Pi without modification"
     ],
@@ -451,19 +451,19 @@
       },
       {
         "title": "Files, Paths, and Being Defensive",
-        "text": "Working with files and paths was the first real lesson. Python's pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists — then watching your script crash when it doesn't — teaches you to be defensive fast.\n\nJSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.",
+        "text": "Working with files and paths was the first real lesson. Python's pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists (then watching your script crash when it doesn't) teaches you to be defensive fast.\n\nJSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.",
         "image": "",
         "alt": "Organized folder structure created by the scraper"
       },
       {
         "title": "The 10-Method Waterfall",
-        "text": "HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.\n\nI built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python's module ecosystem in a very practical way — what each tool actually does and when to reach for a heavier one.",
+        "text": "HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.\n\nI built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python's module ecosystem in a very practical way: what each tool actually does and when to reach for a heavier one.",
         "image": "",
         "alt": "Waterfall fallback method chain in code"
       },
       {
         "title": "SHA256 Deduplication",
-        "text": "If you run the scraper twice, you don't want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.\n\nI'd never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data — and that a dictionary makes a fast lookup table — felt like real computer science knowledge, not just Python trivia.",
+        "text": "If you run the scraper twice, you don't want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.\n\nI'd never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data, and that a dictionary makes a fast lookup table, felt like real computer science knowledge, not just Python trivia.",
         "image": "",
         "alt": "SHA256 hash registry lookup in the scraper"
       },
@@ -484,13 +484,13 @@
     "cover_image": "",
     "image": "",
     "images": [],
-    "alt": "TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console",
-    "description": "A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.",
+    "alt": "TBX: a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console",
+    "description": "A television station. Not a media server. A broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.",
     "bullets": [
-      "Raspberry Pi 5 with 16GB RAM — boots straight to playback",
+      "Raspberry Pi 5 with 16GB RAM. Boots straight to playback",
       "FastAPI backend + mpv playback engine via Unix socket",
       "Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network",
-      "React web UI — dark, amber, gunmetal — surfed with a handheld IR remote",
+      "React web UI. Dark, amber, gunmetal. Surfed with a handheld IR remote",
       "7-segment front panel display, breathing power LED, amber activity LED during imports",
       "Channel 99: hidden game console with 6 original games sharing a universe and lore",
       "Cloud tier, Stripe integration, OTA update system, 48 setup wizards",
@@ -504,13 +504,13 @@
     "steps": [
       {
         "title": "What TBX Is",
-        "text": "A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.\n\nTBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time — every time someone tunes to a channel — exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.\n\nBuilt alone, in a studio apartment, over the better part of two years.",
+        "text": "A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.\n\nTBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time, every time someone tunes to a channel, exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.\n\nBuilt alone, in a studio apartment, over the better part of two years.",
         "image": "",
         "alt": "TBX web UI showing channel grid and now-playing display"
       },
       {
         "title": "The UI and the Remote",
-        "text": "The web UI is React. Dark, amber, gunmetal — the color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.\n\nThe 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.",
+        "text": "The web UI is React. Dark, amber, gunmetal. The color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.\n\nThe 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.",
         "image": "",
         "alt": "TBX front panel with 7-segment display and LEDs"
       },
@@ -524,17 +524,17 @@
         "title": "The Software",
         "text": "360 files. 320 passing tests. 17 phases complete.\n\nCloud tier, Stripe integration, OTA updates, 48 setup wizards, 30 CLI commands, SD card image build pipeline. A Kickstarter plan, manufacturing plan, QC checklist, legal pack, and a launch-day playbook.\n\nThe code is done. The image builds. The tests pass.",
         "image": "",
-        "alt": "TBX test suite output — 320 passing"
+        "alt": "TBX test suite output: 320 passing"
       },
       {
-        "title": "Phase 18 — Building the Hardware",
-        "text": "On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.\n\nThe ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine — OFF, STARTING, RUNNING, SHUTTING DOWN — in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.\n\nThis circuit doesn't exist yet. Building it now.",
+        "title": "Phase 18: Building the Hardware",
+        "text": "On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.\n\nThe ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine (OFF, STARTING, RUNNING, SHUTTING DOWN) in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.\n\nThis circuit doesn't exist yet. Building it now.",
         "image": "",
         "alt": "ATtiny85 breadboard circuit for TBX power controller"
       },
       {
         "title": "What Comes After",
-        "text": "When Phase 18 is done — when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command — Phase 19 begins.\n\nPhase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.\n\nYour station. Your signal. Your broadcast.",
+        "text": "When Phase 18 is done, when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command, Phase 19 begins.\n\nPhase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.\n\nYour station. Your signal. Your broadcast.",
         "image": "",
         "alt": "TBX completed enclosure"
       }
@@ -550,16 +550,16 @@
     "image": "",
     "images": [],
     "alt": "Custom 30-port USB-C Power Delivery charging rack for iPads over 50-foot cable runs",
-    "description": "A custom 2U rack system that delivers USB-C Power Delivery charging to 30 iPads over 50-foot cable runs. 24V distribution, per-port PD conversion, 7-pin XLR interconnects, 4-pin XLR tablet outputs. Designed to actually work at distance — not just on a workbench.",
+    "description": "A custom 2U rack system that delivers USB-C Power Delivery charging to 30 iPads over 50-foot cable runs. 24V distribution, per-port PD conversion, 7-pin XLR interconnects, 4-pin XLR tablet outputs. Designed to actually work at distance, not just on a workbench.",
     "bullets": [
-      "30 iPad ports in a 2U rack chassis — 5×6 grid of 4-pin XLR front panel outputs",
+      "30 iPad ports in a 2U rack chassis. 5×6 grid of 4-pin XLR front panel outputs",
       "24V distribution bus → 30 individual USB-C PD modules, one per port",
       "50-foot cable spec: 14 AWG VBUS/GND, 22 AWG twisted CC1/CC2, overall shield",
-      "7-pin XLR internal harness — 15 connectors, each carrying 2 tablet ports",
+      "7-pin XLR internal harness. 15 connectors, each carrying 2 tablet ports",
       "4-pin XLR tablet cables: Pin 1 GND, Pin 2 CC1, Pin 3 CC2, Pin 4 VBUS",
       "Mean Well RSP-1000-24 (24V, 40A, 960W) main power supply",
-      "Per-port 2A fusing — 30-circuit fuse block",
-      "CC lines twisted and shielded — single-point grounding to prevent ground loops",
+      "Per-port 2A fusing. 30-circuit fuse block",
+      "CC lines twisted and shielded. Single-point grounding to prevent ground loops",
       "Single-port validation test before committing to all 30 ports"
     ],
     "tags": ["hardware", "electronics", "power", "rack", "usb-c", "build"],
@@ -568,21 +568,21 @@
     "steps": [
       {
         "title": "The Problem",
-        "text": "USB-C Power Delivery over 50 feet is not something the standard was designed for. The CC lines — the small signal wires that carry the PD negotiation handshake — are extremely sensitive to noise, impedance, and ground reference issues. Most DIY attempts fail because the cables aren't built right, the grounds aren't bonded correctly, or the PD module doesn't expose the CC pins externally.\n\nThe architecture that actually works: distribute 24V over heavy wire the full distance, convert to USB-C PD at each port. Keep the sensitive signaling short.",
+        "text": "USB-C Power Delivery over 50 feet is not something the standard was designed for. The CC lines (the small signal wires that carry the PD negotiation handshake) are extremely sensitive to noise, impedance, and ground reference issues. Most DIY attempts fail because the cables aren't built right, the grounds aren't bonded correctly, or the PD module doesn't expose the CC pins externally.\n\nThe architecture that actually works: distribute 24V over heavy wire the full distance, convert to USB-C PD at each port. Keep the sensitive signaling short.",
         "image": "",
-        "alt": "Rack power distribution architecture — 24V bus to per-port PD modules"
+        "alt": "Rack power distribution architecture: 24V bus to per-port PD modules"
       },
       {
         "title": "Cable Specification",
-        "text": "The 50-foot tablet cables are built to a specific spec: 4-conductor shielded control cable. 14 AWG power pair (VBUS and GND). 22 AWG twisted signal pair (CC1 and CC2). Overall foil or braid shield.\n\nWhy 14 AWG: at 50 feet round-trip that's 100 feet of conductor. At 2.5Ω per 1000 ft, voltage drop at iPad charge current (~2.2A at 9V) is about 0.25V — within PD tolerance. Smaller wire causes renegotiation loops and charging instability.\n\nCC lines twisted to reduce EMI pickup. Shield tied to ground at the rack end only — grounding both ends creates a ground loop that corrupts the PD signal.",
+        "text": "The 50-foot tablet cables are built to a specific spec: 4-conductor shielded control cable. 14 AWG power pair (VBUS and GND). 22 AWG twisted signal pair (CC1 and CC2). Overall foil or braid shield.\n\nWhy 14 AWG: at 50 feet round-trip that's 100 feet of conductor. At 2.5Ω per 1000 ft, voltage drop at iPad charge current (~2.2A at 9V) is about 0.25V, within PD tolerance. Smaller wire causes renegotiation loops and charging instability.\n\nCC lines twisted to reduce EMI pickup. Shield tied to ground at the rack end only. Grounding both ends creates a ground loop that corrupts the PD signal.",
         "image": "",
-        "alt": "Cable cross-section — 14AWG power pair + 22AWG twisted CC pair + shield"
+        "alt": "Cable cross-section: 14AWG power pair + 22AWG twisted CC pair + shield"
       },
       {
         "title": "The Connector System",
-        "text": "Internal interconnect: 7-pin XLR. Each connector carries two tablet ports — VBUS-A, CC1-A, CC2-A, VBUS-B, CC1-B, CC2-B, and a shared GND. 15 harnesses total for 30 ports.\n\nFront panel: 4-pin XLR per tablet output. Neutrik connectors throughout — cheap connectors add 20–50 milliohms of resistance on the CC lines, which is enough to break PD negotiation.\n\nPanel layout: 5 rows × 6 columns, ports 1–30 left-to-right, top-to-bottom. Power switch and LED on the left margin.",
+        "text": "Internal interconnect: 7-pin XLR. Each connector carries two tablet ports: VBUS-A, CC1-A, CC2-A, VBUS-B, CC1-B, CC2-B, and a shared GND. 15 harnesses total for 30 ports.\n\nFront panel: 4-pin XLR per tablet output. Neutrik connectors throughout. Cheap connectors add 20–50 milliohms of resistance on the CC lines, which is enough to break PD negotiation.\n\nPanel layout: 5 rows × 6 columns, ports 1–30 left-to-right, top-to-bottom. Power switch and LED on the left margin.",
         "image": "",
-        "alt": "2U front panel — 5x6 grid of 4-pin XLR outputs labeled 1 through 30"
+        "alt": "2U front panel: 5x6 grid of 4-pin XLR outputs labeled 1 through 30"
       },
       {
         "title": "Validate One Port Before Building Thirty",
@@ -592,7 +592,7 @@
       },
       {
         "title": "The Build",
-        "text": "Mean Well RSP-1000-24 feeding a 40A DC breaker into positive and negative bus bars. 30 PD modules fused at 2A each from a 30-circuit fuse block. 18–20 AWG leads from fuse to module, 22 AWG for CC wiring kept short inside the rack. 2× 80mm fans for cooling.\n\nThe critical rule that makes it work: all grounds stay common throughout the system. Power ground and CC reference ground are the same ground. Splitting them at any point — even with a thin separate wire to a different terminal — breaks PD negotiation. Every ground in the rack ties to the same bar.",
+        "text": "Mean Well RSP-1000-24 feeding a 40A DC breaker into positive and negative bus bars. 30 PD modules fused at 2A each from a 30-circuit fuse block. 18–20 AWG leads from fuse to module, 22 AWG for CC wiring kept short inside the rack. 2× 80mm fans for cooling.\n\nThe critical rule that makes it work: all grounds stay common throughout the system. Power ground and CC reference ground are the same ground. Splitting them at any point, even with a thin separate wire to a different terminal, breaks PD negotiation. Every ground in the rack ties to the same bar.",
         "image": "",
         "alt": "Rack interior showing PSU, bus bars, fuse block, and PD modules"
       }

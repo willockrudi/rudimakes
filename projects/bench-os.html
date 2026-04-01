@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Willock Bench OS | Rudi Willock</title>
-  <meta name="description" content="A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no..." />
+  <meta name="description" content="A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware. No ..." />
   <meta property="og:title" content="Willock Bench OS | Rudi Makes" />
-  <meta property="og:description" content="A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no..." />
+  <meta property="og:description" content="A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware. No ..." />
   <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
   <meta property="og:url" content="https://www.rudimakes.com/projects/bench-os.html" />
   <meta property="og:type" content="article" />
@@ -59,7 +59,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware. No cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
 
       <div class="card-tags">
             <span class="tag-chip">software</span>
@@ -73,13 +73,13 @@
           <li>Full customer → unit → job → history data model with structured diagnostics per equipment type</li>
           <li>Real workflow states: NEW → INTAKE → DIAGNOSING → AWAITING APPROVAL → REPAIRING → TESTING → READY → COMPLETED</li>
           <li>SQLite FTS5 full-text search across jobs, customers, units, knowledge base, and inventory</li>
-          <li>Structured diagnostic forms per equipment category — tube amps, synths, pedals each get different fields</li>
-          <li>Every status transition logged with timestamp — complete audit trail on every job</li>
+          <li>Structured diagnostic forms per equipment category. Tube amps, synths, pedals each get different fields</li>
+          <li>Every status transition logged with timestamp. Complete audit trail on every job</li>
           <li>Local-first: runs on shop hardware, works without internet, data stays mine</li>
-          <li>Phone-optimized wallboard — big text, current job counts by status, auto-refreshes every 60 seconds</li>
+          <li>Phone-optimized wallboard. Big text, current job counts by status, auto-refreshes every 60 seconds</li>
           <li>Built-in knowledge base: every interesting failure mode becomes searchable history</li>
           <li>Automated rotating backups: 7 daily, 4 weekly, 12 monthly</li>
-          <li>CLI interface built before UI — fast, scriptable, testable from day one</li>
+          <li>CLI interface built before UI. Fast, scriptable, testable from day one</li>
         </ul>
       
 
@@ -100,7 +100,7 @@
 
     <article class="project-step">
       <h3>2. Designing the Data Model</h3>
-      <p>The core structure is: Customer → Unit (the piece of gear) → Job (the repair event). A job contains intake, diagnostics, work performed, parts used, estimate, invoice, payments, notes, file attachments, and an optional knowledge base entry.<br>A customer can have multiple units. A unit can have a full service history across multiple jobs over the years. That history is searchable, structured, and permanently mine.<br>Diagnostics are structured JSON templates per equipment category. When I open a tube amp job I get a tube amp diagnostic form — bias readings, B+ voltage, power rail checks. When I open a synth job I get a synth diagnostic form. That makes the data actually queryable later.</p>
+      <p>The core structure is: Customer → Unit (the piece of gear) → Job (the repair event). A job contains intake, diagnostics, work performed, parts used, estimate, invoice, payments, notes, file attachments, and an optional knowledge base entry.<br>A customer can have multiple units. A unit can have a full service history across multiple jobs over the years. That history is searchable, structured, and permanently mine.<br>Diagnostics are structured JSON templates per equipment category. When I open a tube amp job I get a tube amp diagnostic form: bias readings, B+ voltage, power rail checks. When I open a synth job I get a synth diagnostic form. That makes the data actually queryable later.</p>
     </article>
 
 
@@ -112,13 +112,13 @@
 
     <article class="project-step">
       <h3>4. The Build Plan</h3>
-      <p>Built in deliberate phases.<br>Phase 1 — SQLite schema with FTS5. Customers, units, jobs, diagnostics, parts, estimates, invoices, inventory, knowledge base, status history. Foreign keys and indexes correct from day one.<br>Phase 2 — Pure Python data access layer. No Flask yet. Clean separation between the database and everything above it.<br>Phase 3 — Business logic. Job workflow validation, status transition enforcement, estimate and invoice calculations, backup automation.<br>Phase 4 — CLI first. new_job, update_status, add_note, add_part, today, search. Fast, scriptable, testable before there&#x27;s any UI.<br>Phase 5 — Flask web UI. Dashboard, job list, job detail, new intake, customers, inventory, knowledge base, search, settings. Dark theme.<br>Phase 6 — Dashboard with real operational metrics: open jobs, on bench, waiting parts, awaiting approval, overdue, due this week.<br>Phase 7 — Phone wallboard. Single page, big text, auto-refreshes every 60 seconds. Designed to be glanced at from across the room.</p>
+      <p>Built in deliberate phases.<br>Phase 1: SQLite schema with FTS5. Customers, units, jobs, diagnostics, parts, estimates, invoices, inventory, knowledge base, status history. Foreign keys and indexes correct from day one.<br>Phase 2: Pure Python data access layer. No Flask yet. Clean separation between the database and everything above it.<br>Phase 3: Business logic. Job workflow validation, status transition enforcement, estimate and invoice calculations, backup automation.<br>Phase 4: CLI first. new_job, update_status, add_note, add_part, today, search. Fast, scriptable, testable before there&#x27;s any UI.<br>Phase 5: Flask web UI. Dashboard, job list, job detail, new intake, customers, inventory, knowledge base, search, settings. Dark theme.<br>Phase 6: Dashboard with real operational metrics: open jobs, on bench, waiting parts, awaiting approval, overdue, due this week.<br>Phase 7: Phone wallboard. Single page, big text, auto-refreshes every 60 seconds. Designed to be glanced at from across the room.</p>
     </article>
 
 
     <article class="project-step">
       <h3>5. The Long Game</h3>
-      <p>If I use this system consistently — and I will, because I&#x27;m building it to be faster than not using it — then after a few years I&#x27;ll have something most repair shops don&#x27;t have: a complete, structured, searchable history of every job I&#x27;ve ever worked. Every failure mode. Every part. Every voltage reading. Every callback.<br>That&#x27;s the real product. Not the software. The data the software accumulates.<br>At that point AI integration becomes genuinely useful. Not a chatbot. A system that can say: you&#x27;ve seen this symptom on this model four times, here&#x27;s what it turned out to be each time, here are the parts you used. That&#x27;s a real tool for a real bench technician.</p>
+      <p>If I use this system consistently (and I will, because I&#x27;m building it to be faster than not using it) then after a few years I&#x27;ll have something most repair shops don&#x27;t have: a complete, structured, searchable history of every job I&#x27;ve ever worked. Every failure mode. Every part. Every voltage reading. Every callback.<br>That&#x27;s the real product. Not the software. The data the software accumulates.<br>At that point the data starts working for you. A system that can tell you: you&#x27;ve seen this symptom on this model four times, here&#x27;s what it turned out to be each time, here are the parts you used. That&#x27;s a real tool for a real bench technician.</p>
     </article>
 <!-- PROJECT_STEPS_END -->
       </div>

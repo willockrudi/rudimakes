@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TBX Home Broadcast Station | Rudi Willock</title>
-  <meta name="description" content="A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physi..." />
+  <meta name="description" content="A television station. Not a media server. A broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physic..." />
   <meta property="og:title" content="TBX Home Broadcast Station | Rudi Makes" />
-  <meta property="og:description" content="A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physi..." />
+  <meta property="og:description" content="A television station. Not a media server. A broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physic..." />
   <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
   <meta property="og:url" content="https://www.rudimakes.com/projects/tbx-home-broadcast.html" />
   <meta property="og:type" content="article" />
@@ -59,7 +59,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A television station. Not a media server. A broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
 
       <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
@@ -70,10 +70,10 @@
             <span class="tag-chip">from-scratch</span>
           </div>
       <ul class="bullets project-bullets">
-          <li>Raspberry Pi 5 with 16GB RAM — boots straight to playback</li>
+          <li>Raspberry Pi 5 with 16GB RAM. Boots straight to playback</li>
           <li>FastAPI backend + mpv playback engine via Unix socket</li>
           <li>Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network</li>
-          <li>React web UI — dark, amber, gunmetal — surfed with a handheld IR remote</li>
+          <li>React web UI. Dark, amber, gunmetal. Surfed with a handheld IR remote</li>
           <li>7-segment front panel display, breathing power LED, amber activity LED during imports</li>
           <li>Channel 99: hidden game console with 6 original games sharing a universe and lore</li>
           <li>Cloud tier, Stripe integration, OTA update system, 48 setup wizards</li>
@@ -83,7 +83,7 @@
         </ul>
       
 
-      <img class="project-detail-hero" src="" alt="TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
+      <img class="project-detail-hero" src="" alt="TBX: a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
 
     </div>
 
@@ -94,13 +94,13 @@
 
     <article class="project-step">
       <h3>1. What TBX Is</h3>
-      <p>A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.<br>TBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time — every time someone tunes to a channel — exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.<br>Built alone, in a studio apartment, over the better part of two years.</p>
+      <p>A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.<br>TBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time, every time someone tunes to a channel, exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.<br>Built alone, in a studio apartment, over the better part of two years.</p>
     </article>
 
 
     <article class="project-step">
       <h3>2. The UI and the Remote</h3>
-      <p>The web UI is React. Dark, amber, gunmetal — the color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.<br>The 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.</p>
+      <p>The web UI is React. Dark, amber, gunmetal. The color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.<br>The 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.</p>
     </article>
 
 
@@ -117,14 +117,14 @@
 
 
     <article class="project-step">
-      <h3>5. Phase 18 — Building the Hardware</h3>
-      <p>On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.<br>The ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine — OFF, STARTING, RUNNING, SHUTTING DOWN — in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.<br>This circuit doesn&#x27;t exist yet. Building it now.</p>
+      <h3>5. Phase 18: Building the Hardware</h3>
+      <p>On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.<br>The ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine (OFF, STARTING, RUNNING, SHUTTING DOWN) in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.<br>This circuit doesn&#x27;t exist yet. Building it now.</p>
     </article>
 
 
     <article class="project-step">
       <h3>6. What Comes After</h3>
-      <p>When Phase 18 is done — when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command — Phase 19 begins.<br>Phase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.<br>Your station. Your signal. Your broadcast.</p>
+      <p>When Phase 18 is done, when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command, Phase 19 begins.<br>Phase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.<br>Your station. Your signal. Your broadcast.</p>
     </article>
 <!-- PROJECT_STEPS_END -->
       </div>

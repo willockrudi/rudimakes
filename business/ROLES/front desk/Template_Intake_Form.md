@@ -1,4 +1,4 @@
-# WILLOCK BENCH — INTAKE FORM
+# WILLOCK BENCH | INTAKE FORM
 
 **Filled by:** Rudi (at intake)
 **Given to:** Bench Tech AI (as starting context for diagnosis)
@@ -50,7 +50,7 @@
 
 ## CUSTOMER COMPLAINT
 
-*(Their words — what they say is wrong)*
+*(Their words. What they say is wrong)*
 
 &nbsp;
 
@@ -82,7 +82,7 @@
 
 ## INITIAL OBSERVATIONS
 
-*(Filled by Rudi during intake — quick bench check)*
+*(Filled by Rudi during intake. Quick bench check)*
 
 | Check | Result |
 |-------|--------|
@@ -111,7 +111,7 @@
 
 ## INITIAL MEASUREMENTS
 
-*(Fill if taken at intake — otherwise Bench Tech AI will guide these during diagnosis)*
+*(Fill if taken at intake. Otherwise Bench Tech AI will guide these during diagnosis)*
 
 | Rail / Point | Reading |
 |-------------|---------|
@@ -144,19 +144,19 @@
 **Risk level:** ☐ Low  ☐ Medium  ☐ High  ☐ Parts risk  ☐ Intermittent  ☐ Previous repair
 
 **Estimate category:**
-☐ Bench fee / diagnosis — $45
-☐ Retube + bias (combo) — $65 + tubes
-☐ Retube + bias (head) — $85 + tubes
-☐ Bias only — $45
-☐ Power supply recap — $95–150 + parts
-☐ Speaker replacement — $45 + parts
-☐ Hum / noise troubleshooting — $65/hr
-☐ General repair — $65/hr
-☐ Guitar/bass electronics — $35–65
-☐ Pedal repair — $55/hr
-☐ Synth repair — $65/hr
+☐ Bench fee / diagnosis: $45
+☐ Retube + bias (combo): $65 + tubes
+☐ Retube + bias (head): $85 + tubes
+☐ Bias only: $45
+☐ Power supply recap: $95–150 + parts
+☐ Speaker replacement: $45 + parts
+☐ Hum / noise troubleshooting: $65/hr
+☐ General repair: $65/hr
+☐ Guitar/bass electronics: $35–65
+☐ Pedal repair: $55/hr
+☐ Synth repair: $65/hr
 ☐ Quoted job
-☐ Not economical — warn customer
+☐ Not economical: warn customer
 
 ---
 
@@ -180,8 +180,8 @@
 
 ---
 
-*$45 bench fee — applied to repair if authorized, non-refundable if declined.*
+*$45 bench fee, applied to repair if authorized, non-refundable if declined.*
 *30-day labor warranty. Parts warranties per manufacturer.*
 *Equipment unclaimed after 90 days may be surrendered.*
 
-**Willock Bench** — rudiwillockmakes@gmail.com — rudimakes.com
+**Willock Bench** · rudiwillockmakes@gmail.com · rudimakes.com
