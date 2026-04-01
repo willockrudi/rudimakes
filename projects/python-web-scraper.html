@@ -7,7 +7,7 @@
   <meta name="description" content="I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on ..." />
   <meta property="og:title" content="Python Web Scraper | Rudi Makes" />
   <meta property="og:description" content="I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on ..." />
-  <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
+  <meta property="og:image" content="https://www.rudimakes.com/images/projects/python-web-scraper.jpg" />
   <meta property="og:url" content="https://www.rudimakes.com/projects/python-web-scraper.html" />
   <meta property="og:type" content="article" />
   <link rel="canonical" href="https://www.rudimakes.com/projects/python-web-scraper.html" />
@@ -71,17 +71,17 @@
       <ul class="bullets project-bullets">
           <li>Reads a structured JSON database and systematically fetches every URL in it</li>
           <li>10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess</li>
-          <li>SHA256 deduplication. Hashes every file before saving, skips anything already seen</li>
+          <li>SHA256 deduplication — hashes every file before saving, skips anything already seen</li>
           <li>PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents</li>
-          <li>BFS crawler with configurable depth. Follows links without running forever</li>
+          <li>BFS crawler with configurable depth — follows links without running forever</li>
           <li>Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler</li>
-          <li>argparse CLI. Target a single manufacturer or the entire database</li>
+          <li>argparse CLI — target a single manufacturer or the entire database</li>
           <li>Simultaneous terminal and file logging with timestamps</li>
           <li>Runs on a Raspberry Pi without modification</li>
         </ul>
       
 
-      <img class="project-detail-hero" src="" alt="A Python web scraper built from scratch as a real project, not a tutorial exercise">
+      <img class="project-detail-hero" src="../images/projects/python-web-scraper.jpg" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
 
     </div>
 
@@ -98,19 +98,19 @@
 
     <article class="project-step">
       <h3>2. Files, Paths, and Being Defensive</h3>
-      <p>Working with files and paths was the first real lesson. Python&#x27;s pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists (then watching your script crash when it doesn&#x27;t) teaches you to be defensive fast.<br>JSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.</p>
+      <p>Working with files and paths was the first real lesson. Python&#x27;s pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists — then watching your script crash when it doesn&#x27;t — teaches you to be defensive fast.<br>JSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.</p>
     </article>
 
 
     <article class="project-step">
       <h3>3. The 10-Method Waterfall</h3>
-      <p>HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.<br>I built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python&#x27;s module ecosystem in a very practical way: what each tool actually does and when to reach for a heavier one.</p>
+      <p>HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.<br>I built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python&#x27;s module ecosystem in a very practical way — what each tool actually does and when to reach for a heavier one.</p>
     </article>
 
 
     <article class="project-step">
       <h3>4. SHA256 Deduplication</h3>
-      <p>If you run the scraper twice, you don&#x27;t want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.<br>I&#x27;d never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data, and that a dictionary makes a fast lookup table, felt like real computer science knowledge, not just Python trivia.</p>
+      <p>If you run the scraper twice, you don&#x27;t want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.<br>I&#x27;d never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data — and that a dictionary makes a fast lookup table — felt like real computer science knowledge, not just Python trivia.</p>
     </article>
 
 

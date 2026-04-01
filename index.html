@@ -241,10 +241,10 @@
         <!-- PROJECTS_START -->
 
       <div class="project-card" data-tags="synth,555,analog,build,polyphonic,from-scratch">
-        <img class="project-thumb" src="" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
+        <img class="project-thumb" src="images/projects/555-polyphonic-synth.jpg" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
         <div class="project-info">
           <h3>37-Key 555 Polyphonic Synthesizer <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me. A learning project, and a real instrument.</p>
+          <p>A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me — as a learning project, and a real instrument.</p>
           <div class="card-tags">
             <span class="tag-chip">synth</span>
             <span class="tag-chip">555</span>
@@ -256,25 +256,29 @@
           <a class="project-open" href="projects/555-polyphonic-synth.html">Open project</a>
           <ul class="bullets">
             <li>37 semi-weighted keys salvaged from a broken M-Audio Axiom 61</li>
-            <li>12 × 555 timer oscillators, each tuned with a trim pot. One full chromatic octave</li>
-            <li>CD4024 binary ripple counter per oscillator. 7 octaves each, 84 tones total</li>
+            <li>12 × 555 timer oscillators, each tuned with a trim pot — one full chromatic octave</li>
+            <li>CD4024 binary ripple counter per oscillator — 7 octaves each, 84 tones total</li>
             <li>Squarewave output + low-pass filtered sine-ish output with blend knob</li>
             <li>White noise on every key via shared membrane switch rail</li>
-            <li>LM386 amplification throughout. Runs entirely on 9V, no split supply</li>
+            <li>LM386 amplification throughout — runs entirely on 9V, no split supply</li>
             <li>555 monostable LFO vibrato circuit on each oscillator</li>
             <li>LM386 fuzz stage with power sag control for unstable, collapsing tones</li>
             <li>Dual PT2399 delay module with depth and rate controls</li>
-            <li>Transformer saturation stage. Audio driven backwards through an AC transformer</li>
+            <li>Transformer saturation stage — audio driven backwards through an AC transformer</li>
             <li>Output stage: passive compressor + 1/4&quot; jack</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-37-key-555-polyphonic-synthesizer-73545">More photos</button>
+          <div class="gallery" id="gallery-37-key-555-polyphonic-synthesizer-73545">
+            <img src="images/projects/555-polyphonic-synth.jpg" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="software,python,sqlite,repair,tools,local-first">
-        <img class="project-thumb" src="" alt="Local-first repair shop management software built for electronics and instrument repair">
+        <img class="project-thumb" src="images/projects/bench-os.jpg" alt="Local-first repair shop management software built for electronics and instrument repair">
         <div class="project-info">
           <h3>Willock Bench OS <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware. No cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
+          <p>A local-first repair shop operating system built specifically for tube amp, synth, and instrument repair. SQLite, Python, Flask. Runs on my own hardware — no cloud, no subscription, no internet required. Designed around how bench work actually happens, not how a car shop or phone kiosk works.</p>
           <div class="card-tags">
             <span class="tag-chip">software</span>
             <span class="tag-chip">python</span>
@@ -288,21 +292,25 @@
             <li>Full customer → unit → job → history data model with structured diagnostics per equipment type</li>
             <li>Real workflow states: NEW → INTAKE → DIAGNOSING → AWAITING APPROVAL → REPAIRING → TESTING → READY → COMPLETED</li>
             <li>SQLite FTS5 full-text search across jobs, customers, units, knowledge base, and inventory</li>
-            <li>Structured diagnostic forms per equipment category. Tube amps, synths, pedals each get different fields</li>
-            <li>Every status transition logged with timestamp. Complete audit trail on every job</li>
+            <li>Structured diagnostic forms per equipment category — tube amps, synths, pedals each get different fields</li>
+            <li>Every status transition logged with timestamp — complete audit trail on every job</li>
             <li>Local-first: runs on shop hardware, works without internet, data stays mine</li>
-            <li>Phone-optimized wallboard. Big text, current job counts by status, auto-refreshes every 60 seconds</li>
+            <li>Phone-optimized wallboard — big text, current job counts by status, auto-refreshes every 60 seconds</li>
             <li>Built-in knowledge base: every interesting failure mode becomes searchable history</li>
             <li>Automated rotating backups: 7 daily, 4 weekly, 12 monthly</li>
-            <li>CLI interface built before UI. Fast, scriptable, testable from day one</li>
+            <li>CLI interface built before UI — fast, scriptable, testable from day one</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-willock-bench-os-98067">More photos</button>
+          <div class="gallery" id="gallery-willock-bench-os-98067">
+            <img src="images/projects/bench-os.jpg" alt="Local-first repair shop management software built for electronics and instrument repair">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="compiler,language,c,x86,linux,from-scratch">
-        <img class="project-thumb" src="" alt="Blu: a compiled programming language written from scratch, targeting x86-64 Linux">
+        <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu — a compiled programming language written from scratch, targeting x86-64 Linux">
         <div class="project-info">
-          <h3>Blu: A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
+          <h3>Blu — A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
           <p>A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn&#x27;t exist yet.</p>
           <div class="card-tags">
             <span class="tag-chip">compiler</span>
@@ -316,21 +324,25 @@
           <ul class="bullets">
             <li>Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen</li>
             <li>Compiles to native x86-64 assembly, runs on Linux</li>
-            <li>Forms: record-like structures with named fields and type inference from usage</li>
+            <li>Forms — record-like structures with named fields and type inference from usage</li>
             <li>Closures with proper environment capture across stack frames</li>
             <li>File I/O, JSON, CSV, process spawning, environment variables in stdlib</li>
-            <li>400+ regression tests. All required green before any phase closes</li>
-            <li>18-phase development plan. 5 phases complete</li>
-            <li>Keywords: give (return), show (print), when (if). The language has its own voice</li>
+            <li>400+ regression tests — all required green before any phase closes</li>
+            <li>18-phase development plan — 5 phases complete</li>
+            <li>Keywords: give (return), show (print), when (if) — the language has its own voice</li>
             <li>Style guide, development guide, phase tracker, and audit log</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-blu-a-compiled-programming-language-16857">More photos</button>
+          <div class="gallery" id="gallery-blu-a-compiled-programming-language-16857">
+            <img src="images/projects/blu-language.jpg" alt="Blu — a compiled programming language written from scratch, targeting x86-64 Linux">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="game,unity,narrative,indie,hdrp,from-scratch">
-        <img class="project-thumb" src="" alt="BASIL: a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
+        <img class="project-thumb" src="images/projects/basil-game.jpg" alt="BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
         <div class="project-info">
-          <h3>BASIL: Cinematic Narrative Game <span class="status-badge status-progress">🛠 In Progress</span></h3>
+          <h3>BASIL — Cinematic Narrative Game <span class="status-badge status-progress">🛠 In Progress</span></h3>
           <p>A short cinematic narrative game built in Unity 2022 HDRP. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. 45–90 minutes. Bittersweet, restrained, quiet. Not a power fantasy. Nobody wins, but they don&#x27;t lose each other.</p>
           <div class="card-tags">
             <span class="tag-chip">game</span>
@@ -342,23 +354,27 @@
           </div>
           <a class="project-open" href="projects/basil-game.html">Open project</a>
           <ul class="bullets">
-            <li>Built in Unity 2022 HDRP. Full cinematic lighting pipeline</li>
-            <li>19-phase production plan, fully documented with implementation specs at every step</li>
+            <li>Built in Unity 2022 HDRP — full cinematic lighting pipeline</li>
+            <li>19-phase production plan, fully documented with AI-assisted coding prompts at every step</li>
             <li>Entire narrative locked into a master canon document before any code was written</li>
             <li>Mog threat AI: patrol, detection, alert, hunt state machine</li>
             <li>RoomProgressionManager gates story beats so they unfold in the right emotional order</li>
             <li>Full movement controller: walk, run, crouch, climb, carry, squeeze through gaps</li>
             <li>Every mechanic has a symbolic purpose before it has a technical one</li>
-            <li>Greybox-first. Game plays beginning to end in rough geometry before any art begins</li>
-            <li>Planning and design phase complete. Active Unity build is next</li>
+            <li>Greybox-first — game plays beginning to end in rough geometry before any art begins</li>
+            <li>Planning and design phase complete — active Unity build is next</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-basil-cinematic-narrative-game-52647">More photos</button>
+          <div class="gallery" id="gallery-basil-cinematic-narrative-game-52647">
+            <img src="images/projects/basil-game.jpg" alt="BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="game,card-game,design,solitaire,tabletop">
-        <img class="project-thumb" src="" alt="Glorb: a 64-card solitaire dungeon crawl card game">
+        <img class="project-thumb" src="images/projects/glorb-card-game.jpg" alt="Glorb — a 64-card solitaire dungeon crawl card game">
         <div class="project-info">
-          <h3>Glorb: A Solo Card Game <span class="status-badge status-complete">✅ Complete</span></h3>
+          <h3>Glorb — A Solo Card Game <span class="status-badge status-complete">✅ Complete</span></h3>
           <p>A single-player card game. You&#x27;re trapped in the Temple of Glorb, navigating rooms, collecting four keys in order, and fighting your way through an army of Gleebs to escape. 64 cards, designed and balanced from scratch.</p>
           <div class="card-tags">
             <span class="tag-chip">game</span>
@@ -369,23 +385,27 @@
           </div>
           <a class="project-open" href="projects/glorb-card-game.html">Open project</a>
           <ul class="bullets">
-            <li>64-card standalone deck. Swords, chi, gleebs, keys, armor, candles, special cards</li>
-            <li>Solitaire dungeon crawl. Four directional decks represent rooms of the temple</li>
+            <li>64-card standalone deck — swords, chi, gleebs, keys, armor, candles, special cards</li>
+            <li>Solitaire dungeon crawl — four directional decks represent rooms of the temple</li>
             <li>Collect keys 1–4 in order to unlock the escape condition</li>
             <li>Combat system: fight gleebs barehanded or with equipped weapon</li>
-            <li>Weapon degradation: gleebs cap your sword&#x27;s reach against weaker enemies</li>
+            <li>Weapon degradation — gleebs cap your sword&#x27;s reach against weaker enemies</li>
             <li>Special cards: The Moon, The Sun, The King, The Magus</li>
             <li>Gleeb Princes can&#x27;t be killed until the boss battle (except by special cards)</li>
-            <li>Boss battle triggers when two decks remain. Defeat Glorb (power 15) to escape</li>
-            <li>Glorb can be equipped as a weapon for 2 chi. Costs 2 per scene to keep</li>
+            <li>Boss battle triggers when two decks remain — defeat Glorb (power 15) to escape</li>
+            <li>Glorb can be equipped as a weapon for 2 chi — costs 2 per scene to keep</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-glorb-a-solo-card-game-93870">More photos</button>
+          <div class="gallery" id="gallery-glorb-a-solo-card-game-93870">
+            <img src="images/projects/glorb-card-game.jpg" alt="Glorb — a 64-card solitaire dungeon crawl card game">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="game,board-game,design,tabletop,arena">
-        <img class="project-thumb" src="" alt="Keystone: a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
+        <img class="project-thumb" src="images/projects/keystone-board-game.jpg" alt="Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
         <div class="project-info">
-          <h3>Keystone: Arena Board Game <span class="status-badge status-complete">✅ Complete</span></h3>
+          <h3>Keystone — Arena Board Game <span class="status-badge status-complete">✅ Complete</span></h3>
           <p>A fast-paced arena game of movement, pressure, and permanent construction. Players move across a 12×12 black-and-white grid, drawing cards based on where they land. Health is both life and currency. Towers change the map. Nothing you build protects you from the system itself.</p>
           <div class="card-tags">
             <span class="tag-chip">game</span>
@@ -396,9 +416,9 @@
           </div>
           <a class="project-open" href="projects/keystone-board-game.html">Open project</a>
           <ul class="bullets">
-            <li>12×12 checkerboard grid. Black squares draw Yin cards, white squares draw Yang cards</li>
-            <li>Health is both life and currency. Spent to build towers, lost to threats and combat</li>
-            <li>Towers are permanent. Stack 7 tiles and win immediately</li>
+            <li>12×12 checkerboard grid — black squares draw Yin cards, white squares draw Yang cards</li>
+            <li>Health is both life and currency — spent to build towers, lost to threats and combat</li>
+            <li>Towers are permanent — stack 7 tiles and win immediately</li>
             <li>Dual 52-card deck system: Yin deck (pressure, damage) and Yang deck (recovery, momentum)</li>
             <li>Card types: Threat, Supply, Shift, Equipment, Exit</li>
             <li>1–4 players, solo to competitive to cooperative</li>
@@ -407,14 +427,18 @@
             <li>Optional modes: Capture the Flag, Team Score with respawn</li>
             <li>20–30 minute play time</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-keystone-arena-board-game-43187">More photos</button>
+          <div class="gallery" id="gallery-keystone-arena-board-game-43187">
+            <img src="images/projects/keystone-board-game.jpg" alt="Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="linux,driver,kernel,hardware,debugging,wifi">
-        <img class="project-thumb" src="" alt="MediaTek MT7902 Linux Wi-Fi enablement: finding and patching a wrong interrupt bit mask">
+        <img class="project-thumb" src="images/projects/linux-wifi-driver-patch.jpg" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
         <div class="project-info">
           <h3>MT7902 Linux Wi-Fi Driver Patch <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage. The handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
+          <p>An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.</p>
           <div class="card-tags">
             <span class="tag-chip">linux</span>
             <span class="tag-chip">driver</span>
@@ -426,18 +450,22 @@
           <a class="project-open" href="projects/linux-wifi-driver-patch.html">Open project</a>
           <ul class="bullets">
             <li>Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)</li>
-            <li>Symptom: firmware uploads but version field reads ____000000. Handshake never completes</li>
+            <li>Symptom: firmware uploads but version field reads ____000000 — handshake never completes</li>
             <li>Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17</li>
-            <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17, a chip-specific quirk buried in vendor source</li>
+            <li>MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source</li>
             <li>Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump</li>
-            <li>Fix: two-file patch: regs.h constant + pci.c interrupt enable mask</li>
+            <li>Fix: two-file patch — regs.h constant + pci.c interrupt enable mask</li>
             <li>Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-mt7902-linux-wi-fi-driver-patch-4425">More photos</button>
+          <div class="gallery" id="gallery-mt7902-linux-wi-fi-driver-patch-4425">
+            <img src="images/projects/linux-wifi-driver-patch.jpg" alt="MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="python,scraper,tools,learning,automation">
-        <img class="project-thumb" src="" alt="A Python web scraper built from scratch as a real project, not a tutorial exercise">
+        <img class="project-thumb" src="images/projects/python-web-scraper.jpg" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
         <div class="project-info">
           <h3>Python Web Scraper <span class="status-badge status-complete">✅ Complete</span></h3>
           <p>I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on disk, and never download the same file twice. This is the story of building it and what I learned along the way.</p>
@@ -452,22 +480,26 @@
           <ul class="bullets">
             <li>Reads a structured JSON database and systematically fetches every URL in it</li>
             <li>10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess</li>
-            <li>SHA256 deduplication. Hashes every file before saving, skips anything already seen</li>
+            <li>SHA256 deduplication — hashes every file before saving, skips anything already seen</li>
             <li>PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents</li>
-            <li>BFS crawler with configurable depth. Follows links without running forever</li>
+            <li>BFS crawler with configurable depth — follows links without running forever</li>
             <li>Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler</li>
-            <li>argparse CLI. Target a single manufacturer or the entire database</li>
+            <li>argparse CLI — target a single manufacturer or the entire database</li>
             <li>Simultaneous terminal and file logging with timestamps</li>
             <li>Runs on a Raspberry Pi without modification</li>
           </ul>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-python-web-scraper-9614">More photos</button>
+          <div class="gallery" id="gallery-python-web-scraper-9614">
+            <img src="images/projects/python-web-scraper.jpg" alt="A Python web scraper built from scratch as a real project — not a tutorial exercise">
+          </div>
         </div>
       </div>
 
       <div class="project-card" data-tags="raspberry-pi,software,hardware,broadcast,atmel,from-scratch">
-        <img class="project-thumb" src="" alt="TBX: a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
+        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
         <div class="project-info">
           <h3>TBX Home Broadcast Station <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A television station. Not a media server. A broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
+          <p>A television station. Not a media server — a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
           <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
             <span class="tag-chip">software</span>
@@ -478,10 +510,10 @@
           </div>
           <a class="project-open" href="projects/tbx-home-broadcast.html">Open project</a>
           <ul class="bullets">
-            <li>Raspberry Pi 5 with 16GB RAM. Boots straight to playback</li>
+            <li>Raspberry Pi 5 with 16GB RAM — boots straight to playback</li>
             <li>FastAPI backend + mpv playback engine via Unix socket</li>
             <li>Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network</li>
-            <li>React web UI. Dark, amber, gunmetal. Surfed with a handheld IR remote</li>
+            <li>React web UI — dark, amber, gunmetal — surfed with a handheld IR remote</li>
             <li>7-segment front panel display, breathing power LED, amber activity LED during imports</li>
             <li>Channel 99: hidden game console with 6 original games sharing a universe and lore</li>
             <li>Cloud tier, Stripe integration, OTA update system, 48 setup wizards</li>
@@ -489,34 +521,10 @@
             <li>ATtiny85 power controller: OFF / STARTING / RUNNING / SHUTTING DOWN state machine in 8KB flash</li>
             <li>360 files, 320 passing tests, 17 software phases complete</li>
           </ul>
-        </div>
-      </div>
-
-      <div class="project-card" data-tags="hardware,electronics,power,rack,usb-c,build">
-        <img class="project-thumb" src="" alt="Custom 30-port USB-C Power Delivery charging rack for iPads over 50-foot cable runs">
-        <div class="project-info">
-          <h3>30-Port iPad Charging Rack <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A custom 2U rack system that delivers USB-C Power Delivery charging to 30 iPads over 50-foot cable runs. 24V distribution, per-port PD conversion, 7-pin XLR interconnects, 4-pin XLR tablet outputs. Designed to actually work at distance, not just on a workbench.</p>
-          <div class="card-tags">
-            <span class="tag-chip">hardware</span>
-            <span class="tag-chip">electronics</span>
-            <span class="tag-chip">power</span>
-            <span class="tag-chip">rack</span>
-            <span class="tag-chip">usb-c</span>
-            <span class="tag-chip">build</span>
+          <button class="gallery-toggle" type="button" data-gallery-toggle="gallery-tbx-home-broadcast-station-48078">More photos</button>
+          <div class="gallery" id="gallery-tbx-home-broadcast-station-48078">
+            <img src="images/projects/tbx-home-broadcast.jpg" alt="TBX — a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
           </div>
-          <a class="project-open" href="projects/usb-pd-charging-rack.html">Open project</a>
-          <ul class="bullets">
-            <li>30 iPad ports in a 2U rack chassis. 5×6 grid of 4-pin XLR front panel outputs</li>
-            <li>24V distribution bus → 30 individual USB-C PD modules, one per port</li>
-            <li>50-foot cable spec: 14 AWG VBUS/GND, 22 AWG twisted CC1/CC2, overall shield</li>
-            <li>7-pin XLR internal harness. 15 connectors, each carrying 2 tablet ports</li>
-            <li>4-pin XLR tablet cables: Pin 1 GND, Pin 2 CC1, Pin 3 CC2, Pin 4 VBUS</li>
-            <li>Mean Well RSP-1000-24 (24V, 40A, 960W) main power supply</li>
-            <li>Per-port 2A fusing. 30-circuit fuse block</li>
-            <li>CC lines twisted and shielded. Single-point grounding to prevent ground loops</li>
-            <li>Single-port validation test before committing to all 30 ports</li>
-          </ul>
         </div>
       </div>
 <!-- PROJECTS_END -->

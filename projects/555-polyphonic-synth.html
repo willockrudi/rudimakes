@@ -7,7 +7,7 @@
   <meta name="description" content="A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, ..." />
   <meta property="og:title" content="37-Key 555 Polyphonic Synthesizer | Rudi Makes" />
   <meta property="og:description" content="A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, ..." />
-  <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
+  <meta property="og:image" content="https://www.rudimakes.com/images/projects/555-polyphonic-synth.jpg" />
   <meta property="og:url" content="https://www.rudimakes.com/projects/555-polyphonic-synth.html" />
   <meta property="og:type" content="article" />
   <link rel="canonical" href="https://www.rudimakes.com/projects/555-polyphonic-synth.html" />
@@ -59,7 +59,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me. A learning project, and a real instrument.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A fully analog polyphonic synthesizer built from scratch. 37 keys, 12 hand-tuned 555 oscillators, 7 octaves via CD4024 counters, onboard fuzz, PT2399 delay, transformer saturation, and white noise on every key. Designed and built entirely by me — as a learning project, and a real instrument.</p>
 
       <div class="card-tags">
             <span class="tag-chip">synth</span>
@@ -71,20 +71,20 @@
           </div>
       <ul class="bullets project-bullets">
           <li>37 semi-weighted keys salvaged from a broken M-Audio Axiom 61</li>
-          <li>12 × 555 timer oscillators, each tuned with a trim pot. One full chromatic octave</li>
-          <li>CD4024 binary ripple counter per oscillator. 7 octaves each, 84 tones total</li>
+          <li>12 × 555 timer oscillators, each tuned with a trim pot — one full chromatic octave</li>
+          <li>CD4024 binary ripple counter per oscillator — 7 octaves each, 84 tones total</li>
           <li>Squarewave output + low-pass filtered sine-ish output with blend knob</li>
           <li>White noise on every key via shared membrane switch rail</li>
-          <li>LM386 amplification throughout. Runs entirely on 9V, no split supply</li>
+          <li>LM386 amplification throughout — runs entirely on 9V, no split supply</li>
           <li>555 monostable LFO vibrato circuit on each oscillator</li>
           <li>LM386 fuzz stage with power sag control for unstable, collapsing tones</li>
           <li>Dual PT2399 delay module with depth and rate controls</li>
-          <li>Transformer saturation stage. Audio driven backwards through an AC transformer</li>
+          <li>Transformer saturation stage — audio driven backwards through an AC transformer</li>
           <li>Output stage: passive compressor + 1/4&quot; jack</li>
         </ul>
       
 
-      <img class="project-detail-hero" src="" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
+      <img class="project-detail-hero" src="../images/projects/555-polyphonic-synth.jpg" alt="37-key polyphonic synthesizer built from salvaged keybed and 555 timer oscillators">
 
     </div>
 
@@ -95,48 +95,48 @@
 
     <article class="project-step">
       <h3>1. Designing the Instrument</h3>
-      <p>Before touching any hardware I mapped out the full signal chain. Each key would trigger both a squarewave oscillator tone and a white noise source. The oscillator output splits into two paths: raw squarewave and a cascaded low-pass filtered output, with a blend knob between them. Then a full effects chain: fuzz with power sag, PT2399 delay, transformer saturation, and a final output amp with passive compression before the 1/4&quot; jack.<br>Running the whole thing off a single 9V supply was a design constraint from day one. That&#x27;s why LM386 ended up as the amplifier everywhere. It doesn&#x27;t need a split rail.</p>
+      <p>Before touching any hardware I mapped out the full signal chain. Each key would trigger both a squarewave oscillator tone and a white noise source. The oscillator output splits into two paths — raw squarewave and a cascaded low-pass filtered output — with a blend knob between them. Then a full effects chain: fuzz with power sag, PT2399 delay, transformer saturation, and a final output amp with passive compression before the 1/4&quot; jack.<br>Running the whole thing off a single 9V supply was a design constraint from day one. That&#x27;s why LM386 ended up as the amplifier everywhere — it doesn&#x27;t need a split rail.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>2. Part 1: Salvaging the Keybed</h3>
-      <p>Found a broken M-Audio Axiom 61. The MIDI calibration had died permanently and a few keys were cracked. Didn&#x27;t matter for my purposes. Pulled the keybed out of the chassis and used a Dremel to cut out the 37-key section I needed. Semi-weighted action, feels good under your hands. The tricky part was going to be the membrane switch PCB underneath it.</p>
+      <h3>2. Part 1 — Salvaging the Keybed</h3>
+      <p>Found a broken M-Audio Axiom 61 — the MIDI calibration had died permanently and a few keys were cracked. Didn&#x27;t matter for my purposes. Pulled the keybed out of the chassis and used a Dremel to cut out the 37-key section I needed. Semi-weighted action, feels good under your hands. The tricky part was going to be the membrane switch PCB underneath it.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>3. Part 2: Modifying the Membrane Switches</h3>
-      <p>The membrane switch PCB needed serious surgery. I cut all the traces to separate the top and bottom button contacts, then tied all the bottom contacts together into one shared rail. That becomes the white noise bus, active on every single key.<br>For each individual note I scraped back the PCB mask to expose the copper trace and soldered a wire to each side of the button. This was the most frustrating part of the whole build. The traces lift off easily if you move the wire around too much. The fix was to build a 12-wire harness first, zip-tie it to the board so it can&#x27;t fight you, then solder. Where traces got damaged I checked continuity and superglued the wire down to lock it.<br>Labeled every wire (C1, C#1, D1...) and verified every connection with a multimeter before moving on. Wiring resistance came in over 100k ohms, which actually works out, since the passive mixer uses 100k resistors anyway. Just needs an amp stage to recover level.</p>
+      <h3>3. Part 2 — Modifying the Membrane Switches</h3>
+      <p>The membrane switch PCB needed serious surgery. I cut all the traces to separate the top and bottom button contacts, then tied all the bottom contacts together into one shared rail — that becomes the white noise bus, active on every single key.<br>For each individual note I scraped back the PCB mask to expose the copper trace and soldered a wire to each side of the button. This was the most frustrating part of the whole build. The traces lift off easily if you move the wire around too much. The fix was to build a 12-wire harness first, zip-tie it to the board so it can&#x27;t fight you, then solder. Where traces got damaged I checked continuity and superglued the wire down to lock it.<br>Labeled every wire (C1, C#1, D1...) and verified every connection with a multimeter before moving on. Wiring resistance came in over 100k ohms — which actually works out, since the passive mixer uses 100k resistors anyway. Just needs an amp stage to recover level.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>4. Part 3: Amplification</h3>
+      <h3>4. Part 3 — Amplification</h3>
       <p>The LM386 is the workhorse of this whole build. It runs on a single positive supply, handles the signal levels I&#x27;m working with, and is dirt cheap. I&#x27;m using it at the mixer output, the filtered sine channel, and the white noise channel. No split rails, no drama.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>5. Part 4: Tone Generator</h3>
-      <p>The tone generator is 12 × 555 timers configured as squarewave oscillators, one per semitone, covering a full chromatic octave. Each one has its own RC values and a trim pot for fine tuning.<br>Each 555 feeds a CD4024 binary ripple counter, which divides the frequency down through 7 binary stages. That gives 7 octaves per oscillator, 84 total pitches from one board. To tune the synth you only need to tune 12 oscillators. The 37 notes for the keybed get selected from those 84 available outputs.</p>
+      <h3>5. Part 4 — Tone Generator</h3>
+      <p>The tone generator is 12 × 555 timers configured as squarewave oscillators — one per semitone, covering a full chromatic octave. Each one has its own RC values and a trim pot for fine tuning.<br>Each 555 feeds a CD4024 binary ripple counter, which divides the frequency down through 7 binary stages. That gives 7 octaves per oscillator, 84 total pitches from one board. To tune the synth you only need to tune 12 oscillators. The 37 notes for the keybed get selected from those 84 available outputs.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>6. Part 5: The Mixer</h3>
-      <p>All 37 squarewave signals come into a passive resistor network, then split into two paths: raw squarewave, and a low-pass filtered output run through 4 cascaded filter stages and re-amplified to match level. Those two outputs go either side of a blend knob.<br>I wanted to filter each note individually for true polyphonic sine waves, but the component count made it impractical. Running the summed output through the filter instead means it&#x27;s more of a filtered output than a true sine, but it should sound interesting, and very different from the raw square.<br>The mixer board also handles white noise (its own LM386 channel) and a line-in jack. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.</p>
+      <h3>6. Part 5 — The Mixer</h3>
+      <p>All 37 squarewave signals come into a passive resistor network, then split into two paths: raw squarewave, and a low-pass filtered output run through 4 cascaded filter stages and re-amplified to match level. Those two outputs go either side of a blend knob.<br>I wanted to filter each note individually for true polyphonic sine waves, but the component count made it impractical. Running the summed output through the filter instead means it&#x27;s more of a filtered output than a true sine — but it should sound interesting, and very different from the raw square.<br>The mixer board also handles white noise (its own LM386 channel) and a line-in jack. External controls: Oscillator Blend, Oscillator Volume, White Noise Volume, Line In Volume.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>7. Part 6: Effects Chain</h3>
-      <p>Three effect stages after the mixer.<br>Fuzz: LM386-based with a power sag feature that starves the supply voltage and produces collapsing, unstable fuzz tones. Controls: bypass switch, power sag knob, gain knob.<br>Delay: dual PT2399 chip module for longer delay times and more headroom. Controls: depth, rate.<br>Transformer Saturation: the signal is driven backwards through a small AC transformer. The transformer charges and clips on the way through, adding harmonic saturation. Controls: bypass switch, input level, output level.<br>Also planned: a 555 monostable LFO on each oscillator for vibrato.</p>
+      <h3>7. Part 6 — Effects Chain</h3>
+      <p>Three effect stages after the mixer.<br>Fuzz — LM386-based with a power sag feature that starves the supply voltage and produces collapsing, unstable fuzz tones. Controls: bypass switch, power sag knob, gain knob.<br>Delay — dual PT2399 chip module for longer delay times and more headroom. Controls: depth, rate.<br>Transformer Saturation — the signal is driven backwards through a small AC transformer. The transformer charges and clips on the way through, adding harmonic saturation. Controls: bypass switch, input level, output level.<br>Also planned: a 555 monostable LFO on each oscillator for vibrato.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>8. Part 7: Output Stage</h3>
+      <h3>8. Part 7 — Output Stage</h3>
       <p>Final stage is a small amp with volume and tone controls, followed by a passive compressor to tame peaks before the 1/4&quot; output jack. The passive compressor keeps things from getting too spiky when multiple notes are playing at once.</p>
     </article>
 <!-- PROJECT_STEPS_END -->

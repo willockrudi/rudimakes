@@ -47,7 +47,7 @@
         with the accuracy of a senior Roland specialist.
       </p>
       <div class="hero-cta">
-        <a href="mailto:rudiwillockmakes@gmail.com" class="btn btn-primary">Get In Touch</a>
+        <a href="#contact-aria" class="btn btn-primary">Get In Touch</a>
         <a href="https://github.com/willockrudi" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
       </div>
     </div>
@@ -155,16 +155,42 @@
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="section" style="border-top: 1px solid var(--border);">
+    <!-- CONTACT FORM -->
+    <section id="contact-aria" class="section" style="border-top: 1px solid var(--border);">
       <div class="container">
-        <div class="cta-section">
-          <h2>Interested in ARIA?</h2>
-          <p>I'm exploring partnership and licensing opportunities with Roland and music technology companies. If you're at Roland or represent a company that could benefit from ARIA's capabilities, I'd love to talk.</p>
-          <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
-            <a href="mailto:rudiwillockmakes@gmail.com" class="btn btn-primary">Get In Touch</a>
-            <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener" class="btn btn-outline">Connect on LinkedIn</a>
+        <div class="section-header">
+          <p class="section-label">Contact</p>
+          <h2 class="section-title">Interested in ARIA?</h2>
+          <p class="section-note">I'm exploring partnership and licensing opportunities with Roland and music technology companies. If you're at Roland or represent a company that could benefit from ARIA's capabilities, I'd love to hear from you.</p>
+        </div>
+        <form action="https://formsubmit.co/info@rudimakes.com" method="POST" style="max-width:600px;">
+          <input type="hidden" name="_subject" value="ARIA Inquiry from rudimakes.com">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="https://www.rudimakes.com/aria.html">
+          <input type="text" name="_honey" style="display:none">
+          <div class="grid-2" style="gap:1rem;">
+            <div class="form-group">
+              <label for="aname">Your Name</label>
+              <input type="text" id="aname" name="name" placeholder="Full name" required />
+            </div>
+            <div class="form-group">
+              <label for="acompany">Company / Organization</label>
+              <input type="text" id="acompany" name="company" placeholder="Optional" />
+            </div>
           </div>
+          <div class="form-group">
+            <label for="aemail">Email</label>
+            <input type="email" id="aemail" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="amessage">Message</label>
+            <textarea id="amessage" name="message" placeholder="What are you interested in? Partnership, licensing, demo, or just a question about ARIA." style="min-height:140px;" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Send Message</button>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-top:1rem; text-align:center;">I'll reply within 24 hours.</p>
+        </form>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem;">
+          <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener" class="btn btn-outline">Connect on LinkedIn</a>
         </div>
       </div>
     </section>
