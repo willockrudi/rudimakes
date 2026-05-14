@@ -2,7 +2,7 @@
 
 {
   "title": "Roland XP-80 — Red Goo Keybed Restoration + Floppy Drive Replacement",
-  "date": "2026-05-14",
+  "date": "2026-05-06",
   "status": "Fixed",
   "device": "Roland XP-80 88-Key Workstation Synthesizer",
   "symptom": "Two issues: floppy drive not reading disks; multiple keys sticking down or behaving erratically. Both complaints reported together on intake.",
@@ -10,7 +10,7 @@
   "fix": "Fully disassembled the keybed. Removed all keys carefully — many were fused together or to the frame with degraded adhesive and required slow, deliberate separation to avoid cracking the key bodies.\n\nCleaned the metal keybed frame with isopropyl alcohol first, then scraped residue manually. Windex proved effective on the keybed PCB — safe on the board surface and cut through the goo without lifting traces.\n\nFor the keys and weight brackets: mixed a lye/water solution (gloves, ventilation, full precautions — lye will saponify organic material including skin). Soaked the affected keys and weight hardware to break down the adhesive. Removed all weights, cleaned individually. Neutralized the metal components in white vinegar, then soaked in water to remove all acid residue. Heat gun used to fully dry all parts before reassembly — any moisture under a reinstalled weight risks corrosion.\n\nTouched up any exposed bare metal on the keybed frame with a paint marker before reinstallation.\n\nRemounted each key weight using 5-minute JB Weld epoxy, set individually and allowed to cure fully before the next stage. Reassembled the keybed, reinstalled into the chassis.\n\nFloppy drive: sourced a Sony replacement with correct pin 34 configuration from Adafruit. Installed and confirmed disk read on first test.",
   "notes": "The Red Goo is a known failure mode on a number of Roland instruments from the late 80s through the 90s. It is not a matter of if — it is a matter of when. Any XP-80 or similar Roland workstation that hasn't been serviced should be inspected at the keybed before the goo migrates far enough to damage the PCB permanently. The lye soak is effective but requires strict chemical handling. JB Weld holds the weights reliably — no need for original-spec adhesive.",
   "tags": ["roland", "xp-80", "synth", "keybed", "red-goo", "floppy", "restoration", "mechanical"],
-  "image": "",
+  image": "images/repairs/roland-xp80-red-goo/01-intake.webp",
   "alt": "Roland XP-80 keybed disassembled showing key weight brackets after Red Goo removal",
   "created": "2026-05-14T00:00:00",
   "updated": "2026-05-14T00:00:00"
