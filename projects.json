@@ -219,326 +219,6 @@
     "updated": "2026-03-30T00:00:00"
   },
   {
-    "title": "BASIL — Cinematic Narrative Game",
-    "slug": "basil-game",
-    "status": "In Progress",
-    "cover_image": "images/projects/basil-game.jpg",
-    "image": "images/projects/basil-game.jpg",
-    "images": [
-      "images/projects/basil-game.jpg"
-    ],
-    "alt": "BASIL — a short cinematic narrative game built in Unity HDRP about a mouse searching for his sister",
-    "description": "A short cinematic narrative game built in Unity 2022 HDRP. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. 45–90 minutes. Bittersweet, restrained, quiet. Not a power fantasy. Nobody wins, but they don't lose each other.",
-    "bullets": [
-      "Built in Unity 2022 HDRP — full cinematic lighting pipeline",
-      "19-phase production plan, fully documented with AI-assisted coding prompts at every step",
-      "Entire narrative locked into a master canon document before any code was written",
-      "Mog threat AI: patrol, detection, alert, hunt state machine",
-      "RoomProgressionManager gates story beats so they unfold in the right emotional order",
-      "Full movement controller: walk, run, crouch, climb, carry, squeeze through gaps",
-      "Every mechanic has a symbolic purpose before it has a technical one",
-      "Greybox-first — game plays beginning to end in rough geometry before any art begins",
-      "Planning and design phase complete — active Unity build is next"
-    ],
-    "tags": [
-      "game",
-      "unity",
-      "narrative",
-      "indie",
-      "hdrp",
-      "from-scratch"
-    ],
-    "links": [],
-    "created": "2026-03-30T00:00:00",
-    "steps": [
-      {
-        "title": "What BASIL Is",
-        "text": "BASIL is a short cinematic narrative game. You play as Bas, a brown mouse searching for his sister Myea after a white cat named Mog separates them. It begins in warmth — a dollhouse, a chess game, afternoon light, tea. It ends in survival. Not triumph.\n\nThe emotional core: nobody wins, but they don't lose each other.\n\nThe tone is bittersweet, restrained, cinematic. No dialogue-heavy exposition. No power fantasy. Just a small creature trying to get back to someone.",
-        "image": "",
-        "alt": "BASIL concept — Bas the mouse in a dollhouse"
-      },
-      {
-        "title": "Story Architecture Drives Everything",
-        "text": "BASIL is unusual because the story was fully locked before a single line of code was written. Every system, every room, every trigger exists to serve the emotional truth of the narrative.\n\nThe white pawn means something. The grass hat means something. The moment Mog says 'Colder' is a taunt, a warning, and a game all at once. Every mechanic has a symbolic purpose before it has a technical one.\n\nThe question driving every technical decision: does the coded game still follow the story exactly?",
-        "image": "",
-        "alt": "BASIL narrative design master canon document"
-      },
-      {
-        "title": "The Production Plan",
-        "text": "19 phases, fully documented.\n\nPhases 0–3: Unity HDRP setup, Bas's full movement controller (walk, run, crouch, climb, carry, squeeze through gaps), opening cinematic.\n\nPhases 4–5: Greybox of the full house interior at mouse scale. Every room has a narrative purpose before it has geometry.\n\nPhases 6–7: Mog's threat AI (patrol, detection, alert, hunt), checkpoint/save system, RoomProgressionManager.\n\nPhases 8–11: Every authored moment — dialogue, silence, clue discovery, the terrarium reveal, the shatter, the ending walk.\n\nPhases 12–18: Character models, environment models, art pass, animation, audio, narrative continuity review.\n\nPhase 19: Trailer, PC build, itch.io release.",
-        "image": "",
-        "alt": "BASIL 19-phase production roadmap"
-      },
-      {
-        "title": "Where It Stands",
-        "text": "The project is in the planning and documentation phase — fully designed, fully spec'd, ready for active build. Every room, every scene, every system, and every AI prompt needed to build it has been written.\n\nWhat exists: a locked master canon document, a complete 19-phase implementation roadmap, scene-by-scene specs for every authored moment, system design docs for the Bas controller, Mog AI, progression gating, checkpoint system, and scene transitions.\n\nThe build is next.",
-        "image": "",
-        "alt": "BASIL scene specification document"
-      }
-    ],
-    "updated": "2026-03-30T00:00:00"
-  },
-  {
-    "title": "Glorb — A Solo Card Game",
-    "slug": "glorb-card-game",
-    "status": "Complete",
-    "cover_image": "images/projects/glorb-card-game.jpg",
-    "image": "images/projects/glorb-card-game.jpg",
-    "images": [
-      "images/projects/glorb-card-game.jpg"
-    ],
-    "alt": "Glorb — a 64-card solitaire dungeon crawl card game",
-    "description": "A single-player card game. You're trapped in the Temple of Glorb, navigating rooms, collecting four keys in order, and fighting your way through an army of Gleebs to escape. 64 cards, designed and balanced from scratch.",
-    "bullets": [
-      "64-card standalone deck — swords, chi, gleebs, keys, armor, candles, special cards",
-      "Solitaire dungeon crawl — four directional decks represent rooms of the temple",
-      "Collect keys 1–4 in order to unlock the escape condition",
-      "Combat system: fight gleebs barehanded or with equipped weapon",
-      "Weapon degradation — gleebs cap your sword's reach against weaker enemies",
-      "Special cards: The Moon, The Sun, The King, The Magus",
-      "Gleeb Princes can't be killed until the boss battle (except by special cards)",
-      "Boss battle triggers when two decks remain — defeat Glorb (power 15) to escape",
-      "Glorb can be equipped as a weapon for 2 chi — costs 2 per scene to keep"
-    ],
-    "tags": [
-      "game",
-      "card-game",
-      "design",
-      "solitaire",
-      "tabletop"
-    ],
-    "links": [],
-    "created": "2026-03-30T00:00:00",
-    "steps": [
-      {
-        "title": "The Premise",
-        "text": "You became trapped in the Temple of Glorb. He's not exactly friendly, and neither is his conglomerate army of Gleebs. The goal: collect the four keys in order and defeat Glorb himself.\n\nGlorb is a single-player card game — no opponent required. Just you, a shuffled deck, and a temple that gets harder to escape the longer you're in it.",
-        "image": "",
-        "alt": "Glorb card game setup — four room decks in corners"
-      },
-      {
-        "title": "How the Temple Works",
-        "text": "Shuffle the 64-card deck and divide it into 4 piles of 13. Place them at the four corners — each pile is a direction in the temple.\n\nPlace 4 cards clockwise in a diamond to form a scene. You can avoid a scene by scooping all four cards to the bottom of that room's deck, but you can't avoid two scenes in a row. If you face the scene, you resolve 3 of the 4 cards one at a time. The remaining card carries over and becomes part of the next scene — its position tells you which room you move to next.",
-        "image": "",
-        "alt": "Glorb scene layout — four cards in diamond formation"
-      },
-      {
-        "title": "Combat",
-        "text": "When you encounter a Gleeb you can fight barehanded (subtract its full value from your health) or with an equipped weapon.\n\nWeapon combat has a twist: the Gleeb's power limits your sword's reach. Fight a 5-power Gleeb with a 12-power sword and that sword can now only kill things below power 5 — until you clear it. Armor prevents this degradation. The math keeps you managing your equipment carefully throughout the run.\n\nGleeb Princes are a special problem. They can't be killed until the boss battle — they just keep going back to the bottom of their room's deck. Unless you have The Magus, The King, or The Sun. Those can send Princes to the graveyard at any point in the game.",
-        "image": "",
-        "alt": "Glorb combat showing weapon degradation mechanic"
-      },
-      {
-        "title": "The Special Cards",
-        "text": "Four special cards change the texture of play.\n\nThe Moon: +1 health per scene it stays in play. Lets you scry one non-Gleeb card from its room.\n\nThe Sun: +1 health per scene. Can clear the entire scene including your equipped weapon. Stays 3 rounds and your health replenishes.\n\nThe King: Scry the top 6 cards of his room. Buy any card for 6 chi, or send any card to discard for 6.\n\nThe Magus: Draw the top 3 cards of his room. All Gleebs including Princes go to discard. Any Gleeb drawn can be equipped as a weapon.",
-        "image": "",
-        "alt": "Glorb special cards — Moon, Sun, King, Magus"
-      },
-      {
-        "title": "The Boss Battle",
-        "text": "When you're down to two room decks, the boss battle begins. Scenes expand to 4 cards. Princes can now be killed normally. Candles act as regular chi.\n\nGlorb is the 14th Prince of Gleeb, power 15. Fight him straight, or spend 2 chi to equip him as a weapon — paying 2 chi at the start of each scene to keep him armed. Glorb attacks anything you ask for 2.\n\nCollect all four keys. Defeat Glorb. Escape the temple.",
-        "image": "",
-        "alt": "Glorb boss battle setup — two remaining room decks"
-      }
-    ],
-    "updated": "2026-03-30T00:00:00"
-  },
-  {
-    "title": "Keystone — Arena Board Game",
-    "slug": "keystone-board-game",
-    "status": "Complete",
-    "cover_image": "images/projects/keystone-board-game.jpg",
-    "image": "images/projects/keystone-board-game.jpg",
-    "images": [
-      "images/projects/keystone-board-game.jpg"
-    ],
-    "alt": "Keystone — a fast-paced arena board game of movement, pressure, and permanent construction on a 12x12 grid",
-    "description": "A fast-paced arena game of movement, pressure, and permanent construction. Players move across a 12×12 black-and-white grid, drawing cards based on where they land. Health is both life and currency. Towers change the map. Nothing you build protects you from the system itself.",
-    "bullets": [
-      "12×12 checkerboard grid — black squares draw Yin cards, white squares draw Yang cards",
-      "Health is both life and currency — spent to build towers, lost to threats and combat",
-      "Towers are permanent — stack 7 tiles and win immediately",
-      "Dual 52-card deck system: Yin deck (pressure, damage) and Yang deck (recovery, momentum)",
-      "Card types: Threat, Supply, Shift, Equipment, Exit",
-      "1–4 players, solo to competitive to cooperative",
-      "PvP: both players roll d6, loser takes damage equal to the difference",
-      "Ranged shooting: d6 range, orthogonal or diagonal, blocked by towers",
-      "Optional modes: Capture the Flag, Team Score with respawn",
-      "20–30 minute play time"
-    ],
-    "tags": [
-      "game",
-      "board-game",
-      "design",
-      "tabletop",
-      "arena"
-    ],
-    "links": [],
-    "created": "2026-03-30T00:00:00",
-    "steps": [
-      {
-        "title": "The Concept",
-        "text": "Keystone is about movement, pressure, and commitment. The board never remembers what happened. Cards resolve immediately and get discarded. The arena has no memory of you. Only Towers persist — and building them costs the same resource that keeps you alive.\n\nHealth is your fuel. Spend it to build. Lose it to threats. The tension is in that tradeoff the whole game.",
-        "image": "",
-        "alt": "Keystone 12x12 grid board at start of play"
-      },
-      {
-        "title": "The Grid and the Cards",
-        "text": "The board is a 12×12 checkerboard. Black squares draw from the Yin deck — pressure, damage, disruption. White squares draw from the Yang deck — recovery, momentum, opportunity.\n\nYou never know what you're drawing until you land. The Yin deck is heavy with Threats (29 of 52 cards). The Yang deck is heavy with Supplies (20 of 52). The asymmetry rewards navigating toward white squares when you need to recover and punishes you when you get trapped on black.\n\nCards resolve immediately and are discarded. No board state. No memory. The arena doesn't know you were here.",
-        "image": "",
-        "alt": "Yin and Yang decks with composition breakdown"
-      },
-      {
-        "title": "Towers",
-        "text": "Towers are the only permanent things in Keystone. You place tiles by ending your movement on a square and spending 1 Health per tile — up to 2 tiles per turn. Stack 7 upright tiles and you win immediately with the Capstone.\n\nA sideways tile caps a tower. Capped towers can't grow, can't be recaptured, but are still landable and PvP can happen on them.\n\nBuilding costs Health you might need to survive. That's the whole game.",
-        "image": "",
-        "alt": "Tower stack with Keystone and Capstone tiles"
-      },
-      {
-        "title": "Combat and Movement",
-        "text": "PvP triggers when you land on another player. Both roll d6. Higher roll wins. Loser takes damage equal to the difference. Ties deal nothing. The winner can move 1 additional square.\n\nShooting: roll 1d6 for range, pick direction, first opposing player in the line takes 1 damage. Can't shoot through towers.\n\nMovement is 1d6 per turn. Stop early if you want — unused MP is lost. Passing through squares does nothing. Cards only trigger on landing.",
-        "image": "",
-        "alt": "Combat and shooting resolution examples"
-      },
-      {
-        "title": "Win Conditions and Game Modes",
-        "text": "Win immediately if: you land on an Exit with Health ≥ 1, your opponent dies, or you complete a Tower with 7 tiles.\n\nCooperative: all players must escape. If any player hits 0, everyone loses.\n\nCapture the Flag: team play, objective-based, Exits removed, flag carrier can't use Equipment or Momentum Supplies.\n\nTeam Score: PvP kills earn VP (1 per win, 2 for KO), defeated players respawn at Start with 10 Health.\n\nGame length 20–30 minutes.",
-        "image": "",
-        "alt": "Win condition summary and game mode options"
-      }
-    ],
-    "updated": "2026-03-30T00:00:00"
-  },
-  {
-    "title": "MT7902 Linux Wi-Fi Driver Patch",
-    "slug": "linux-wifi-driver-patch",
-    "status": "In Progress",
-    "cover_image": "images/projects/linux-wifi-driver-patch.jpg",
-    "image": "images/projects/linux-wifi-driver-patch.jpg",
-    "images": [
-      "images/projects/linux-wifi-driver-patch.jpg"
-    ],
-    "alt": "MediaTek MT7902 Linux Wi-Fi enablement — finding and patching a wrong interrupt bit mask",
-    "description": "An ASUS laptop with a MediaTek MT7902 Wi-Fi chip had no upstream Linux support. The driver loaded, the firmware uploaded, but the firmware version field showed placeholder garbage — the handshake never completed. This is the story of finding the wrong interrupt bit mask and fixing it.",
-    "bullets": [
-      "Hardware: ASUS laptop, Ryzen 7 7730U, Linux Mint kernel 6.14, MT7902 (PCI ID 14c3:7902)",
-      "Symptom: firmware uploads but version field reads ____000000 — handshake never completes",
-      "Root cause: MT7921-era interrupt bit mask (BIT 27) inherited in driver base, MT7902 needs BIT 17",
-      "MT7902 CMD TX ring fires on wfdma0_tx_done_17 — a chip-specific quirk buried in vendor source",
-      "Found by cataloguing Windows driver package and analyzing firmware blobs with strings and hexdump",
-      "Fix: two-file patch — regs.h constant + pci.c interrupt enable mask",
-      "Verification: objdump to confirm patch in binary + devmem2 register read to confirm on silicon"
-    ],
-    "tags": [
-      "linux",
-      "driver",
-      "kernel",
-      "hardware",
-      "debugging",
-      "wifi"
-    ],
-    "links": [],
-    "created": "2026-03-30T00:00:00",
-    "steps": [
-      {
-        "title": "The Machine and the Symptom",
-        "text": "ASUS laptop, Ryzen 7 7730U, Linux Mint on kernel 6.14, MediaTek MT7902 Wi-Fi chip. No upstream Linux support — Windows driver only.\n\nThe driver loaded without crashing. The chip showed up on the PCI bus. Firmware upload appeared to complete. But dmesg had one damning line: the WM firmware version field was ____000000 — placeholder garbage instead of real digits. The firmware uploaded, but the driver never received the completion event. The handshake never happened.",
-        "image": "",
-        "alt": "dmesg output showing MT7902 firmware version placeholder garbage"
-      },
-      {
-        "title": "Mapping the Hardware",
-        "text": "Before touching code the first job was understanding what the MT7902 actually looks like from the host side. Read register dumps through BAR0 using devmem2. Traced the WFDMA layout. Documented the interrupt architecture.\n\nMT7902 uses a single WFDMA engine with 4 TX rings and 4 RX rings. The command ring — how the host sends firmware commands — is hardware ring 15.",
-        "image": "",
-        "alt": "MT7902 WFDMA ring layout diagram"
-      },
-      {
-        "title": "Reading the Windows Driver and Firmware Blobs",
-        "text": "Extracted the ASUS OEM Windows driver package and catalogued every .sys, .inf, .bin, and .dat file with checksums. Fed the firmware blobs through binwalk, strings, and hexdump.\n\nCross-referenced string tables, register constants, and interrupt field names across the vendor source. The key finding: the MT7902 command TX ring doesn't fire on interrupt bit 15 or bit 2 — it fires on bit 17, called wfdma0_tx_done_17. Explicitly called out in the vendor source as a chip-specific quirk. No clean explanation. That's just what this chip does.",
-        "image": "",
-        "alt": "Vendor driver source comment showing MT7902 interrupt bit 17 quirk"
-      },
-      {
-        "title": "The Root Cause",
-        "text": "The Linux driver base was written for the MT7921. That chip uses HOST_TX_DONE_INT_ENA13 = BIT(27) for its command ring interrupt. MT7902 requires BIT(17) in the same position.\n\nThe mask was wrong. When the firmware finished initializing and fired the CMD TX done interrupt on bit 17, the driver's interrupt handler was masked against bit 27 and saw nothing. The handshake never completed. Hence: ____000000.",
-        "image": "",
-        "alt": "Side-by-side diff of MT7921 vs MT7902 interrupt mask constants"
-      },
-      {
-        "title": "The Patch and Verification",
-        "text": "Two files needed fixing: regs.h to correct the constant, and pci.c to fix the interrupt enable mask written to WF_WFDMA_HOST_DMA0_HOST_INT_ENA_ADDR. Recompiled with make -j$(nproc).\n\nVerification in progress: confirm the patch in the binary via objdump, then read the hardware register at 0xe0302204 with devmem2 to verify the mask programs correctly into silicon. Then rmmod the old module, insmod the new one, and watch dmesg to see whether the CMD TX done interrupt arrives and the firmware version field shows real digits.",
-        "image": "",
-        "alt": "Terminal showing module reload and dmesg after patch"
-      }
-    ],
-    "updated": "2026-03-30T00:00:00"
-  },
-  {
-    "title": "Python Web Scraper",
-    "slug": "python-web-scraper",
-    "status": "Complete",
-    "cover_image": "images/projects/python-web-scraper.jpg",
-    "image": "images/projects/python-web-scraper.jpg",
-    "images": [
-      "images/projects/python-web-scraper.jpg"
-    ],
-    "alt": "A Python web scraper built from scratch as a real project — not a tutorial exercise",
-    "description": "I came into this with no Python background and a clear goal: build a scraper that could pull technical documents from hundreds of websites, organize them on disk, and never download the same file twice. This is the story of building it and what I learned along the way.",
-    "bullets": [
-      "Reads a structured JSON database and systematically fetches every URL in it",
-      "10-method waterfall fallback: requests → httpx → Playwright → Selenium → curl subprocess",
-      "SHA256 deduplication — hashes every file before saving, skips anything already seen",
-      "PDF handling: pdfminer.six, pymupdf, pytesseract OCR for scanned documents",
-      "BFS crawler with configurable depth — follows links without running forever",
-      "Proper class design: HashRegistry, ScrapeLog, UrlProcessor, ManufacturerCrawler",
-      "argparse CLI — target a single manufacturer or the entire database",
-      "Simultaneous terminal and file logging with timestamps",
-      "Runs on a Raspberry Pi without modification"
-    ],
-    "tags": [
-      "python",
-      "scraper",
-      "tools",
-      "learning",
-      "automation"
-    ],
-    "links": [],
-    "created": "2026-03-30T00:00:00",
-    "steps": [
-      {
-        "title": "Starting From Zero",
-        "text": "I didn't learn Python by reading a book. I learned it by having a problem that needed solving. I needed a tool that could pull technical documents from hundreds of websites, save them in an organized way, and never download the same thing twice. A real tool, not a tutorial exercise.\n\nThe early wins were small. Getting a script to read a JSON file. Getting it to make an HTTP request and save the response to disk. Each one felt like a real step forward.",
-        "image": "",
-        "alt": "Early Python scraper script running in terminal"
-      },
-      {
-        "title": "Files, Paths, and Being Defensive",
-        "text": "Working with files and paths was the first real lesson. Python's pathlib module became essential. Learning the difference between Path.mkdir(parents=True, exist_ok=True) and just assuming a folder exists — then watching your script crash when it doesn't — teaches you to be defensive fast.\n\nJSON was the backbone of the whole project. The database was JSON, the logs were JSON, the state tracking was JSON. Error handling with try/except stopped being something I added grudgingly and started being something I reached for automatically.",
-        "image": "",
-        "alt": "Organized folder structure created by the scraper"
-      },
-      {
-        "title": "The 10-Method Waterfall",
-        "text": "HTTP requests were where things got interesting. The web is not simple. Sites have bot detection. Some require JavaScript to render. Some block certain user-agent strings.\n\nI built a 10-method waterfall fallback: plain requests first, then httpx for HTTP/2 support, then Playwright for JavaScript-heavy pages, then Selenium, then raw curl via subprocess as a last resort. If one method fails, try the next. Building that taught me Python's module ecosystem in a very practical way — what each tool actually does and when to reach for a heavier one.",
-        "image": "",
-        "alt": "Waterfall fallback method chain in code"
-      },
-      {
-        "title": "SHA256 Deduplication",
-        "text": "If you run the scraper twice, you don't want to download the same file twice. The solution was to hash every piece of content before saving it and keep a registry of hashes seen. If the hash already exists, skip it.\n\nI'd never written a hash function in any language before. Learning that hashlib.sha256(content).hexdigest() gives you a reliable fingerprint for any piece of data — and that a dictionary makes a fast lookup table — felt like real computer science knowledge, not just Python trivia.",
-        "image": "",
-        "alt": "SHA256 hash registry lookup in the scraper"
-      },
-      {
-        "title": "Classes, PDFs, and Finishing It",
-        "text": "PDFs are a binary format that hides text in surprisingly difficult ways. I worked through pdfminer.six for text extraction, pymupdf for faster processing, and pytesseract for OCR on scanned documents. Checking raw_bytes[:4] == b\"%PDF\" to detect a PDF by magic bytes rather than file extension felt like a real programmer move.\n\nClass design was the biggest conceptual jump. The scraper grew into HashRegistry, ScrapeLog, UrlProcessor, and ManufacturerCrawler. Learning when to use a class versus a function clicked not by reading about it but by needing it to keep the code manageable.\n\nThe scraper works. It handles HTML, PDFs, binary files, redirects, failures, retries, and restarts gracefully. It runs on a Raspberry Pi. None of that was obvious when I started.",
-        "image": "",
-        "alt": "Scraper class diagram showing the four main components"
-      }
-    ],
-    "updated": "2026-03-30T00:00:00"
-  },
-  {
     "title": "TBX Home Broadcast Station",
     "slug": "tbx-home-broadcast",
     "status": "In Progress",
@@ -607,6 +287,63 @@
         "text": "When Phase 18 is done — when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command — Phase 19 begins.\n\nPhase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.\n\nYour station. Your signal. Your broadcast.",
         "image": "",
         "alt": "TBX completed enclosure"
+      }
+    ],
+    "updated": "2026-03-30T00:00:00"
+  },
+  {
+    "title": "30-Port iPad Charging Rack",
+    "slug": "usb-pd-charging-rack",
+    "status": "In Progress",
+    "cover_image": "",
+    "image": "",
+    "images": [],
+    "alt": "Custom 30-port USB-C Power Delivery charging rack for iPads over 50-foot cable runs",
+    "description": "A custom 2U rack system that delivers USB-C Power Delivery charging to 30 iPads over 50-foot cable runs. 24V distribution, per-port PD conversion, 7-pin XLR interconnects, 4-pin XLR tablet outputs. Designed to actually work at distance — not just on a workbench.",
+    "bullets": [
+      "30 iPad ports in a 2U rack chassis — 5×6 grid of 4-pin XLR front panel outputs",
+      "24V distribution bus → 30 individual USB-C PD modules, one per port",
+      "50-foot cable spec: 14 AWG VBUS/GND, 22 AWG twisted CC1/CC2, overall shield",
+      "7-pin XLR internal harness — 15 connectors, each carrying 2 tablet ports",
+      "4-pin XLR tablet cables: Pin 1 GND, Pin 2 CC1, Pin 3 CC2, Pin 4 VBUS",
+      "Mean Well RSP-1000-24 (24V, 40A, 960W) main power supply",
+      "Per-port 2A fusing — 30-circuit fuse block",
+      "CC lines twisted and shielded — single-point grounding to prevent ground loops",
+      "Single-port validation test before committing to all 30 ports"
+    ],
+    "tags": ["hardware", "electronics", "power", "rack", "usb-c", "build"],
+    "links": [],
+    "created": "2026-03-30T00:00:00",
+    "steps": [
+      {
+        "title": "The Problem",
+        "text": "USB-C Power Delivery over 50 feet is not something the standard was designed for. The CC lines — the small signal wires that carry the PD negotiation handshake — are extremely sensitive to noise, impedance, and ground reference issues. Most DIY attempts fail because the cables aren't built right, the grounds aren't bonded correctly, or the PD module doesn't expose the CC pins externally.\n\nThe architecture that actually works: distribute 24V over heavy wire the full distance, convert to USB-C PD at each port. Keep the sensitive signaling short.",
+        "image": "",
+        "alt": "Rack power distribution architecture — 24V bus to per-port PD modules"
+      },
+      {
+        "title": "Cable Specification",
+        "text": "The 50-foot tablet cables are built to a specific spec: 4-conductor shielded control cable. 14 AWG power pair (VBUS and GND). 22 AWG twisted signal pair (CC1 and CC2). Overall foil or braid shield.\n\nWhy 14 AWG: at 50 feet round-trip that's 100 feet of conductor. At 2.5Ω per 1000 ft, voltage drop at iPad charge current (~2.2A at 9V) is about 0.25V — within PD tolerance. Smaller wire causes renegotiation loops and charging instability.\n\nCC lines twisted to reduce EMI pickup. Shield tied to ground at the rack end only — grounding both ends creates a ground loop that corrupts the PD signal.",
+        "image": "",
+        "alt": "Cable cross-section — 14AWG power pair + 22AWG twisted CC pair + shield"
+      },
+      {
+        "title": "The Connector System",
+        "text": "Internal interconnect: 7-pin XLR. Each connector carries two tablet ports — VBUS-A, CC1-A, CC2-A, VBUS-B, CC1-B, CC2-B, and a shared GND. 15 harnesses total for 30 ports.\n\nFront panel: 4-pin XLR per tablet output. Neutrik connectors throughout — cheap connectors add 20–50 milliohms of resistance on the CC lines, which is enough to break PD negotiation.\n\nPanel layout: 5 rows × 6 columns, ports 1–30 left-to-right, top-to-bottom. Power switch and LED on the left margin.",
+        "image": "",
+        "alt": "2U front panel — 5x6 grid of 4-pin XLR outputs labeled 1 through 30"
+      },
+      {
+        "title": "Validate One Port Before Building Thirty",
+        "text": "Before committing to 30 ports, build one and prove the design. The test: one PD module, one 50-foot cable, one iPad. Success means the iPad negotiates PD (not 5V fallback), voltage at the tablet end reads 8.7–9.3V, power stabilizes at 18–20W, and the system runs stable for 30 minutes.\n\nA $25 inline USB-C PD meter shows negotiated voltage, current, and profile in real time. Without one you're guessing. With one you can see exactly whether the handshake happened and how much voltage dropped across the cable.\n\nIf the single-port test passes, the design scales.",
+        "image": "",
+        "alt": "Single-port PD test setup with inline USB-C power meter reading 9V 2A"
+      },
+      {
+        "title": "The Build",
+        "text": "Mean Well RSP-1000-24 feeding a 40A DC breaker into positive and negative bus bars. 30 PD modules fused at 2A each from a 30-circuit fuse block. 18–20 AWG leads from fuse to module, 22 AWG for CC wiring kept short inside the rack. 2× 80mm fans for cooling.\n\nThe critical rule that makes it work: all grounds stay common throughout the system. Power ground and CC reference ground are the same ground. Splitting them at any point — even with a thin separate wire to a different terminal — breaks PD negotiation. Every ground in the rack ties to the same bar.",
+        "image": "",
+        "alt": "Rack interior showing PSU, bus bars, fuse block, and PD modules"
       }
     ],
     "updated": "2026-03-30T00:00:00"
