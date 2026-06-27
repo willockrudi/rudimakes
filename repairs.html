@@ -170,6 +170,30 @@
         </div>
         <!-- REPAIRS_START -->
 
+      <div class="project-card" data-tags="organ,hammond,b3,ao-28,power-supply,recap,filter-caps,120hz">
+        
+        <div class="project-info">
+          <h3>Hammond B-3 — Recapping the AO-28 Power Supply (120 Hz Hum)</h3>
+          <p class="muted">2026-06-27 • Fixed</p>
+          
+          <div class="card-tags">
+            <span class="tag-chip">organ</span>
+            <span class="tag-chip">hammond</span>
+            <span class="tag-chip">b3</span>
+            <span class="tag-chip">ao-28</span>
+            <span class="tag-chip">power-supply</span>
+            <span class="tag-chip">recap</span>
+            <span class="tag-chip">filter-caps</span>
+            <span class="tag-chip">120hz</span>
+          </div>
+          <p><strong>Device:</strong> Hammond B-3 Organ — AO-28 Preamp/Output Amplifier</p>
+          <p><strong>Symptom:</strong> Steady low 120 Hz tone sitting under everything coming out of the organ — not a buzz, more of a hum riding right into the output. The tell was that it didn&#x27;t move with the volume. Pull the expression pedal all the way down and the tone was still there, which placed it after the volume control — down in the output stage or its supply, not up in the signal path.</p>
+          <p><strong>Diagnosis:</strong> Worked it from the outside in before opening anything up. Swapped the rectifier, checked the grounds, went through the tubes and the sockets for anything loose, swapped tubes around, then swapped the Leslie and the cables to rule out everything downstream. The tone never budged. That left the power supply filtering. The two large can caps in the AO-28 dry out with age and stop smoothing the rectifier ripple — and because the 6X4 rectifier is full-wave, that ripple lands right at 120 Hz, which is exactly the tone I was chasing. A cap test on the meter confirmed one of them was well out of spec.</p>
+          <p><strong>Fix:</strong> Replaced both can caps with the AO-28 kit from bborgan.com rather than leave the second one to fail right behind the first. With fresh caps in, I put the scope on the output and the 120 Hz was gone. One more thing turned up on the way out: with the rail back up to spec, the 12BH7 output tube got touchy. It had been coasting on the sagging voltage, and once it saw proper B+ it showed its age. Dropped in a new 12BH7 and it settled right down. Dead quiet, back to the customer.</p>
+          <p>Hum that doesn&#x27;t change with the volume control is downstream of it — look in the output stage or its supply, not in the signal path. The frequency is the other half of the diagnosis: a full-wave rectifier puts its ripple at 120 Hz, so a 120 Hz tone points straight at tired filter caps, where 60 Hz would have me chasing a ground or heater problem instead. Always replace the can caps as a pair — the second one is the same age as the first and will fail right behind it. And check the output tube after a recap: a tube that&#x27;s been running on a sagging rail can show its age the moment you give it proper B+ again.</p>
+        </div>
+      </div>
+
       <div class="project-card" data-tags="amp,ampeg,svt,tube,bias,screen-resistor,6550,high-voltage">
         
         <div class="project-info">
@@ -341,20 +365,76 @@
           <h2 class="section-title">Submit a Repair Inquiry</h2>
           <p class="section-note">Fill this out and I'll get back to you within 24 hours to confirm dropoff.</p>
         </div>
-        <div style="max-width:720px; margin:0 auto;">
-          <iframe
-            src="https://docs.google.com/forms/d/1yI79Tq6dT6ZI9iHMwkBAPTYqrAWlVK9f9auO25eqz-o/viewform?embedded=true"
-            width="100%"
-            height="900"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            style="border:none; border-radius:8px;"
-            title="Repair Inquiry Form"
-            loading="lazy">
-            Loading…
-          </iframe>
-        </div>
+        <form action="mailto:rudiwillockmakes@gmail.com" method="get" enctype="text/plain" style="max-width:680px;">
+          <div class="grid-2" style="gap:1rem;">
+            <div class="form-group">
+              <label for="fname">Your Name</label>
+              <input type="text" id="fname" name="name" placeholder="Full name" required />
+            </div>
+            <div class="form-group">
+              <label for="fphone">Phone</label>
+              <input type="tel" id="fphone" name="phone" placeholder="(317) 000-0000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="femail">Email</label>
+            <input type="email" id="femail" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="grid-2" style="gap:1rem;">
+            <div class="form-group">
+              <label for="fmake">Equipment Make / Brand</label>
+              <input type="text" id="fmake" name="make" placeholder="Fender, Marshall, Roland..." />
+            </div>
+            <div class="form-group">
+              <label for="fmodel">Model</label>
+              <input type="text" id="fmodel" name="model" placeholder="Deluxe Reverb, JCM800..." />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ftype">Equipment Type</label>
+            <select id="ftype" name="type" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
+              <option value="">Select type...</option>
+              <option>Tube Amplifier — Combo</option>
+              <option>Tube Amplifier — Head</option>
+              <option>Solid State Amplifier</option>
+              <option>Bass Amplifier</option>
+              <option>Electric Guitar</option>
+              <option>Bass Guitar</option>
+              <option>Acoustic Guitar</option>
+              <option>Synthesizer / Keyboard</option>
+              <option>Effects Pedal</option>
+              <option>Professional Audio Equipment</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fservice">Service Needed</label>
+            <select id="fservice" name="service" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
+              <option value="">Select service...</option>
+              <option>Diagnose & repair</option>
+              <option>Retube + bias</option>
+              <option>Bias only</option>
+              <option>Full recap</option>
+              <option>Guitar setup + intonation</option>
+              <option>Electronics repair</option>
+              <option>Speaker replacement</option>
+              <option>Modification</option>
+              <option>Not sure — need diagnosis</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fproblem">Describe the Problem</label>
+            <textarea id="fproblem" name="body" placeholder="What is it doing or not doing? When did it start? Any recent drops, liquid exposure, or prior repairs?" style="min-height:140px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="frush">
+              <input type="checkbox" id="frush" name="rush" style="width:auto; margin-right:0.5rem;" />
+              Rush service (+$35) — 48 hour turnaround
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Submit Repair Inquiry</button>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-top:1rem; text-align:center;">I'll reply within 24 hours to confirm your dropoff appointment.</p>
+        </form>
       </div>
     </section>
 
