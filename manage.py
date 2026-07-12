@@ -616,7 +616,7 @@ def _web_layout(title: str, body: str, message: str = "", active_tab: str = "das
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{html.escape(title)} — RudiMakes Admin</title>
+  <title>{html.escape(title)} - RudiMakes Admin</title>
   {_ADMIN_FONTS}
   <style>{_ADMIN_CSS}</style>
 </head>
@@ -703,7 +703,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 </li>""")
                 project_list = f'<ul class="entry-list">{"".join(p_rows)}</ul>'
             else:
-                project_list = '<div class="empty-state">No builds yet — add one in the Add Build tab.</div>'
+                project_list = '<div class="empty-state">No builds yet - add one in the Add Build tab.</div>'
 
             if repairs:
                 r_rows = []
@@ -728,7 +728,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 </li>""")
                 repair_list = f'<ul class="entry-list">{"".join(r_rows)}</ul>'
             else:
-                repair_list = '<div class="empty-state">No repairs yet — add one in the Add Repair tab.</div>'
+                repair_list = '<div class="empty-state">No repairs yet - add one in the Add Repair tab.</div>'
 
             body = f"""
 <div class="stat-row">
@@ -745,7 +745,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
   <div class="stat-card">
     <div class="stat-label">Site</div>
     <div class="stat-value" style="font-size:18px;padding-top:4px">{html.escape(site.get('name') or 'RudiMakes')}</div>
-    <div class="stat-sub">{html.escape(site.get('tagline') or '—')}</div>
+    <div class="stat-sub">{html.escape(site.get('tagline') or '-')}</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Quick Actions</div>
@@ -784,7 +784,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
     <div class="card-title">Publish Changes to GitHub</div>
     <form method="post" action="/actions/publish">
       <div class="publish-row">
-        <input type="text" name="commit_message" placeholder="Commit message (optional — leave blank for auto)" />
+        <input type="text" name="commit_message" placeholder="Commit message (optional - leave blank for auto)" />
         <button type="submit" class="btn btn-publish">↑ Publish</button>
       </div>
     </form>
@@ -842,7 +842,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
       <div class="two-col">
         <div class="form-group">
           <label>Title *</label>
-          <input name="title" required placeholder="e.g. Moog Subsequent 37 — No Audio Output" />
+          <input name="title" required placeholder="e.g. Moog Subsequent 37 - No Audio Output" />
         </div>
         <div class="form-group">
           <label>Device / Board</label>
@@ -975,7 +975,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
 </li>""")
                 section_list = f'<ul class="entry-list">{"".join(s_rows)}</ul>'
             else:
-                section_list = '<div class="empty-state">No story sections yet — add one below.</div>'
+                section_list = '<div class="empty-state">No story sections yet - add one below.</div>'
 
             body = f"""
 <a href="/" class="back-link">← Dashboard</a>
@@ -1019,7 +1019,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
   </div>
 </div>
 """
-            self._send_html(_web_layout(f"Story — {project.get('title','Build')}", body, message))
+            self._send_html(_web_layout(f"Story - {project.get('title','Build')}", body, message))
 
         def _render_project_edit(self, idx: int, message: str = ""):
             projects = load_projects()
@@ -1092,7 +1092,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
   </form>
 </div>
 """
-            self._send_html(_web_layout(f"Edit Build — {p.get('title','')}", body, message))
+            self._send_html(_web_layout(f"Edit Build - {p.get('title','')}", body, message))
 
         def _render_repair_edit(self, idx: int, message: str = ""):
             repairs = load_repairs()
@@ -1165,7 +1165,7 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
   </form>
 </div>
 """
-            self._send_html(_web_layout(f"Edit Repair — {r.get('title','')}", body, message))
+            self._send_html(_web_layout(f"Edit Repair - {r.get('title','')}", body, message))
 
         def _render_story_edit(self, idx: int, step_idx: int, message: str = ""):
             projects = load_projects()
