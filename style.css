@@ -15,8 +15,8 @@
   --bg-card-hover: #161a22;
   --text: #f1faee;
   --text-muted: #8b9ab0;
-  --accent: #e63946;
-  --accent-hover: #c1121f;
+  --accent: #f0b429;
+  --accent-hover: #d69e2e;
   --blue: #457b9d;
   --border: rgba(255,255,255,0.08);
   --font-head: 'Space Grotesk', sans-serif;
@@ -374,7 +374,7 @@ nav ul li a.active {
 
 .project-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(230,57,70,0.15);
+  box-shadow: 0 8px 32px rgba(240,180,41,0.15);
   background: var(--bg-card-hover);
 }
 
@@ -599,7 +599,7 @@ nav ul li a.active {
 
 .repair-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(230,57,70,0.1);
+  box-shadow: 0 8px 32px rgba(240,180,41,0.1);
 }
 
 .repair-card h3 {
@@ -962,9 +962,9 @@ nav ul li a.active {
 }
 
 .tech-tag {
-  background: rgba(230,57,70,0.12);
+  background: rgba(240,180,41,0.12);
   color: var(--accent);
-  border: 1px solid rgba(230,57,70,0.25);
+  border: 1px solid rgba(240,180,41,0.25);
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
   font-size: 0.85rem;
