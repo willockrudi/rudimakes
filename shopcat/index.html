@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>SHOP CAT — an arcade endless runner starring Blu</title>
+  <meta name="description" content="Help Blu, a flame point Siamese, sprint through an endless workday of amps, studios and stages. Dodge, dash and dig vinyl in this pixel-art arcade runner." />
+  <meta property="og:title" content="SHOP CAT" />
+  <meta property="og:description" content="Help Blu survive the shop — a pixel-art arcade endless runner." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='2' y='1' width='3' height='4' fill='%23e8a06a'/%3E%3Crect x='11' y='1' width='3' height='4' fill='%23e8a06a'/%3E%3Crect x='2' y='4' width='12' height='10' fill='%23fbf6ea'/%3E%3Crect x='5' y='7' width='2' height='3' fill='%234a90d9'/%3E%3Crect x='9' y='7' width='2' height='3' fill='%234a90d9'/%3E%3Crect x='7' y='10' width='2' height='2' fill='%232b2b2b'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: #1b1714;
+      color: #fbf6ea;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      overscroll-behavior: none;               /* no pull-to-refresh / rubber-band */
+      -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .frame {
+      width: min(96vw, 1180px);
+      aspect-ratio: 16 / 9;
+      border: 2px solid rgba(255,255,255,0.12);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      background: #111;
+      overflow: hidden;
+    }
+
+    /* Clean modern page frame around the pixel-art canvas. */
+    .page { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+
+    .masthead { text-align: center; }
+    .masthead h1 {
+      margin: 0;
+      font-size: clamp(22px, 4vw, 34px);
+      letter-spacing: 8px;
+      font-weight: 800;
+      color: #f3e7cf;
+    }
+    .masthead p { margin: 5px 0 0; font-size: 13px; letter-spacing: 1px; color: #a58e6a; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
+      font-size: 12px; letter-spacing: 0.5px; color: #8a7458;
+    }
+    .legend span { white-space: nowrap; }
+
+    /* On phones let the game fill the screen (landscape); the in-canvas UI carries the framing. */
+    @media (max-width: 760px) {
+      .frame { width: 100vw; border: none; box-shadow: none; }
+      .masthead, .legend { display: none; }
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      touch-action: none;                       /* we handle all gestures ourselves */
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <h1>SHOP CAT</h1>
+      <p>Help Blu survive the shop.</p>
+    </header>
+    <div class="frame">
+      <canvas id="game"></canvas>
+    </div>
+    <footer class="legend">
+      <span>← → move</span>
+      <span>↑ jump (×2 double)</span>
+      <span>↓ dive / slide</span>
+      <span>D dash</span>
+      <span>M mute</span>
+    </footer>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    const CONFIG = {
+      // Canvas + responsiveness
+      targetAspect: 16 / 9,
+      dpr: Math.min(window.devicePixelRatio || 1, 2),
+
+      // World / camera  (whole scroll curve slowed 10%: 240→216, ramp 8→7.2)
+      baseScrollSpeed: 216,
+      scrollSpeedRamp: 7.2,
+      cameraLead: 0.35,
+      leftDeathX: 0.16,
+
+      // Player movement feel
+      moveAccel: 1100,
+      moveDecel: 1600,
+      maxGroundSpeed: 380,
+      maxAirSpeed: 360,
+      jumpForce: 305,
+      jumpCutoff: 90,
+      gravity: 975,
+      fallGravity: 1475,
+      coyoteTime: 0.10,
+      jumpBufferTime: 0.12,
+
+      // Slide / dive
+      diveFallMult: 1.75,
+      slideSpeed: 140,
+      slideHeight: 0.72,
+
+      // Dash / dodge
+      dashDuration: 0.16,
+      dashSpeed: 760,
+      dashCooldown: 0.95,
+
+      // Obstacles / spawn pacing
+      obstacleGapBase: 260,
+      obstacleGapSpeedScale: 38,
+      obstacleSpawnLead: 1.15,
+      obstaclePatternSpread: 90,
+
+      // Enemies / death flow
+      enemySpawnGapBase: 280,
+      enemySpawnGapSpeedScale: 26,
+      enemySpawnLead: 1.15,
+      enemyStageLength: 900,
+      enemyStartMeters: 60,        // brief warm-up, then enemies (first one lands ~100m in)
+      enemyObstacleClearance: 74,  // min world-space padding an enemy keeps from any solid (fairness)
+
+      // Death flow (Phase 3)
+      hitFreezeTime: 0.10,   // brief freeze on the killing blow
+      tumbleTime: 0.85,      // comedic tumble duration before the death screen appears
+      deadZone: 0.40,        // input dead-zone once the death screen shows, then any key restarts
+      tumblePop: 360,        // upward launch of the tumble
+      tumbleGravity: 1300,
+      tumbleSpin: 9,         // radians/sec of the dizzy spin
+      tumbleBounce: 0.45,    // energy kept on each ground bounce
+
+      // Pickups & scoring (Phase 4)
+      notePoints: 10,
+      vinylPoints: 100,
+      pickupSpawnLead: 1.15,
+      pickupGapBase: 300,      // world-space gap between pickup formations
+      pickupGapJitter: 220,
+      noteSpacing: 34,         // spacing between notes in a formation
+      vinylChance: 0.12,       // roll: rare vinyl
+      shieldChance: 0.08,      // roll: uncommon headphone shield
+      highRouteChance: 0.35,   // chance a note trail rides an obstacle top
+      shieldHeight: 30,        // spawn height of a shield pickup off the ground
+      shieldBreakFlicker: 0.5, // flicker + brief i-frames after a shield absorbs a hit
+      bestTakesKey: 'shopcat.bestTakes',
+
+      // Visuals / debug
+      debug: false,
+      backgroundColor: '#f2e8d5',
+      groundColor: '#8a6f4d',
+      groundGlow: '#e8a06a',
+      bluBody: '#fbf6ea',    // cream
+      bluShade: '#efe4cd',   // cream shadow (paws/underside)
+      bluEar: '#e8a06a',     // flame orange (ears, tail tip, mask hint only)
+      bluMask: '#f0d3b4',    // very soft mask
+      bluEye: '#4a90d9',     // blue
+      bluNose: '#2b2b2b',
+      rust: '#b8563e',
+      dark: '#2b2420',
+      glow: '#f5b862',
+      dangerGlow: 'rgba(245, 184, 98, 0.22)',
+
+      // Entity art shades (matched to the approved asset flash sheet)
+      art: {
+        ampBody: '#7a5c3d', ampTop: '#4e3c28', ampFace: '#c9b393', ampTube: '#f5b862', ampKnob: '#d9c9a8', ampSlat: '#8a6f4d',
+        cabFrame: '#5c4a33', cabCloth: '#d8c8a8', cabDot: '#8a6f4d',
+        benchTop: '#8a6f4d', benchLeg: '#6e5637', benchMetal: '#9aa0a6', benchDark: '#4a4a4a', benchTool: '#e8734a',
+        crateBody: '#a5814f', crateSlat: '#7a5c3d', crateRecA: '#e8a06a', crateRecB: '#b8563e', crateRecC: '#7ba8a0', crateRecD: '#f5c542',
+        micPole: '#4a4a4a', micHead: '#2b2b2b', micGrille: '#6b6156',
+        roomba: '#4a4238', roombaDome: '#5c554a', roombaEyeA: '#e8734a', roombaEyeB: '#f5c542', roombaWheel: '#2b2b2b', roombaDash: '#8a8378',
+        rat: '#8f7f6e', ratNose: '#e8a3a3', ratFoot: '#7a6c5c', ratTail: '#c98a8a',
+        drone: '#6b6156', droneProp: '#b8b2a6', droneStalk: '#6b6156', droneEyeA: '#e8734a', droneEyeB: '#f5c542', droneRotor: '#4a4a4a',
+        sparkA: '#f5c542', sparkB: '#f0b45c', sparkBase: '#3a332a',
+        noteDark: '#3a2f24', vinylDisc: '#2b2420', vinylLabel: '#e8734a', vinylShine: '#fbf6ea', vinylGroove: '#5c554a',
+        shieldBand: '#e8a06a', shieldCup: '#2b2b2b', shieldAccent: '#4a90d9',
+      },
+
+      // Audio (Phase 7) — mix levels + optional run-song intro loop point
+      audio: {
+        musicGain: 0.5,
+        sfxGain: 0.6,
+        runSongLoopStart: 0,   // seconds; if your run-song.mp3 has an intro, set its loop point here
+      },
+
+      // Global WAX counter (Phase 10) — paste your Supabase values here after setup.
+      // Leave blank to keep the local placeholder number. The anon key is meant to
+      // be public; row-level security limits it to reading + incrementing the count.
+      supabase: {
+        url: 'https://usoogihxpsgemqevjdaj.supabase.co',
+        anonKey: 'sb_publishable_XQzBRfKPeUUzZt2NsXwo0A_yz8q7aED',   // publishable key — safe to expose (RLS limits it to read + increment_wax)
+      },
+
+      // Juice (Phase 8)
+      particlePool: 240,       // fixed pool; long runs never allocate mid-frame
+      shakeDeath: 11,          // screen-shake magnitude
+      shakeShield: 5,
+      shakeDecay: 26,          // px/sec the shake magnitude bleeds off
+      flashTime: 0.18,         // warm vinyl flash duration
+      landSquashTime: 0.14,
+      wakeStartleTime: 0.34,
+      enemyNearDist: 190,      // ears twitch when an enemy is this close ahead
+
+      // Mobile / touch (Phase 9)
+      touchTapMs: 130,         // press shorter than this (with little movement) = tap = jump
+      touchSwipePx: 40,        // min travel for a swipe
+      touchSwipeMs: 260,       // swipe must complete within this window
+      touchJumpHold: 0.22,     // how long a tap "holds" jump (sets hop height)
+      smallScreenW: 560,       // narrower than this → halve particle spawns
+    };
+
+    const input = {
+      left: false,
+      right: false,
+      up: false,
+      down: false,
+      jumpPressed: false,
+      jumpReleased: false,
+      dashPressed: false,
+      dashDir: 0,          // touch swipe forces a dash direction (overrides facing)
+      anyPressed: false,
+      paused: false,
+      keys: new Set(),
+    };
+
+    const player = {
+      x: 0,
+      y: 0,
+      width: 34,
+      height: 46,
+      vx: 0,
+      vy: 0,
+      facing: 1,
+      onGround: false,
+      coyoteTimer: 0,
+      jumpBufferTimer: 0,
+      doubleJumpsLeft: 1,
+      isSliding: false,
+      slideHold: false,
+      dead: false,
+      prevX: 0,
+      prevY: 0,
+      screenX: 0,
+      worldX: 0,
+      cameraX: 0,
+      meters: 0,
+      lastGroundY: 0,
+      stateLabel: 'ready',
+      dashTimer: 0,
+      dashCooldown: 0,
+      dashDirection: 1,
+      airDashUsed: false,
+      invulnTimer: 0,
+      deathCause: 'LEFT BEHIND',
+      angle: 0,
+      angularVel: 0,
+      points: 0,           // pickup points (notes + vinyl)
+      vinylsThisRun: 0,    // feeds the global WAX counter in Phase 10
+      hasShield: false,
+      shieldBreakTimer: 0, // >0 = flickering just after a shield break
+      diving: false,       // latch so the dive whoosh plays once per dive
+      landTimer: 0,        // >0 = squashing from a landing
+    };
+
+    const state = {
+      time: 0,
+      lastTime: performance.now(),
+      scrollSpeed: CONFIG.baseScrollSpeed,
+      spawnTimer: 0,
+      glowAmount: 0,
+      nextSpawnWorldX: null,
+      patternIndex: 0,
+      nextEnemyWorldX: null,
+      stageIndex: 0,
+      deathPhase: null,   // null | 'freeze' | 'tumble' | 'initials'
+      deathTimer: 0,      // time within the current death phase
+      deadZoneTimer: 0,   // input dead-zone counter (death screen / sleep wake)
+      stars: [],          // dizzy stars orbiting Blu's head
+      nextPickupWorldX: null,
+      quip: '',           // chosen death quip (picked once per death)
+      initials: ['', '', ''],
+      initialsPos: 0,
+      pendingScore: 0,    // score awaiting initials entry
+      newTakeIndex: -1,   // index of the just-placed Best Take (for the ◀ marker)
+      mode: 'sleep',      // 'sleep' (title = game over) | 'run'
+      sleepMode: 'title', // 'title' (first visit) | 'gameover' (post-death)
+      lastTake: 0,        // meters from the last run (YOUR TAKE)
+      waxCount: 12438,    // WAX PULLED WORLDWIDE — local placeholder until Supabase is configured
+      waxOnline: true,    // false = a configured fetch failed → hide the panel gracefully
+      muted: false,
+      shakeMag: 0,        // current screen-shake magnitude
+      flashTimer: 0,      // warm vinyl flash
+      wakeTimer: 0,       // wake-up startle on run start
+      touchDevice: false, // true once any touch happens → touch drives movement
+      touchUpTimer: 0,    // keeps "jump held" for a moment after a tap
+    };
+
+    const obstacles = [];
+    const enemies = [];
+    const pickups = [];
+
+    // Fixed particle pool (object pooling — long runs never allocate mid-frame).
+    const particles = [];
+    for (let i = 0; i < CONFIG.particlePool; i += 1) {
+      particles.push({ active: false, wx: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 1, size: 2, color: '#fff', grav: 0 });
+    }
+
+    // Top-3 BEST TAKES, persisted in localStorage (loaded at startup).
+    let bestTakes = [];
+    function loadBestTakes() {
+      try {
+        const raw = localStorage.getItem(CONFIG.bestTakesKey);
+        const parsed = raw ? JSON.parse(raw) : [];
+        bestTakes = Array.isArray(parsed) ? parsed.slice(0, 3) : [];
+      } catch (e) {
+        bestTakes = [];
+      }
+    }
+    function persistBestTakes() {
+      try {
+        localStorage.setItem(CONFIG.bestTakesKey, JSON.stringify(bestTakes));
+      } catch (e) { /* sandboxed preview — fail gracefully */ }
+    }
+
+    function loadMute() {
+      try { state.muted = localStorage.getItem('shopcat.muted') === '1'; } catch (e) { state.muted = false; }
+    }
+    function toggleMute() {
+      state.muted = !state.muted;
+      AUDIO.setMuted(state.muted);
+      try { localStorage.setItem('shopcat.muted', state.muted ? '1' : '0'); } catch (e) { /* ignore */ }
+    }
+
+    // --- WAX PULLED WORLDWIDE (global vinyl counter via Supabase) ---
+    function waxConfigured() { return !!(CONFIG.supabase.url && CONFIG.supabase.anonKey); }
+
+    function waxHeaders() {
+      return { apikey: CONFIG.supabase.anonKey, Authorization: 'Bearer ' + CONFIG.supabase.anonKey };
+    }
+
+    // Read the shared count for the sleep screen. Any failure hides the panel.
+    function fetchWax() {
+      if (!waxConfigured()) { state.waxOnline = true; return; }   // local placeholder mode
+      fetch(CONFIG.supabase.url + '/rest/v1/counter?select=count&id=eq.1', { headers: waxHeaders() })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(rows => {
+          if (rows && rows[0]) { state.waxCount = Number(rows[0].count); state.waxOnline = true; }
+          else state.waxOnline = false;
+        })
+        .catch(() => { state.waxOnline = false; });   // blocked/offline → panel hides, retry next load
+    }
+
+    // ONE atomic call per run (never per pickup). The RPC returns the new total.
+    function incrementWax(n) {
+      if (n <= 0 || !waxConfigured()) return;
+      fetch(CONFIG.supabase.url + '/rest/v1/rpc/increment_wax', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, waxHeaders()),
+        body: JSON.stringify({ n: Math.min(n, 10000) }),
+      })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(total => { state.waxCount = Number(total); state.waxOnline = true; })
+        .catch(() => { /* offline — local number stays; nothing breaks */ });
+    }
+
+    const obstaclePatterns = [
+      {
+        name: 'tube-amp',
+        pieces: [
+          { type: 'tube', label: 'TUBE AMP', x: 0, width: 46, height: 44, color: '#b8563e', passUnder: false },
+        ],
+      },
+      {
+        name: 'crate-cab',
+        pieces: [
+          { type: 'crate', label: 'VINYL CRATE', x: 0, width: 48, height: 32, color: '#8a6f4d', passUnder: false },
+          { type: 'cab', label: 'CAB STACK', x: 92, width: 54, height: 62, color: '#b8563e', passUnder: false },
+        ],
+      },
+      {
+        name: 'mic-stand',
+        pieces: [
+          { type: 'mic', label: 'MIC STAND', x: 0, width: 24, height: 58, color: '#c9995e', passUnder: false },
+        ],
+      },
+      {
+        name: 'bench-and-crate',
+        pieces: [
+          { type: 'bench', label: 'WORKBENCH', x: 0, width: 98, height: 28, color: '#8a6f4d', passUnder: true },
+          { type: 'crate', label: 'VINYL CRATE', x: 116, width: 48, height: 32, color: '#8a6f4d', passUnder: false },
+        ],
+      },
+      {
+        name: 'cab-and-mic',
+        pieces: [
+          { type: 'cab', label: 'CAB STACK', x: 0, width: 54, height: 62, color: '#b8563e', passUnder: false },
+          { type: 'mic', label: 'MIC STAND', x: 96, width: 24, height: 58, color: '#c9995e', passUnder: false },
+        ],
+      },
+    ];
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      canvas.width = Math.round(width * CONFIG.dpr);
+      canvas.height = Math.round(height * CONFIG.dpr);
+      ctx.setTransform(CONFIG.dpr, 0, 0, CONFIG.dpr, 0, 0);
+      player.screenX = width * CONFIG.cameraLead;
+      player.worldX = player.screenX;
+      player.x = player.screenX;
+      player.y = height * 0.65;
+      player.lastGroundY = player.y;
+    }
+
+    function resetRun() {
+      player.x = player.screenX;
+      player.y = canvas.clientHeight * 0.65;
+      player.vx = 0;
+      player.vy = 0;
+      player.onGround = true;
+      player.coyoteTimer = 0;
+      player.jumpBufferTimer = 0;
+      player.doubleJumpsLeft = 1;
+      player.isSliding = false;
+      player.slideHold = false;
+      player.dead = false;
+      player.worldX = player.screenX;
+      player.cameraX = 0;
+      player.meters = 0;
+      state.time = 0;
+      state.scrollSpeed = CONFIG.baseScrollSpeed;
+      state.spawnTimer = 0;
+      state.glowAmount = 0;
+      state.nextSpawnWorldX = null;
+      state.patternIndex = 0;
+      state.nextEnemyWorldX = null;
+      state.stageIndex = 0;
+      obstacles.length = 0;
+      enemies.length = 0;
+      player.dashTimer = 0;
+      player.dashCooldown = 0;
+      player.dashDirection = 1;
+      player.airDashUsed = false;
+      player.invulnTimer = 0;
+      player.deathCause = 'LEFT BEHIND';
+      player.angle = 0;
+      player.angularVel = 0;
+      player.points = 0;
+      player.vinylsThisRun = 0;
+      player.hasShield = false;
+      player.shieldBreakTimer = 0;
+      player.diving = false;
+      state.deathPhase = null;
+      state.deathTimer = 0;
+      state.deadZoneTimer = 0;
+      state.stars.length = 0;
+      state.nextPickupWorldX = null;
+      state.quip = '';
+      state.initials = ['', '', ''];
+      state.initialsPos = 0;
+      state.pendingScore = 0;
+      state.newTakeIndex = -1;
+      pickups.length = 0;
+      player.landTimer = 0;
+      state.shakeMag = 0;
+      state.flashTimer = 0;
+      for (const p of particles) p.active = false;
+    }
+
+    function getScore() {
+      return Math.floor(player.meters) + player.points;
+    }
+
+    // Wake Blu into a fresh run (from the sleep screen).
+    function startRun() {
+      resetRun();
+      state.mode = 'run';
+      state.wakeTimer = CONFIG.wakeStartleTime;   // wake-up startle
+      AUDIO.startMusic('run-song');   // hard-swap sleep-song → run-song
+    }
+
+    // Return to the sleep screen. `fromDeath` picks the game-over vs title state.
+    function goToSleep(fromDeath) {
+      state.mode = 'sleep';
+      state.sleepMode = fromDeath ? 'gameover' : 'title';
+      state.deathPhase = null;
+      player.dead = false;
+      obstacles.length = 0;
+      enemies.length = 0;
+      pickups.length = 0;
+      state.stars.length = 0;
+      // Title needs no dead-zone; game-over gets the 0.4s anti-mash guard.
+      state.deadZoneTimer = fromDeath ? 0 : CONFIG.deadZone;
+      AUDIO.startMusic('sleep-song');   // peaceful loop resumes after the death beat of silence
+    }
+
+    // Finish a death: bank the take, tick the local WAX counter, back to sleep.
+    function finalizeDeath() {
+      state.lastTake = Math.floor(player.meters);
+      if (waxConfigured()) incrementWax(player.vinylsThisRun);   // shared global count
+      else state.waxCount += player.vinylsThisRun;               // local placeholder
+      goToSleep(true);
+    }
+
+    function spawnObstacles() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const groundY = height * 0.72;
+      if (state.nextSpawnWorldX === null) {
+        state.nextSpawnWorldX = player.cameraX + width * CONFIG.obstacleSpawnLead;
+      }
+      if (player.cameraX + width * CONFIG.obstacleSpawnLead < state.nextSpawnWorldX) {
+        return;
+      }
+
+      const pattern = obstaclePatterns[state.patternIndex % obstaclePatterns.length];
+      const speedFactor = Math.min(1.2, state.scrollSpeed / CONFIG.baseScrollSpeed);
+      const gap = CONFIG.obstacleGapBase + speedFactor * CONFIG.obstacleGapSpeedScale - Math.min(80, player.meters * 0.15);
+      const spawnWorldX = state.nextSpawnWorldX;
+      state.patternIndex += 1;
+      state.nextSpawnWorldX = spawnWorldX + gap;
+
+      pattern.pieces.forEach((piece, index) => {
+        obstacles.push({
+          type: piece.type,
+          label: piece.label,
+          worldX: spawnWorldX + piece.x + index * CONFIG.obstaclePatternSpread * 0.35,
+          width: piece.width,
+          height: piece.height,
+          color: piece.color,
+          passUnder: !!piece.passUnder,
+          groundY,
+          screenX: 0,
+        });
+      });
+    }
+
+    function pruneObstacles() {
+      const width = canvas.clientWidth;
+      for (let i = obstacles.length - 1; i >= 0; i -= 1) {
+        const obstacle = obstacles[i];
+        const screenX = obstacle.worldX - player.cameraX;
+        if (screenX + obstacle.width < -80) {
+          obstacles.splice(i, 1);
+        }
+      }
+    }
+
+    function getStageIndex() {
+      return Math.floor(player.meters / CONFIG.enemyStageLength);
+    }
+
+    // Push a candidate enemy X to the right until it clears every solid by a fair
+    // margin, so an enemy never sits on top of / flush against an obstacle where
+    // dodging it would be impossible.
+    function clearOfObstacles(worldX, entWidth) {
+      const pad = CONFIG.enemyObstacleClearance;
+      let x = worldX;
+      for (let iter = 0; iter < 6; iter += 1) {
+        let conflict = false;
+        for (const o of obstacles) {
+          if (x + entWidth + pad > o.worldX && x < o.worldX + o.width + pad) {
+            x = o.worldX + o.width + pad;
+            conflict = true;
+          }
+        }
+        if (!conflict) break;
+      }
+      return x;
+    }
+
+    function spawnEnemies() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const groundY = height * 0.72;
+      // Early game stays simple — hold enemies back until the run has warmed up.
+      if (player.meters < CONFIG.enemyStartMeters) {
+        state.nextEnemyWorldX = null;
+        return;
+      }
+      if (state.nextEnemyWorldX === null) {
+        state.nextEnemyWorldX = player.cameraX + width * CONFIG.enemySpawnLead + 320;
+      }
+      if (player.cameraX + width * CONFIG.enemySpawnLead < state.nextEnemyWorldX) {
+        return;
+      }
+
+      const stage = getStageIndex();
+      const speedFactor = Math.min(1.35, state.scrollSpeed / CONFIG.baseScrollSpeed);
+      const gap = CONFIG.enemySpawnGapBase + speedFactor * CONFIG.enemySpawnGapSpeedScale - Math.min(70, player.meters * 0.08);
+      let spawnWorldX = state.nextEnemyWorldX;
+      state.stageIndex = stage;
+
+      const roll = Math.random();
+      let type = 'rat';
+      if (stage < 1) {
+        type = roll < 0.5 ? 'roomba' : 'rat';
+      } else {
+        if (roll < 0.4) type = 'roomba';
+        else if (roll < 0.7) type = 'drone';
+        else type = 'rat';
+      }
+
+      if (type === 'roomba') {
+        spawnWorldX = clearOfObstacles(spawnWorldX, 28);
+        enemies.push({
+          type,
+          worldX: spawnWorldX,
+          worldY: groundY - 20,
+          width: 28,
+          height: 20,
+          vx: 70 + stage * 10,
+          patrolMin: spawnWorldX - 60,
+          patrolMax: spawnWorldX + 60,
+        });
+      } else if (type === 'drone') {
+        // Drone cruises at jump height; clearing it keeps it off a cab top you're forced onto.
+        spawnWorldX = clearOfObstacles(spawnWorldX, 28);
+        enemies.push({
+          type,
+          worldX: spawnWorldX,
+          worldY: groundY - 84,
+          width: 28,
+          height: 22,
+          vx: 60 + stage * 6,
+          bob: Math.random() * Math.PI * 2,
+        });
+      } else {
+        spawnWorldX = clearOfObstacles(spawnWorldX, 18);
+        enemies.push({
+          type,
+          worldX: spawnWorldX,
+          worldY: groundY - 18,
+          width: 18,
+          height: 18,
+          vx: -200 - stage * 16,
+        });
+      }
+
+      // Advance pacing from the *adjusted* position so clearance never bunches spawns.
+      state.nextEnemyWorldX = spawnWorldX + gap;
+    }
+
+    function pruneEnemies() {
+      // Cull only after an enemy has scrolled off the LEFT. (Enemies spawn off
+      // the right at ~1.15×width and scroll in — a right-side cull would delete
+      // them the instant they spawn on any full-size screen.)
+      for (let i = enemies.length - 1; i >= 0; i -= 1) {
+        const enemy = enemies[i];
+        const screenX = enemy.worldX - player.cameraX;
+        if (screenX + enemy.width < -120) enemies.splice(i, 1);
+      }
+    }
+
+    function updateEnemies(dt) {
+      const stage = getStageIndex();
+      for (const enemy of enemies) {
+        if (enemy.type === 'roomba') {
+          enemy.worldX += enemy.vx * dt;
+          if (enemy.worldX > enemy.patrolMax) {
+            enemy.worldX = enemy.patrolMax;
+            enemy.vx *= -1;
+          } else if (enemy.worldX < enemy.patrolMin) {
+            enemy.worldX = enemy.patrolMin;
+            enemy.vx *= -1;
+          }
+        } else if (enemy.type === 'drone') {
+          enemy.worldX += (state.scrollSpeed * 0.28 + 40) * dt;
+          enemy.bob += dt * 2.2;
+          enemy.worldY = canvas.clientHeight * 0.72 - 84 - Math.sin(enemy.bob) * 18;
+        } else if (enemy.type === 'rat') {
+          enemy.worldX += enemy.vx * dt;
+        }
+      }
+    }
+
+    function pushPickup(kind, worldX, worldY, w, h) {
+      pickups.push({
+        kind,
+        worldX,
+        worldY,
+        width: w,
+        height: h,
+        bob: Math.random() * Math.PI * 2,
+        spin: Math.random() * Math.PI * 2,
+      });
+    }
+
+    // A note trail — an arc, a jump-height line, or a low ground line.
+    function spawnNoteFormation(x, groundY) {
+      const n = 3 + Math.floor(Math.random() * 3); // 3-5 notes
+      const shape = Math.random();
+      for (let i = 0; i < n; i += 1) {
+        let yOff;
+        if (shape < 0.4) {
+          const t = n > 1 ? i / (n - 1) : 0;   // arc
+          yOff = -Math.sin(t * Math.PI) * 74 - 24;
+        } else if (shape < 0.8) {
+          yOff = -50;                            // jump-height line (tempting)
+        } else {
+          yOff = -20;                            // ground-hug line (safe)
+        }
+        pushPickup('note', x + i * CONFIG.noteSpacing, groundY + yOff, 14, 16);
+      }
+    }
+
+    // A "high route" note trail riding the top of a tall obstacle.
+    function spawnNotesOnObstacle(o) {
+      const top = canvas.clientHeight * 0.72 - o.height;
+      const n = Math.max(2, Math.floor(o.width / CONFIG.noteSpacing));
+      for (let i = 0; i < n; i += 1) {
+        pushPickup('note', o.worldX + 8 + i * CONFIG.noteSpacing, top - 20, 14, 16);
+      }
+    }
+
+    function spawnPickups() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const groundY = height * 0.72;
+      if (state.nextPickupWorldX === null) {
+        state.nextPickupWorldX = player.cameraX + width * CONFIG.pickupSpawnLead + 180;
+      }
+      if (player.cameraX + width * CONFIG.pickupSpawnLead < state.nextPickupWorldX) {
+        return;
+      }
+
+      const spawnWorldX = state.nextPickupWorldX;
+      const gap = CONFIG.pickupGapBase + Math.random() * CONFIG.pickupGapJitter;
+      state.nextPickupWorldX = spawnWorldX + gap;
+
+      const roll = Math.random();
+      if (roll < CONFIG.shieldChance) {
+        // Uncommon headphone shield, kept clear of solids so it's reachable.
+        const x = clearOfObstacles(spawnWorldX, 22);
+        pushPickup('shield', x, groundY - CONFIG.shieldHeight, 22, 18);
+      } else if (roll < CONFIG.shieldChance + CONFIG.vinylChance) {
+        // Rare vinyl on a skill placement: elevated, or just past a drone.
+        const drone = enemies.find(e => e.type === 'drone' && e.worldX > spawnWorldX - 60);
+        if (drone) {
+          pushPickup('vinyl', drone.worldX + 70, drone.worldY - 6, 22, 22);
+        } else {
+          const elevated = Math.random() < 0.6;
+          pushPickup('vinyl', spawnWorldX, groundY - (elevated ? 100 : 30), 22, 22);
+        }
+      } else {
+        // Notes: sometimes a high-route trail on a nearby tall obstacle, else a formation.
+        let placed = false;
+        if (Math.random() < CONFIG.highRouteChance) {
+          const o = obstacles.find(ob => ob.worldX > spawnWorldX - 40 && ob.worldX < spawnWorldX + 320 && ob.height > 34 && !ob.passUnder);
+          if (o) { spawnNotesOnObstacle(o); placed = true; }
+        }
+        if (!placed) spawnNoteFormation(spawnWorldX, groundY);
+      }
+    }
+
+    function updatePickups(dt) {
+      for (const p of pickups) {
+        p.bob += dt * 3;
+        p.spin += dt * 3.4;
+      }
+    }
+
+    function prunePickups() {
+      for (let i = pickups.length - 1; i >= 0; i -= 1) {
+        const screenX = pickups[i].worldX - player.cameraX;
+        if (screenX + pickups[i].width < -80) pickups.splice(i, 1);
+      }
+    }
+
+    function collectPickups() {
+      if (player.dead) return;
+      const playerLeft = player.x - player.width / 2;
+      const playerRight = player.x + player.width / 2;
+      const bodyH = player.height * (player.isSliding ? CONFIG.slideHeight : 1);
+      const playerTop = player.y - bodyH + 1;
+      const playerBottom = player.y;
+
+      for (let i = pickups.length - 1; i >= 0; i -= 1) {
+        const p = pickups[i];
+        const bobY = Math.sin(p.bob) * 4;
+        const screenX = p.worldX - player.cameraX;
+        const px = screenX;
+        const py = p.worldY + bobY;
+        const overlapX = Math.min(playerRight, px + p.width) - Math.max(playerLeft, px);
+        const overlapY = Math.min(playerBottom, py + p.height) - Math.max(playerTop, py);
+        if (overlapX <= 0 || overlapY <= 0) continue;
+
+        if (p.kind === 'note') {
+          player.points += CONFIG.notePoints;
+          sparkle(p.worldX, py, CONFIG.glow);
+          AUDIO.playSfx('note');
+        } else if (p.kind === 'vinyl') {
+          player.points += CONFIG.vinylPoints;
+          player.vinylsThisRun += 1;
+          sparkle(p.worldX, py, CONFIG.art.vinylLabel);
+          state.flashTimer = CONFIG.flashTime;   // quick warm flash on vinyl
+          AUDIO.playSfx('vinyl');
+        } else if (p.kind === 'shield') {
+          player.hasShield = true;         // re-grab refreshes, never stacks
+          player.shieldBreakTimer = 0;
+          sparkle(p.worldX, py, CONFIG.bluEye);
+          AUDIO.playSfx('shield-get');
+        }
+        pickups.splice(i, 1);
+      }
+    }
+
+    function resolveEnemyCollisions() {
+      if (player.dead) return;
+      const playerLeft = player.x - player.width / 2;
+      const playerRight = player.x + player.width / 2;
+      const playerTop = player.y - player.height + 1;
+      const playerBottom = player.y;
+
+      for (const enemy of enemies) {
+        const screenX = enemy.worldX - player.cameraX;
+        const screenY = enemy.worldY;
+        const enemyLeft = screenX;
+        const enemyRight = screenX + enemy.width;
+        const enemyTop = screenY;
+        const enemyBottom = screenY + enemy.height;
+
+        const overlapX = Math.min(playerRight, enemyRight) - Math.max(playerLeft, enemyLeft);
+        const overlapY = Math.min(playerBottom, enemyBottom) - Math.max(playerTop, enemyTop);
+        if (overlapX <= 0 || overlapY <= 0) continue;
+        if (player.invulnTimer > 0 || player.dashTimer > 0) continue;
+
+        // Headphone shield absorbs exactly ONE enemy hit (no left-edge help).
+        if (player.hasShield) {
+          player.hasShield = false;
+          player.shieldBreakTimer = CONFIG.shieldBreakFlicker;
+          player.invulnTimer = CONFIG.shieldBreakFlicker; // brief i-frames on break
+          state.shakeMag = CONFIG.shakeShield;
+          shatter(player.worldX, player.y - 24);
+          playShieldBreak();
+          break;
+        }
+
+        const causeMap = {
+          roomba: 'ROOMBA\'D!',
+          drone: 'DRONE STRIKE!',
+          rat: 'THE RAT WON.',
+        };
+        triggerDeath(causeMap[enemy.type] || 'ROOMBA\'D!');
+        break;
+      }
+    }
+
+    function resolveSolidCollisions() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const groundY = height * 0.72;
+      const leftEdge = width * CONFIG.leftDeathX;
+
+      for (const obstacle of obstacles) {
+        const screenX = obstacle.worldX - player.cameraX;
+        obstacle.screenX = screenX;
+        const obstacleLeft = screenX;
+        const obstacleRight = screenX + obstacle.width;
+        const obstacleTop = groundY - obstacle.height;
+        const obstacleBottom = groundY;
+
+        const playerLeft = player.x - player.width / 2;
+        const playerRight = player.x + player.width / 2;
+        const playerTop = player.y - player.height + 1;
+        const playerBottom = player.y;
+        const prevLeft = player.prevX - player.width / 2;
+        const prevRight = player.prevX + player.width / 2;
+        const prevTop = player.prevY - player.height + 1;
+        const prevBottom = player.prevY;
+
+        // Resting on / running across the top. Kept forgiving (a few px band) so
+        // standing is stable even when the vertical overlap rounds to exactly 0
+        // — otherwise onGround flickers frame-to-frame and Blu jitters.
+        const overTop = playerRight > obstacleLeft + 1 && playerLeft < obstacleRight - 1;
+        if (!obstacle.passUnder && player.vy >= 0 && overTop
+            && playerBottom >= obstacleTop - 2 && playerBottom <= obstacleTop + 10) {
+          player.y = obstacleTop;
+          player.vy = 0;
+          player.onGround = true;
+          player.lastGroundY = player.y;
+          continue;
+        }
+
+        const overlapX = Math.min(playerRight, obstacleRight) - Math.max(playerLeft, obstacleLeft);
+        const overlapY = Math.min(playerBottom, obstacleBottom) - Math.max(playerTop, obstacleTop);
+        if (overlapX <= 0 || overlapY <= 0) continue;
+
+        const cameFromLeft = prevRight <= obstacleLeft + 2 && playerRight > obstacleLeft;
+        const cameFromRight = prevLeft >= obstacleRight - 2 && playerLeft < obstacleRight;
+        const cameFromAbove = prevBottom <= obstacleTop + 2 && playerBottom > obstacleTop;
+        const cameFromBelow = prevTop >= obstacleBottom - 2 && playerTop < obstacleBottom;
+
+        const landing = playerBottom <= obstacleTop + 8 && player.vy >= 0 && !obstacle.passUnder && cameFromAbove;
+        if (landing) {
+          player.y = obstacleTop;
+          player.vy = 0;
+          player.onGround = true;
+          player.lastGroundY = player.y;
+          continue;
+        }
+
+        if (cameFromLeft) {
+          player.x = obstacleLeft - player.width / 2 - 1;
+          player.vx = 0;
+        } else if (cameFromRight) {
+          player.x = obstacleRight + player.width / 2 + 1;
+          player.vx = 0;
+        } else if (cameFromAbove) {
+          player.y = obstacleTop;
+          player.vy = 0;
+          player.onGround = true;
+          player.lastGroundY = player.y;
+        } else if (cameFromBelow) {
+          player.y = obstacleBottom;
+          player.vy = 0;
+        } else if (overlapX < overlapY) {
+          if (playerRight > obstacleLeft && playerLeft < obstacleRight) {
+            const fromRightSide = player.x >= obstacleRight;
+            if (fromRightSide) {
+              player.x = obstacleRight + player.width / 2 + 1;
+            } else {
+              player.x = obstacleLeft - player.width / 2 - 1;
+            }
+          }
+          player.vx = 0;
+        } else {
+          if (playerBottom > obstacleTop && playerTop < obstacleBottom) {
+            const fromBelowSide = player.y >= obstacleBottom;
+            if (fromBelowSide) {
+              player.y = obstacleBottom;
+              player.vy = 0;
+            } else {
+              player.y = obstacleTop;
+              player.vy = 0;
+              player.onGround = true;
+              player.lastGroundY = player.y;
+            }
+          }
+        }
+
+        if (player.x < leftEdge) {
+          triggerDeath('LEFT BEHIND');
+          break;
+        }
+      }
+    }
+
+    // Cause-specific quips, wired per-cause now (2-3 rotate at random).
+    // The final curated set lands in Phase 12 — this proves the plumbing.
+    const QUIPS = {
+      'LEFT BEHIND': ['LEFT BEHIND!', 'THE SHOP MOVED ON.', 'KEEP UP, BLU.'],
+      "ROOMBA'D!": ["ROOMBA'D!", 'SWEPT AWAY.', 'CLEANED UP.'],
+      'THE RAT WON.': ['THE RAT WON.', 'OUT-SCURRIED.', 'VERMIN VICTORY.'],
+      'DRONE STRIKE!': ['DRONE STRIKE!', 'EYES UP NEXT TIME.', 'BUZZED.'],
+    };
+
+    function pickQuip(cause) {
+      const list = QUIPS[cause];
+      if (!list || !list.length) return cause;
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    // ============================= AUDIO =============================
+    // Drop-in architecture: on the first interaction, every slot below tries
+    // to load audio/<name>.mp3. Any file that 404s silently uses a synthesized
+    // placeholder instead — so you can record your own sounds and drop them in
+    // with these EXACT lowercase names and ZERO code changes.
+    //
+    //   HOW TO ADD YOUR OWN AUDIO   (place files in an  audio/  folder)
+    //   ---------------------------------------------------------------
+    //   sleep-song.mp3      peaceful menu loop, seamless          20–60s
+    //   run-song.mp3        main gameplay loop, seamless          20–60s
+    //                       optional intro: set CONFIG.audio.runSongLoopStart
+    //   jump.mp3            soft chirp                            < 0.4s
+    //   doublejump.mp3      springier chirp                       < 0.4s
+    //   dash.mp3            whoosh (tape fast-forward)            < 0.4s
+    //   dive.mp3            quick downward whoosh                 < 0.4s
+    //   note.mp3            short pluck / blip                    < 0.3s
+    //   vinyl.mp3           crackle + a little chord              < 1s
+    //   shield-get.mp3      rising sweep                          < 0.7s
+    //   shield-break.mp3    glassy break                          < 0.7s
+    //   death-meow.mp3      the saddest real Blu meow             < 1.5s
+    //   meow1.mp3 … meow9.mp3   happy meows (click Blu)           < 1s each
+    //   ---------------------------------------------------------------
+    //   MP3, 128–192 kbps. Songs loop gaplessly via buffer looping (not <audio>).
+    //   Audio won't load from a file:// open — serve over http (see Phase 11).
+
+    const AUDIO = {
+      ctx: null,
+      master: null, musicBus: null, sfxBus: null,
+      buffers: {},          // name -> AudioBuffer for files that loaded
+      meowBuffers: [],      // loaded meowN buffers
+      synthCache: {},       // cached synth music buffers
+      music: null,          // current music BufferSource
+      musicName: null,
+
+      init() {
+        if (this.ctx) return;
+        try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }
+        catch (e) { this.ctx = null; return; }
+        this.master = this.ctx.createGain();
+        this.musicBus = this.ctx.createGain();
+        this.sfxBus = this.ctx.createGain();
+        this.musicBus.gain.value = CONFIG.audio.musicGain;
+        this.sfxBus.gain.value = CONFIG.audio.sfxGain;
+        this.master.gain.value = state.muted ? 0 : 1;
+        this.musicBus.connect(this.master);
+        this.sfxBus.connect(this.master);
+        this.master.connect(this.ctx.destination);
+        this.load();
+      },
+
+      // Unlock on first user gesture (browser autoplay policy).
+      unlock() {
+        this.init();
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      },
+
+      setMuted(m) { if (this.master) this.master.gain.value = m ? 0 : 1; },
+
+      load() {
+        const names = ['sleep-song', 'run-song', 'jump', 'doublejump', 'dash', 'dive',
+          'note', 'vinyl', 'shield-get', 'shield-break', 'death-meow'];
+        names.forEach(n => this._tryLoad(n, false));
+        for (let i = 1; i <= 9; i += 1) this._tryLoad('meow' + i, true);   // probe meows
+      },
+
+      _tryLoad(name, isMeow) {
+        fetch('audio/' + name + '.mp3')
+          .then(res => res.ok ? res.arrayBuffer() : Promise.reject())
+          .then(arr => this.ctx.decodeAudioData(arr))
+          .then(buf => {
+            this.buffers[name] = buf;
+            if (isMeow) this.meowBuffers.push(buf);
+            if (name === this.musicName) this.startMusic(name);   // hot-swap real file in
+          })
+          .catch(() => { /* missing / undecodable → synth fallback */ });
+      },
+
+      playSfx(name) {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.buffers[name]) { this._playBuffer(this.buffers[name]); return; }
+        this._synthSfx(name);
+      },
+
+      playMeow() {
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.meowBuffers.length) {
+          this._playBuffer(this.meowBuffers[Math.floor(Math.random() * this.meowBuffers.length)]);
+        } else {
+          this._synthMeow(Math.floor(Math.random() * 3));
+        }
+      },
+
+      startMusic(name) {
+        if (!this.ctx) return;
+        this.stopMusic();
+        this.musicName = name;
+        const buf = this.buffers[name] || this._synthMusic(name);
+        if (!buf) return;
+        const src = this.ctx.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        if (name === 'run-song' && this.buffers[name] && CONFIG.audio.runSongLoopStart > 0) {
+          src.loopStart = CONFIG.audio.runSongLoopStart;   // intro-then-loop
+          src.loopEnd = buf.duration;
+        }
+        src.connect(this.musicBus);
+        src.start(0);
+        this.music = src;
+      },
+
+      stopMusic() {
+        if (this.music) { try { this.music.stop(); } catch (e) { /* already stopped */ } this.music = null; }
+      },
+
+      _playBuffer(buf) {
+        const src = this.ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(this.sfxBus);
+        src.start(0);
+      },
+
+      // ---- synthesized placeholders ----
+      _synthSfx(name) {
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.connect(g); g.connect(this.sfxBus);
+        const P = {
+          'jump': { type: 'square', f0: 520, f1: 780, dur: 0.14, vol: 0.20 },
+          'doublejump': { type: 'square', f0: 640, f1: 980, dur: 0.14, vol: 0.20 },
+          'dash': { type: 'sawtooth', f0: 300, f1: 120, dur: 0.18, vol: 0.18 },
+          'dive': { type: 'sawtooth', f0: 520, f1: 90, dur: 0.20, vol: 0.18 },
+          'note': { type: 'triangle', f0: 880, f1: 1200, dur: 0.10, vol: 0.18 },
+          'vinyl': { type: 'triangle', f0: 300, f1: 540, dur: 0.45, vol: 0.20 },
+          'shield-get': { type: 'sine', f0: 400, f1: 900, dur: 0.40, vol: 0.20 },
+          'shield-break': { type: 'triangle', f0: 880, f1: 1760, dur: 0.30, vol: 0.18 },
+          'death-meow': { type: 'sawtooth', f0: 640, f1: 170, dur: 0.55, vol: 0.22 },
+        }[name] || { type: 'square', f0: 440, f1: 440, dur: 0.1, vol: 0.15 };
+        osc.type = P.type;
+        osc.frequency.setValueAtTime(P.f0, t);
+        osc.frequency.exponentialRampToValueAtTime(Math.max(1, P.f1), t + P.dur);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(P.vol, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + P.dur);
+        osc.start(t); osc.stop(t + P.dur + 0.02);
+      },
+
+      _synthMeow(variant) {
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.connect(g); g.connect(this.sfxBus);
+        osc.type = 'sawtooth';
+        const base = [540, 660, 600][variant] || 600;
+        osc.frequency.setValueAtTime(base, t);
+        osc.frequency.linearRampToValueAtTime(base * 1.3, t + 0.12);
+        osc.frequency.linearRampToValueAtTime(base * 0.9, t + 0.30);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.20, t + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        osc.start(t); osc.stop(t + 0.4);
+      },
+
+      // Short looping music buffers (rendered once, cached). Envelopes decay to
+      // near-silence at the seam so buffer looping stays gapless.
+      _synthMusic(name) {
+        if (this.synthCache[name]) return this.synthCache[name];
+        const rate = this.ctx.sampleRate;
+        let seconds, render;
+        if (name === 'sleep-song') {
+          seconds = 6;
+          const notes = [261.63, 329.63, 392.00, 493.88];  // Cmaj7, peaceful
+          render = (t) => {
+            const step = 1.5;
+            const f = notes[Math.floor(t / step) % notes.length];
+            const l = t % step;
+            const env = Math.min(1, l * 4) * Math.exp(-l * 2.5);
+            return (0.16 * Math.sin(2 * Math.PI * f * t) + 0.05 * Math.sin(Math.PI * f * t)) * env;
+          };
+        } else {  // run-song — lo-fi bass + tick
+          const bpm = 92, beat = 60 / bpm, bar = beat * 4;
+          seconds = bar * 2;
+          const bass = [65.41, 65.41, 98.00, 87.31];       // C C G F
+          render = (t) => {
+            const bf = bass[Math.floor((t % bar) / beat) % 4];
+            const lb = t % beat;
+            const b = 0.22 * Math.exp(-lb * 6) * Math.sin(2 * Math.PI * bf * t);
+            const hb = t % (beat / 2);
+            const h = 0.03 * Math.exp(-hb * 50) * Math.sin(2 * Math.PI * 7000 * t);
+            return b + h;
+          };
+        }
+        const len = Math.floor(seconds * rate);
+        const buf = this.ctx.createBuffer(1, len, rate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < len; i += 1) d[i] = render(i / rate);
+        this.synthCache[name] = buf;
+        return buf;
+      },
+    };
+
+    // Thin wrappers so call sites read cleanly.
+    function playDeathMeow() { AUDIO.playSfx('death-meow'); }
+    function playShieldBreak() { AUDIO.playSfx('shield-break'); }
+
+    function spawnDizzyStars() {
+      state.stars.length = 0;
+      const count = 5;
+      for (let i = 0; i < count; i += 1) {
+        state.stars.push({
+          angle: (i / count) * Math.PI * 2,
+          radius: 20 + (i % 2) * 7,
+          spin: 3.2 + (i % 3) * 0.6,
+        });
+      }
+    }
+
+    function updateDizzyStars(dt) {
+      for (const s of state.stars) {
+        s.angle += s.spin * dt;
+      }
+    }
+
+    function triggerDeath(cause = 'LEFT BEHIND') {
+      if (player.dead) return;
+      player.dead = true;
+      player.deathCause = cause;
+      player.vx = 0;
+      player.vy = 0;
+      player.angle = 0;
+      player.angularVel = 0;
+      state.deathPhase = 'freeze';
+      state.deathTimer = 0;
+      state.deadZoneTimer = 0;
+      state.stars.length = 0;
+      state.quip = pickQuip(cause);
+      state.shakeMag = CONFIG.shakeDeath;
+      deathPuff(player.worldX, player.y - 20);
+      AUDIO.stopMusic();   // run-song hard cut...
+      playDeathMeow();     // ...then the death meow (silence follows during the tumble)
+    }
+
+    function qualifiesForBestTake(score) {
+      if (score <= 0) return false;
+      if (bestTakes.length < 3) return true;
+      return score > bestTakes[bestTakes.length - 1].score;
+    }
+
+    function commitBestTake(initials) {
+      const entry = { initials, score: state.pendingScore };
+      bestTakes.push(entry);
+      bestTakes.sort((a, b) => b.score - a.score);
+      bestTakes = bestTakes.slice(0, 3);
+      state.newTakeIndex = bestTakes.indexOf(entry);
+      persistBestTakes();
+      finalizeDeath();
+    }
+
+    // Called from the keyboard handler while entering initials.
+    function handleInitialsKey(event) {
+      const k = event.key;
+      event.preventDefault();
+      if (k === 'Enter') {
+        const ini = state.initials.map(c => c || 'A').join('').slice(0, 3);
+        commitBestTake(ini);
+      } else if (k === 'Escape') {
+        commitBestTake('---');
+      } else if (k === 'Backspace') {
+        if (state.initials[state.initialsPos]) {
+          state.initials[state.initialsPos] = '';
+        } else if (state.initialsPos > 0) {
+          state.initialsPos -= 1;
+          state.initials[state.initialsPos] = '';
+        }
+      } else if (/^[a-zA-Z]$/.test(k)) {
+        state.initials[state.initialsPos] = k.toUpperCase();
+        state.initialsPos = Math.min(2, state.initialsPos + 1);
+      }
+    }
+
+    // The Phase-3 death flow state machine: freeze -> tumble -> screen.
+    function updateDeath(dt) {
+      state.deathTimer += dt;
+
+      if (state.deathPhase === 'freeze') {
+        // ~0.1s hit-freeze: everything holds still on the killing blow.
+        if (state.deathTimer >= CONFIG.hitFreezeTime) {
+          state.deathPhase = 'tumble';
+          state.deathTimer = 0;
+          player.vy = -CONFIG.tumblePop;
+          player.vx = -70 * (player.facing || 1);
+          player.angularVel = CONFIG.tumbleSpin * (player.facing >= 0 ? 1 : -1);
+          spawnDizzyStars();
+        }
+        return;
+      }
+
+      if (state.deathPhase === 'tumble') {
+        // Comedic tumble: pop up, spin, bounce off the ground, stars orbiting.
+        player.vy += CONFIG.tumbleGravity * dt;
+        player.x += player.vx * dt;
+        player.y += player.vy * dt;
+        player.angle += player.angularVel * dt;
+
+        const groundY = canvas.clientHeight * 0.72;
+        if (player.y >= groundY) {
+          player.y = groundY;
+          if (player.vy > 40) {
+            player.vy *= -CONFIG.tumbleBounce;
+            player.vx *= 0.6;
+            player.angularVel *= 0.6;
+          } else {
+            player.vy = 0;
+          }
+        }
+        updateDizzyStars(dt);
+
+        if (state.deathTimer >= CONFIG.tumbleTime) {
+          const finalScore = getScore();
+          if (qualifiesForBestTake(finalScore)) {
+            state.deathPhase = 'initials';   // arcade entry, then → sleep screen
+            state.deathTimer = 0;
+            state.pendingScore = finalScore;
+            state.initials = ['', '', ''];
+            state.initialsPos = 0;
+          } else {
+            state.newTakeIndex = -1;
+            finalizeDeath();                 // straight back to the sleep screen
+          }
+        }
+        return;
+      }
+
+      if (state.deathPhase === 'initials') {
+        updateDizzyStars(dt);   // input-driven; handled in handleInitialsKey
+      }
+    }
+
+    // Sleep screen: animate, and wake into a run on any key once the dead-zone clears.
+    function updateSleep(dt) {
+      state.deadZoneTimer += dt;
+      if (state.deadZoneTimer >= CONFIG.deadZone && input.anyPressed) {
+        startRun();
+        clearInputFlags();
+      }
+    }
+
+    function clearInputFlags() {
+      input.anyPressed = false;
+      input.jumpPressed = false;
+      input.jumpReleased = false;
+      input.dashPressed = false;
+      input.keys.clear();
+      input.left = input.right = input.up = input.down = false;
+    }
+
+    function inputPressed(key) {
+      return input.keys.has(key);
+    }
+
+    function handleKeyDown(event) {
+      // Arcade initials entry captures the keyboard exclusively.
+      if (state.deathPhase === 'initials') {
+        AUDIO.unlock();
+        handleInitialsKey(event);
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+      if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' ', 'd', 'h', 'm'].includes(key)) {
+        event.preventDefault();
+      }
+
+      // First keypress unlocks the audio context (browser autoplay policy).
+      AUDIO.unlock();
+
+      if (key === 'h') {
+        CONFIG.debug = !CONFIG.debug;
+        return;
+      }
+
+      if (key === 'm') {           // mute — never wakes/starts
+        toggleMute();
+        return;
+      }
+
+      // Any key (except debug 'h' and mute 'm') counts as the wake/restart press.
+      input.anyPressed = true;
+
+      if (key === 'd') {
+        input.dashPressed = true;
+      }
+
+      input.keys.add(key);
+      if (key === 'arrowleft' || key === 'a') input.left = true;
+      if (key === 'arrowright') input.right = true;
+      if (key === 'arrowup' || key === 'w' || key === ' ') input.up = true;
+      if (key === 'arrowdown' || key === 's') input.down = true;
+      if (key === 'arrowup' || key === 'w' || key === ' ') {
+        input.jumpPressed = true;
+      }
+    }
+
+    function handleKeyUp(event) {
+      const key = event.key.toLowerCase();
+      input.keys.delete(key);
+      if (key === 'arrowleft' || key === 'a') input.left = false;
+      if (key === 'arrowright') input.right = false;
+      if (key === 'arrowup' || key === 'w' || key === ' ') input.up = false;
+      if (key === 'arrowdown' || key === 's') input.down = false;
+      if (key === 'arrowup' || key === 'w' || key === ' ') {
+        input.jumpReleased = true;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('resize', resizeCanvas);
+
+    // Click the top-right speaker to toggle mute; click Blu for a random meow.
+    // Neither ever wakes or restarts the game.
+    canvas.addEventListener('click', (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width * canvas.clientWidth;
+      const y = (event.clientY - rect.top) / rect.height * canvas.clientHeight;
+      AUDIO.unlock();
+      if (x > canvas.clientWidth - 56 && y < 52) {
+        toggleMute();
+        return;
+      }
+      if (hitBlu(x, y)) AUDIO.playMeow();
+    });
+
+    // ---- Touch controls (Phase 9) ----
+    // tap = jump (tap again mid-air = double jump) · swipe →/← = dash that way ·
+    // swipe ↓ = dive/slide (hold low to keep sliding) · hold a screen half = move ·
+    // tap Blu = meow · tap the speaker = mute. None of these misread as another.
+    const touches = new Map();   // identifier -> { sx, sy, st, x, y, mode }
+
+    function canvasPoint(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (clientX - rect.left) / rect.width * canvas.clientWidth,
+        y: (clientY - rect.top) / rect.height * canvas.clientHeight,
+      };
+    }
+    function hitMute(x, y) { return x > canvas.clientWidth - 56 && y < 52; }
+    function hitBlu(x, y) {
+      let bx, by;
+      if (state.mode === 'sleep') { bx = canvas.clientWidth / 2; by = canvas.clientHeight * 0.72 - 30; }
+      else { bx = player.x; by = player.y - 22; }
+      return Math.abs(x - bx) < 50 && Math.abs(y - by) < 50;
+    }
+
+    function onTouchStart(event) {
+      event.preventDefault();
+      state.touchDevice = true;
+      AUDIO.unlock();
+      for (const t of event.changedTouches) {
+        const p = canvasPoint(t.clientX, t.clientY);
+        if (hitMute(p.x, p.y)) { toggleMute(); continue; }
+        if (hitBlu(p.x, p.y)) { AUDIO.playMeow(); continue; }              // never wakes/starts
+        if (state.mode === 'sleep') { input.anyPressed = true; continue; } // tap anywhere to wake
+        if (player.dead) {
+          if (state.deathPhase === 'initials') commitBestTake('---');      // no keyboard → skip entry
+          else input.anyPressed = true;
+          continue;
+        }
+        touches.set(t.identifier, { sx: p.x, sy: p.y, st: state.time, x: p.x, y: p.y, mode: 'pending' });
+      }
+    }
+
+    function onTouchMove(event) {
+      event.preventDefault();
+      for (const t of event.changedTouches) {
+        const rec = touches.get(t.identifier);
+        if (!rec) continue;
+        const p = canvasPoint(t.clientX, t.clientY);
+        rec.x = p.x; rec.y = p.y;
+        if (rec.mode !== 'pending') continue;
+        const dx = p.x - rec.sx, dy = p.y - rec.sy;
+        const fast = (state.time - rec.st) < CONFIG.touchSwipeMs / 1000;
+        if (fast && Math.abs(dx) > CONFIG.touchSwipePx && Math.abs(dx) > Math.abs(dy)) {
+          input.dashPressed = true; input.dashDir = dx > 0 ? 1 : -1;       // swipe = dash that way
+          rec.mode = 'consumed';
+        } else if (fast && dy > CONFIG.touchSwipePx && Math.abs(dy) > Math.abs(dx)) {
+          rec.mode = 'slide';                                              // swipe down = dive/slide
+        }
+      }
+    }
+
+    function onTouchEnd(event) {
+      event.preventDefault();
+      for (const t of event.changedTouches) {
+        const rec = touches.get(t.identifier);
+        if (!rec) continue;
+        const held = state.time - rec.st;
+        const moved = Math.hypot(rec.x - rec.sx, rec.y - rec.sy);
+        if (rec.mode === 'pending' && held < CONFIG.touchTapMs / 1000 && moved < 24) {
+          input.jumpPressed = true;                       // tap = jump (mid-air = double jump)
+          state.touchUpTimer = CONFIG.touchJumpHold;       // brief hold → a proper hop height
+        }
+        touches.delete(t.identifier);
+      }
+    }
+
+    // Recompute held directions from the live touches each frame.
+    function updateTouchHolds(dt) {
+      if (state.touchUpTimer > 0) state.touchUpTimer = Math.max(0, state.touchUpTimer - dt);
+      if (!state.touchDevice) return;
+      let left = false, right = false, down = false;
+      const half = canvas.clientWidth / 2;
+      for (const rec of touches.values()) {
+        if (rec.mode === 'pending' && (state.time - rec.st) > CONFIG.touchTapMs / 1000) rec.mode = 'move';
+        if (rec.mode === 'move') { if (rec.x < half) left = true; else right = true; }
+        else if (rec.mode === 'slide') down = true;
+      }
+      input.left = left;
+      input.right = right;
+      input.down = down;
+      input.up = state.touchUpTimer > 0;
+    }
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+    // Freeze cleanly when the tab is hidden; on return, avoid a huge dt jump.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) state.lastTime = performance.now();
+    });
+
+    function updateInput(dt) {
+      // While dead or on the sleep screen, leave input flags intact so
+      // updateDeath()/updateSleep() can read the wake/restart press.
+      if (player.dead || state.mode === 'sleep') return;
+
+      if (input.jumpPressed) {
+        player.jumpBufferTimer = CONFIG.jumpBufferTime;
+      }
+      input.jumpPressed = false;
+      input.jumpReleased = false;
+      input.anyPressed = false;
+      // NOTE: input.dashPressed is consumed in updatePlayer's dash block, not here —
+      // clearing it here would eat the press before the dash could ever fire.
+    }
+
+    function updatePlayer(dt) {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const groundedPrev = player.onGround;
+
+      if (player.dead) {
+        return;
+      }
+
+      const moveDir = (input.left ? -1 : 0) + (input.right ? 1 : 0);
+      player.facing = player.dashTimer > 0 ? player.dashDirection : (input.left && !input.right ? -1 : 1);
+
+      const onGroundPrev = player.onGround;
+      const wasSliding = player.isSliding;
+
+      if (player.onGround) {
+        player.coyoteTimer = 0;
+      } else {
+        player.coyoteTimer = Math.max(0, player.coyoteTimer - dt);
+      }
+
+      if (player.jumpBufferTimer > 0) {
+        player.jumpBufferTimer = Math.max(0, player.jumpBufferTimer - dt);
+      }
+
+      if (player.dashTimer > 0) {
+        player.dashTimer = Math.max(0, player.dashTimer - dt);
+      }
+      if (player.dashCooldown > 0) {
+        player.dashCooldown = Math.max(0, player.dashCooldown - dt);
+      }
+
+      if (player.onGround) {
+        player.doubleJumpsLeft = 1;
+        player.airDashUsed = false;
+      }
+
+      // Crouch / slide logic
+      if (player.onGround && input.down) {
+        player.isSliding = true;
+        player.slideHold = true;
+      } else if (player.onGround) {
+        player.isSliding = false;
+        player.slideHold = false;
+      }
+
+      // Horizontal movement
+      const maxSpeed = player.onGround ? CONFIG.maxGroundSpeed : CONFIG.maxAirSpeed;
+      const accel = player.onGround ? CONFIG.moveAccel : CONFIG.moveAccel * 0.86;
+      const decel = player.onGround ? CONFIG.moveDecel : CONFIG.moveDecel * 0.85;
+
+      if (moveDir !== 0) {
+        const targetVx = maxSpeed * moveDir;
+        const accelRate = accel * dt;
+        if (Math.sign(player.vx) === moveDir || player.vx === 0) {
+          player.vx += targetVx > player.vx ? accelRate : -accelRate;
+        } else {
+          player.vx += targetVx > player.vx ? accelRate : -accelRate;
+        }
+        player.vx = Math.max(-maxSpeed, Math.min(maxSpeed, player.vx));
+      } else {
+        const decelRate = decel * dt;
+        if (player.vx > 0) {
+          player.vx = Math.max(0, player.vx - decelRate);
+        } else if (player.vx < 0) {
+          player.vx = Math.min(0, player.vx + decelRate);
+        }
+      }
+
+      // Dash logic — the press is consumed here (see updateInput note).
+      if (input.dashPressed) {
+        const canDash = player.dashCooldown <= 0 && player.dashTimer <= 0
+          && (player.onGround || !player.airDashUsed);   // one air dash per airtime
+        if (canDash) {
+          if (!player.onGround) player.airDashUsed = true;
+          player.dashDirection = input.dashDir || player.facing;   // touch swipe forces a direction
+          player.facing = player.dashDirection;
+          player.dashTimer = CONFIG.dashDuration;
+          player.dashCooldown = CONFIG.dashCooldown;
+          player.vx = player.dashDirection * CONFIG.dashSpeed;
+          player.invulnTimer = CONFIG.dashDuration;
+          dashDust(player.x + player.cameraX, player.y, player.dashDirection);
+          AUDIO.playSfx('dash');
+        }
+        input.dashPressed = false;
+        input.dashDir = 0;
+      }
+
+      // Jump logic
+      const canJump = player.onGround || player.coyoteTimer > 0;
+      if (player.jumpBufferTimer > 0 && (canJump || player.doubleJumpsLeft > 0)) {
+        if (canJump && (player.onGround || player.coyoteTimer > 0)) {
+          player.vy = -CONFIG.jumpForce;
+          player.onGround = false;
+          player.coyoteTimer = 0;
+          player.jumpBufferTimer = 0;
+          player.isSliding = false;
+          player.slideHold = false;
+          AUDIO.playSfx('jump');
+        } else if (player.doubleJumpsLeft > 0 && !player.onGround) {
+          player.vy = -CONFIG.jumpForce * 0.94;
+          player.doubleJumpsLeft = 0;
+          player.jumpBufferTimer = 0;
+          player.isSliding = false;
+          player.slideHold = false;
+          AUDIO.playSfx('doublejump');
+        }
+      }
+
+      if (!input.up) {
+        if (player.vy < -CONFIG.jumpCutoff) {
+          player.vy = -CONFIG.jumpCutoff;
+        }
+      }
+
+
+      // Gravity
+      const gravityNow = player.vy < 0 ? CONFIG.gravity : CONFIG.fallGravity;
+      if (player.dashTimer > 0) {
+        player.vy = 0;
+      }
+      if (player.onGround) {
+        player.vy = 0;
+      } else {
+        player.vy += gravityNow * dt;
+      }
+
+      // Dive / fast fall (whoosh plays once when the dive starts)
+      if (!player.onGround && input.down) {
+        player.vy += (CONFIG.fallGravity * CONFIG.diveFallMult - CONFIG.fallGravity) * dt;
+        if (!player.diving) { AUDIO.playSfx('dive'); player.diving = true; }
+      } else {
+        player.diving = false;
+      }
+
+      // Apply horizontal + vertical movement
+      player.prevX = player.x;
+      player.prevY = player.y;
+      player.x += player.vx * dt;
+      player.y += player.vy * dt;
+
+      // Keep player within soft bounds without snapping back to a fixed point.
+      const leftBound = width * CONFIG.leftDeathX;
+      const rightBound = width * 0.96;
+      player.x = Math.max(leftBound, Math.min(rightBound, player.x));
+      player.screenX = player.x;
+      player.worldX = player.x + player.cameraX;
+
+      // Ground collision (simple)
+      const groundY = height * 0.72;
+      if (player.y >= groundY) {
+        const impactVy = player.vy;
+        player.y = groundY;
+        player.vy = 0;
+        player.onGround = true;
+        if (!groundedPrev) {
+          if (impactVy > 140) { player.landTimer = CONFIG.landSquashTime; dustBurst(player.worldX, groundY, player.facing); }
+          if (input.down) {
+            player.isSliding = true;
+            player.slideHold = true;
+          }
+        }
+      } else {
+        player.onGround = false;
+      }
+
+      // Jump out of slide
+      if (player.onGround && player.isSliding && input.up && player.jumpBufferTimer <= 0) {
+        player.isSliding = false;
+        player.slideHold = false;
+        player.vy = -CONFIG.jumpForce * 0.92;
+        player.onGround = false;
+        AUDIO.playSfx('jump');
+      }
+
+      if (player.onGround && !player.isSliding) {
+        player.onGround = true;
+      }
+
+      if (!player.onGround && groundedPrev) {
+        player.coyoteTimer = CONFIG.coyoteTime;
+      }
+
+      if (player.onGround && !groundedPrev) {
+        player.doubleJumpsLeft = 1;
+        if (input.down) {
+          player.isSliding = true;
+          player.slideHold = true;
+        }
+      }
+
+      if (player.invulnTimer > 0) {
+        player.invulnTimer = Math.max(0, player.invulnTimer - dt);
+      }
+      if (player.shieldBreakTimer > 0) {
+        player.shieldBreakTimer = Math.max(0, player.shieldBreakTimer - dt);
+      }
+      if (player.landTimer > 0) player.landTimer = Math.max(0, player.landTimer - dt);
+      if (state.wakeTimer > 0) state.wakeTimer = Math.max(0, state.wakeTimer - dt);
+
+      if (player.onGround) {
+        player.lastGroundY = player.y;
+      }
+
+      // Left-edge death
+      const leftEdge = width * CONFIG.leftDeathX;
+      if (player.x < leftEdge) {
+        triggerDeath('LEFT BEHIND');
+      }
+
+      // Camera and meters update
+      const nextSpeed = CONFIG.baseScrollSpeed + CONFIG.scrollSpeedRamp * Math.max(0, player.meters / 100);
+      state.scrollSpeed = nextSpeed;
+      player.cameraX += state.scrollSpeed * dt;
+      player.meters += state.scrollSpeed * dt / 8;
+      if (player.meters > 0) {
+        state.glowAmount = Math.min(1, (width * 0.18 - (player.x - leftEdge)) / (width * 0.16));
+      }
+
+      spawnObstacles();
+      spawnEnemies();
+      spawnPickups();
+      pruneObstacles();
+      pruneEnemies();
+      prunePickups();
+      resolveSolidCollisions();
+      updateEnemies(dt);
+      updatePickups(dt);
+      collectPickups();
+      resolveEnemyCollisions();
+
+    }
+
+    // Draw a repeating element across the screen at a given parallax factor.
+    function repeatX(spacing, parallax, w, drawFn) {
+      const off = ((player.cameraX * parallax) % spacing + spacing) % spacing;
+      for (let x = -off - spacing; x < w + spacing; x += spacing) drawFn(x);
+    }
+
+    // The three rooms. Palette darkens room → room so white Blu keeps popping.
+    const ROOMS = [
+      { // STAGE 1 — FILAMENT AUDIO repair shop
+        wall: '#efe0c4', floor: '#b3925f', floorTop: '#c9995e', plank: '#a3855a',
+        far(w, h, g) {
+          repeatX(900, 0.15, w, (x) => {
+            px(x + 560, 20, 150, 44, '#f5b862'); px(x + 564, 24, 142, 36, '#3a2f24');   // neon box
+            ctx.fillStyle = '#ff9c4a'; ctx.textAlign = 'center';
+            ctx.font = 'bold 15px monospace'; ctx.fillText('FILAMENT', x + 635, 42);
+            ctx.font = 'bold 11px monospace'; ctx.fillText('AUDIO', x + 635, 57);
+            px(x + 60, 30, 150, 82, '#dfcaa6');                                          // pegboard
+            for (let i = 0; i < 6; i += 1) for (let j = 0; j < 2; j += 1) px(x + 74 + i * 22, 40 + j * 58, 3, 3, '#b39468');
+            px(x + 80, 58, 30, 6, '#8a8378'); px(x + 150, 48, 7, 26, '#b8563e');         // tools
+          });
+        },
+        mid(w, h, g) {
+          repeatX(560, 0.4, w, (x) => {
+            const sy = g - 150;
+            px(x + 40, sy + 40, 160, 8, '#8a6f4d');                                      // shelf
+            px(x + 50, sy + 16, 40, 24, '#7a5c3d'); px(x + 54, sy + 22, 32, 14, '#c9b393');
+            px(x + 100, sy + 12, 44, 28, '#6e5637'); px(x + 104, sy + 19, 36, 16, '#c9b393');
+            px(x + 150, sy + 18, 36, 22, '#7a5c3d'); px(x + 154, sy + 24, 28, 12, '#c9b393');
+            const by = g - 46;                                                           // workbench + glowing tubes
+            px(x + 300, by - 6, 120, 10, '#6e5637'); px(x + 306, by + 4, 10, 42, '#5c4a33'); px(x + 410, by + 4, 10, 42, '#5c4a33');
+            px(x + 330, by - 34, 60, 28, '#7a5c3d');
+            const gl = 0.6 + 0.4 * Math.abs(Math.sin(state.time * 3));
+            for (let i = 0; i < 3; i += 1) px(x + 340 + i * 12, by - 30, 5, 8, `rgba(245,184,98,${gl})`);
+          });
+        },
+      },
+      { // STAGE 2 — THE STUDIO
+        wall: '#6e5a44', floor: '#55432f', floorTop: '#4a3a2b', plank: '#3f342a',
+        far(w, h, g) {
+          const off = ((player.cameraX * 0.15) % 40 + 40) % 40;                          // foam checker
+          for (let x = -off; x < w; x += 40) for (let y = 10; y < g - 40; y += 40) {
+            if ((Math.round((x + off) / 40) + Math.round(y / 40)) % 2 === 0) px(x, y, 36, 36, '#5a4936');
+          }
+          repeatX(900, 0.15, w, (x) => {
+            px(x + 600, 24, 158, 44, '#e84a4a'); px(x + 604, 28, 150, 36, '#241c14');    // RECORDING sign
+            const on = Math.floor(state.time * 1.1) % 2 === 0;                           // ~1s blink
+            px(x + 614, 42, 9, 9, on ? '#ff5a5a' : '#5a1a1a');
+            ctx.fillStyle = on ? '#ff5a5a' : '#7a2a2a'; ctx.textAlign = 'center';
+            ctx.font = 'bold 13px monospace'; ctx.fillText('RECORDING', x + 692, 52);
+          });
+        },
+        mid(w, h, g) {
+          repeatX(600, 0.4, w, (x) => {
+            const cy = g - 52;
+            px(x + 120, cy, 300, 44, '#3f342a'); px(x + 130, cy - 10, 280, 12, '#4a3e30'); // console
+            for (let i = 0; i < 12; i += 1) { px(x + 140 + i * 22, cy - 8, 4, 8, '#c9b393'); px(x + 140 + i * 22, cy + 10, 4, 4, '#e8a06a'); }
+            px(x + 40, cy - 4, 44, 50, '#2e2822'); px(x + 50, cy + 8, 24, 24, '#4a4238');   // monitors
+            px(x + 440, cy - 4, 44, 50, '#2e2822'); px(x + 450, cy + 8, 24, 24, '#4a4238');
+          });
+        },
+      },
+      { // STAGE 3 — THE STAGE (live venue)
+        wall: '#2e2822', floor: '#3a2e20', floorTop: '#f0b45c', plank: '#241c14',
+        far(w, h, g) {
+          px(0, 14, w, 8, '#1c1814');                                                     // truss bar
+          repeatX(200, 0.1, w, (x) => {
+            const cx = x + 100;
+            px(cx - 12, 22, 24, 16, '#3a332a'); px(cx - 6, 38, 12, 6, '#f5c542');         // light can
+            const sweep = Math.sin(state.time * 0.6 + cx * 0.01) * 44;                    // slow beam sweep
+            ctx.fillStyle = 'rgba(245,197,66,0.10)';
+            ctx.beginPath(); ctx.moveTo(cx, 44); ctx.lineTo(cx - 40 + sweep, g); ctx.lineTo(cx + 40 + sweep, g); ctx.closePath(); ctx.fill();
+          });
+        },
+        mid(w, h, g) {
+          const off = ((player.cameraX * 0.5) % 66 + 66) % 66;                            // crowd silhouettes
+          for (let x = -off; x < w; x += 66) {
+            px(x, g - 30, 26, 30, '#14100c'); px(x + 6, g - 44, 14, 14, '#14100c');
+            const ny = g - 54 - ((state.time * 22 + x) % 46);                             // notes float up
+            px(x + 10, ny, 8, 8, '#3a2f24'); px(x + 18, ny + 2, 3, 6, '#3a2f24');
+          }
+          px(0, g - 2, w, 3, 'rgba(240,180,92,0.6)');                                      // amber stage lip
+        },
+      },
+    ];
+
+    // Curtain doorways sit at the room boundaries (every 900m = 7200 world px).
+    function drawDoorway(w, h, g) {
+      const period = CONFIG.enemyStageLength * 8;
+      const kNext = Math.ceil(player.cameraX / period);
+      [kNext, kNext - 1].forEach((k) => {
+        if (k <= 0) return;
+        const sx = k * period - player.cameraX;
+        if (sx < -30 || sx > w + 30) return;
+        px(sx - 28, 0, 56, 10, '#6e5637');                                                // top bar
+        px(sx - 24, 8, 48, g - 8, '#5c4a33');
+        for (let i = 0; i < 5; i += 1) px(sx - 20 + i * 9, 10, 5, g - 12, i % 2 ? '#b8563e' : '#c96f4a'); // curtain
+      });
+    }
+
+    function drawBackground() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const g = h * 0.72;
+      const room = ROOMS[getStageIndex() % 3];
+      px(0, 0, w, g, room.wall);
+      room.far(w, h, g);
+      room.mid(w, h, g);
+      drawDoorway(w, h, g);
+      px(0, g, w, h - g, room.floor);                                                     // ground
+      px(0, g - 3, w, 3, room.floorTop);
+      const plankOff = ((player.cameraX % 90) + 90) % 90;
+      for (let x = -plankOff; x < w; x += 90) px(x, g, 3, h - g, room.plank);
+    }
+
+    // Fill a pixel rect (no outlines — soft flat shapes, per the sheet).
+    function px(x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+    }
+
+    // ---- particles (pooled) ----
+    // Positions are world-space (wx) so ground dust stays anchored as it scrolls.
+    function spawnParticle(wx, y, vx, vy, life, size, color, grav) {
+      // Halve particle load on small screens (mobile) to keep it smooth.
+      if (canvas.clientWidth < CONFIG.smallScreenW && Math.random() < 0.5) return;
+      for (const p of particles) {
+        if (!p.active) {
+          p.active = true; p.wx = wx; p.y = y; p.vx = vx; p.vy = vy;
+          p.life = life; p.maxLife = life; p.size = size; p.color = color; p.grav = grav || 0;
+          return;
+        }
+      }
+      // pool exhausted → drop the request (natural cap on heavy frames)
+    }
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function dustBurst(wx, y, dir) {
+      for (let i = 0; i < 6; i += 1) spawnParticle(wx + rnd(-6, 6), y, rnd(-40, 40) - dir * 30, rnd(-60, -10), rnd(0.25, 0.45), rnd(2, 4), '#d9c9a8', 260);
+    }
+    function dashDust(wx, y, dir) {
+      for (let i = 0; i < 8; i += 1) spawnParticle(wx, y - rnd(0, 26), -dir * rnd(60, 160), rnd(-20, 20), rnd(0.2, 0.4), rnd(2, 4), '#e8d6b8', 60);
+    }
+    function sparkle(wx, y, color) {
+      for (let i = 0; i < 7; i += 1) spawnParticle(wx + rnd(-8, 8), y + rnd(-8, 8), rnd(-50, 50), rnd(-90, -20), rnd(0.3, 0.55), rnd(2, 3), color, 120);
+    }
+    function shatter(wx, y) {
+      for (let i = 0; i < 10; i += 1) spawnParticle(wx, y, rnd(-140, 140), rnd(-150, 40), rnd(0.35, 0.6), rnd(2, 4), '#4a90d9', 380);
+    }
+    function deathPuff(wx, y) {
+      for (let i = 0; i < 14; i += 1) spawnParticle(wx + rnd(-10, 10), y - rnd(0, 30), rnd(-120, 120), rnd(-160, -20), rnd(0.4, 0.75), rnd(3, 5), i % 2 ? '#c9b393' : '#fbf6ea', 300);
+    }
+
+    function updateParticles(dt) {
+      for (const p of particles) {
+        if (!p.active) continue;
+        p.vy += p.grav * dt;
+        p.wx += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+        if (p.life <= 0) p.active = false;
+      }
+    }
+
+    function drawParticles() {
+      for (const p of particles) {
+        if (!p.active) continue;
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life / p.maxLife));
+        px(p.wx - player.cameraX, p.y, p.size, p.size, p.color);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function countActiveParticles() {
+      let n = 0;
+      for (const p of particles) if (p.active) n += 1;
+      return n;
+    }
+
+    // Runs every frame regardless of mode so effects decay/settle smoothly.
+    function updateEffects(dt) {
+      updateParticles(dt);
+      if (state.shakeMag > 0) state.shakeMag = Math.max(0, state.shakeMag - CONFIG.shakeDecay * dt);
+      if (state.flashTimer > 0) state.flashTimer = Math.max(0, state.flashTimer - dt);
+    }
+
+    function drawObstacles() {
+      const A = CONFIG.art;
+      const groundY = canvas.clientHeight * 0.72;
+      // Tube glow rides up with speed (tubes glow brighter the faster you go).
+      const speedFactor = Math.min(1, (state.scrollSpeed - CONFIG.baseScrollSpeed) / 240);
+      for (const obstacle of obstacles) {
+        const sx = obstacle.worldX - player.cameraX;
+        obstacle.screenX = sx;
+        const w = obstacle.width;
+        const h = obstacle.height;
+        const y = groundY - h;
+
+        if (obstacle.type === 'tube') {
+          px(sx, y, w, h, A.ampBody);
+          px(sx, y, w, Math.max(6, h * 0.26), A.ampTop);          // chassis top
+          for (let i = 0; i < 3; i += 1) px(sx + 5 + i * 7, y + 3, 3, 3, A.ampKnob); // knobs
+          const glow = `rgba(245,184,98,${0.6 + 0.4 * speedFactor})`;               // glowing tubes
+          for (let i = 0; i < 3; i += 1) px(sx + w - 20 + i * 6, y + 2, 3, Math.max(5, h * 0.16), glow);
+          px(sx + w * 0.08, y + h * 0.34, w * 0.84, h * 0.58, A.ampFace);           // grille face
+          for (let i = 1; i < 5; i += 1) px(sx + w * 0.08 + i * (w * 0.84 / 5), y + h * 0.34, 2, h * 0.58, A.ampSlat);
+        } else if (obstacle.type === 'cab') {
+          const half = h > 50 ? h / 2 : h;
+          for (let cabY = y; cabY < y + h - 1; cabY += half) {
+            const ch = Math.min(half, y + h - cabY);
+            px(sx, cabY, w, ch, A.cabFrame);
+            px(sx + 4, cabY + 4, w - 8, ch - 8, A.cabCloth);                        // speaker cloth
+            for (let gx = 0; gx < 3; gx += 1) for (let gy = 0; gy < 2; gy += 1) {
+              px(sx + 12 + gx * (w - 24) / 2, cabY + 8 + gy * (ch - 16), 3, 3, A.cabDot);
+            }
+          }
+        } else if (obstacle.type === 'bench') {
+          px(sx, y, w, Math.max(8, h * 0.36), A.benchTop);                          // plank
+          px(sx + 5, y + h * 0.4, 8, h * 0.6, A.benchLeg);                          // legs
+          px(sx + w - 13, y + h * 0.4, 8, h * 0.6, A.benchLeg);
+          px(sx + w * 0.35, y + 2, w * 0.28, Math.max(6, h * 0.3), A.benchMetal);   // chassis
+          for (let i = 0; i < 3; i += 1) px(sx + w * 0.4 + i * 10, y + 3, 4, 3, i === 1 ? A.benchTool : A.benchDark);
+        } else if (obstacle.type === 'crate') {
+          px(sx, y, w, h, A.crateBody);
+          px(sx, y + h * 0.34, w, 3, A.crateSlat);
+          px(sx, y + h * 0.7, w, 3, A.crateSlat);
+          const recs = [A.crateRecA, A.crateRecB, A.crateRecC, A.crateRecD];        // records poking out
+          for (let i = 0; i < 4; i += 1) {
+            px(sx + 6 + i * 11, y - 10, 5, 12, CONFIG.dark);
+            px(sx + 6 + i * 11, y - 10, 5, 3, recs[i % recs.length]);
+          }
+        } else if (obstacle.type === 'mic') {
+          px(sx + w / 2 - 2, y + 14, 4, h - 14, A.micPole);                          // pole
+          px(sx + w / 2 - 7, y, 14, 16, A.micHead);                                  // mic head
+          for (let gx = 0; gx < 2; gx += 1) for (let gy = 0; gy < 2; gy += 1) px(sx + w / 2 - 4 + gx * 4, y + 3 + gy * 4, 2, 2, A.micGrille);
+          px(sx + w / 2 - 10, y + h - 4, 20, 4, A.micPole);                          // base
+        } else {
+          px(sx, y, w, h, obstacle.color);
+        }
+      }
+    }
+
+    function drawEnemies() {
+      const A = CONFIG.art;
+      for (const enemy of enemies) {
+        const sx = enemy.worldX - player.cameraX;
+        const sy = enemy.worldY;
+        const w = enemy.width;
+        const h = enemy.height;
+
+        if (enemy.type === 'roomba') {
+          const frame = Math.floor(state.time * 6) % 2;              // blink + move
+          if (frame === 0) { px(sx - 8, sy + 4, 6, 2, A.roombaDash); px(sx - 8, sy + 9, 8, 2, A.roombaDash); } // motion dashes
+          px(sx, sy + 4, w, h - 4, A.roomba);                        // disc body
+          px(sx + w * 0.32, sy, w * 0.36, 6, A.roombaDome);          // dome
+          px(sx + w * 0.42, sy + 7, 4, 4, frame ? A.roombaEyeB : A.roombaEyeA); // blinking sensor
+          px(sx + w - 12, sy + 7, 3, 3, CONFIG.bluBody);
+          px(sx + w - 7, sy + 7, 3, 3, CONFIG.bluBody);
+          px(sx + 6, sy + h - 4, 8, 4, A.roombaWheel);
+          px(sx + w - 14, sy + h - 4, 8, 4, A.roombaWheel);
+        } else if (enemy.type === 'rat') {
+          const frame = Math.floor(state.time * 12) % 2;             // scurry
+          px(sx, sy + 6, 14, 3, A.ratTail);                          // tail (whips back)
+          px(sx + 12, sy + 4, 18, h - 4, A.rat);                     // body
+          px(sx + w - 12, sy + 6, 12, 10, A.rat);                    // head (front-right)
+          px(sx + w - 10, sy + 1, 5, 5, A.rat);                      // ear
+          px(sx + w - 3, sy + 10, 2, 2, A.ratNose);                  // pink nose
+          px(sx + w - 7, sy + 8, 3, 3, CONFIG.bluNose);              // eye
+          if (frame === 0) { px(sx + 14, sy + h - 2, 4, 4, A.ratFoot); px(sx + 24, sy + h - 2, 4, 4, A.ratFoot); }
+          else { px(sx + 18, sy + h - 2, 4, 4, A.ratFoot); px(sx + 28, sy + h - 2, 4, 4, A.ratFoot); }
+        } else if (enemy.type === 'drone') {
+          const blur = Math.floor(state.time * 20) % 2;              // prop blur frames
+          if (blur === 0) { px(sx, sy, 18, 3, A.droneProp); px(sx + w - 18, sy, 18, 3, A.droneProp); }
+          else { for (let i = 0; i < 3; i += 1) { px(sx + i * 7, sy, 5, 3, A.droneProp); px(sx + w - 19 + i * 7, sy, 5, 3, A.droneProp); } }
+          px(sx + 8, sy + 3, 3, 5, A.droneStalk);                    // rotor stalks
+          px(sx + w - 11, sy + 3, 3, 5, A.droneStalk);
+          px(sx + w * 0.28, sy + 8, w * 0.44, 12, A.drone);          // body
+          px(sx + w / 2 - 2, sy + 12, 4, 4, blur ? A.droneEyeB : A.droneEyeA); // sensor
+          px(sx + w * 0.32, sy + h - 3, 8, 3, A.droneRotor);
+          px(sx + w * 0.58, sy + h - 3, 8, 3, A.droneRotor);
+        }
+      }
+    }
+
+    function drawPickups() {
+      const A = CONFIG.art;
+      for (const p of pickups) {
+        const sx = p.worldX - player.cameraX;
+        const y = p.worldY + Math.sin(p.bob) * 4;
+        if (p.kind === 'note') {
+          // chunky note: head + stem + flag (bobbing)
+          px(sx, y + 10, 12, 9, A.noteDark);
+          px(sx + 12, y, 3, 12, A.noteDark);
+          px(sx + 15, y, 9, 6, A.noteDark);
+        } else if (p.kind === 'vinyl') {
+          const cx = sx + p.width / 2;
+          const cy = y + p.height / 2;
+          const r = p.width / 2;
+          // round-ish disc from stacked rects (no outline)
+          px(cx - r + 4, cy - r, 2 * r - 8, 2 * r, A.vinylDisc);
+          px(cx - r, cy - r + 4, 2 * r, 2 * r - 8, A.vinylDisc);
+          px(cx - 4, cy - 4, 8, 8, A.vinylLabel);                 // label
+          const f = Math.floor(p.spin / (Math.PI / 2)) % 3;        // 3-frame shine sweep
+          if (f === 0) px(cx - 4, cy - 4, 8, 2, A.vinylShine);
+          else if (f === 1) px(cx - 1, cy - 4, 2, 8, A.vinylShine);
+          else px(cx + 1, cy - 3, 2, 6, A.vinylShine);
+          px(cx - r + 2, cy + r - 6, 4, 4, A.vinylGroove);
+        } else if (p.kind === 'shield') {
+          // pulsing blue glow behind the headphones
+          const pulse = 0.14 + 0.1 * (Math.sin(p.bob) * 0.5 + 0.5);
+          ctx.fillStyle = `rgba(74,144,217,${pulse})`;
+          ctx.beginPath();
+          ctx.arc(sx + p.width / 2, y + p.height / 2, 16, 0, Math.PI * 2);
+          ctx.fill();
+          drawHeadphones(sx + p.width / 2, y + p.height / 2 + 2, 1, false);
+          if (Math.floor(p.bob * 2) % 2 === 0) {                   // glow-pulse sparkle bits
+            px(sx - 2, y, 3, 3, A.shieldAccent);
+            px(sx + p.width, y, 3, 3, A.shieldAccent);
+          }
+        }
+      }
+    }
+
+    // Pixel headphones (orange band, dark cups, blue accents) — shield pickup,
+    // worn Blu, and the HUD slot. `dim` greys it out for the empty HUD slot.
+    function drawHeadphones(cx, cy, scale, dim) {
+      const A = CONFIG.art;
+      const band = dim ? '#6a635a' : A.shieldBand;
+      const cup = dim ? '#4a463f' : A.shieldCup;
+      const accent = dim ? '#6a635a' : A.shieldAccent;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(scale, scale);
+      px(-12, -12, 24, 4, band);        // headband
+      px(-16, -8, 4, 10, band);
+      px(12, -8, 4, 10, band);
+      px(-14, 2, 10, 12, cup);          // ear cups
+      px(4, 2, 10, 12, cup);
+      px(-16, 0, 2, 10, accent);        // blue accents
+      px(14, 0, 2, 10, accent);
+      ctx.restore();
+    }
+
+    // Speaker icon (top-right) — shows a slash / sound waves per mute state.
+    function drawMuteIcon(cx, cy) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      const c = '#5c4a33';
+      px(-6, -4, 6, 8, c);              // speaker box
+      px(0, -8, 6, 16, c);              // cone
+      if (state.muted) {
+        ctx.strokeStyle = CONFIG.rust; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(12, 10); ctx.stroke();  // slash
+      } else {
+        px(9, -3, 2, 6, c); px(13, -6, 2, 12, c);                               // sound waves
+      }
+      ctx.restore();
+    }
+
+    function drawDizzyStars(cx, cy) {
+      ctx.save();
+      ctx.fillStyle = CONFIG.groundGlow;
+      for (const s of state.stars) {
+        const sx = cx + Math.cos(s.angle) * s.radius;
+        const sy = cy + Math.sin(s.angle) * s.radius * 0.5;
+        // tiny 4-point pixel star
+        ctx.fillRect(sx - 1, sy - 3, 2, 6);
+        ctx.fillRect(sx - 3, sy - 1, 6, 2);
+      }
+      ctx.restore();
+    }
+
+    function drawBluTumble() {
+      const B = CONFIG.bluBody, E = CONFIG.bluEar, N = CONFIG.bluNose;
+      ctx.save();
+      ctx.translate(player.x, player.y - 16);
+      ctx.rotate(player.angle);
+      // Curled ball
+      px(-16, -14, 32, 26, B);
+      px(-14, -18, 11, 6, B); px(-1, -18, 12, 6, B);
+      px(-13, -21, 5, 6, E); px(5, -21, 5, 6, E);     // ears
+      px(-16, 10, 10, 5, B); px(6, 10, 10, 5, B);     // tucked paws
+      // Dizzy X eyes
+      ctx.strokeStyle = N; ctx.lineWidth = 2;
+      const X = (ex) => { ctx.beginPath(); ctx.moveTo(ex - 3, -6); ctx.lineTo(ex + 3, 0); ctx.moveTo(ex + 3, -6); ctx.lineTo(ex - 3, 0); ctx.stroke(); };
+      X(-6); X(8);
+      px(14, 2, 10, 4, B); px(22, 0, 6, 4, E);        // tail + orange tip
+      ctx.restore();
+      // Stars orbit the head, in screen space
+      drawDizzyStars(player.x, player.y - 34);
+    }
+
+    function drawBlu() {
+      if (player.dead && state.deathPhase !== 'freeze') {
+        drawBluTumble();
+        return;
+      }
+      const B = CONFIG.bluBody, E = CONFIG.bluEar, EY = CONFIG.bluEye, N = CONFIG.bluNose, SH = CONFIG.bluShade, MK = CONFIG.bluMask;
+      const dir = player.facing;
+
+      let pose;
+      if (player.dashTimer > 0) pose = 'dash';
+      else if (player.isSliding) pose = 'slide';
+      else if (!player.onGround) {
+        if (input.down && player.vy > 40) pose = 'dive';
+        else if (player.vy < 0 && player.doubleJumpsLeft === 0) pose = 'tuck';
+        else pose = 'air';
+      } else pose = 'run';
+
+      const bob = pose === 'run' ? Math.round(Math.sin(state.time * 14) * 1.5) : 0;
+      let headX = 14, headY = -40;
+
+      // Squash & stretch: compress on landing, stretch toward the jump apex.
+      let sqX = 1, sqY = 1;
+      if (player.landTimer > 0) {
+        const k = player.landTimer / CONFIG.landSquashTime;
+        sqX = 1 + 0.30 * k; sqY = 1 - 0.28 * k;
+      } else if (!player.onGround) {
+        const s = Math.max(-0.6, Math.min(0.6, -player.vy / 700));
+        sqY = 1 + 0.16 * s; sqX = 1 - 0.10 * s;
+      }
+      // Wake-up startle pop on run start
+      let wakeBob = 0;
+      if (state.wakeTimer > 0) {
+        const w = 1 - state.wakeTimer / CONFIG.wakeStartleTime;
+        wakeBob = -Math.sin(w * Math.PI) * 7;
+        sqY *= 1 + 0.15 * Math.sin(w * Math.PI);
+      }
+      // Ears/whole-body twitch when an enemy is near ahead
+      let enemyNear = false;
+      for (const en of enemies) {
+        const esx = en.worldX - player.cameraX;
+        if (esx > player.x - 10 && esx - player.x < CONFIG.enemyNearDist && Math.abs(en.worldY - player.y) < 120) { enemyNear = true; break; }
+      }
+      const twitch = enemyNear && player.onGround ? Math.round(Math.sin(state.time * 36)) : 0;
+
+      ctx.save();
+      ctx.translate(player.x + twitch, player.y + bob + wakeBob);
+      ctx.scale(dir * sqX, sqY);
+
+      if (pose === 'run') {
+        px(-30, -26, 8, 4, B); px(-34, -30, 7, 4, B); px(-38, -33, 6, 4, E);   // tail
+        px(-20, -26, 30, 14, B);                                               // torso
+        px(4, -34, 20, 16, B);                                                 // head
+        px(6, -40, 5, 7, E); px(16, -40, 5, 7, E);                             // ears
+        px(7, -38, 3, 3, SH); px(17, -38, 3, 3, SH);
+        px(14, -24, 10, 5, MK); px(16, -28, 4, 4, EY); px(22, -24, 2, 2, N);   // mask/eye/nose
+        const cyc = state.time * 16 * (1 + Math.abs(player.vx) / 260);         // gallop
+        const L = (lx, ph) => { const len = 10 + Math.sin(cyc + ph) * 4; px(lx, -12, 4, len, SH); px(lx, -14 + len, 5, 2, SH); };
+        L(-16, 0); L(-6, Math.PI); L(2, Math.PI * 0.5); L(12, Math.PI * 1.5);
+        headX = 14; headY = -40;
+      } else if (pose === 'air') {
+        px(-16, -34, 6, 4, B); px(-20, -38, 6, 4, E);                          // tail up
+        px(-12, -40, 24, 26, B);                                              // stretched body
+        px(-8, -50, 20, 16, B);                                              // head up
+        px(-6, -56, 5, 7, E); px(6, -56, 5, 7, E);
+        px(6, -46, 4, 4, EY); px(12, -42, 2, 2, N); px(-2, -40, 10, 5, MK);
+        px(10, -26, 8, 5, SH);                                               // front paws reaching
+        px(-10, -16, 5, 8, SH); px(0, -16, 5, 8, SH);                         // back legs tucked
+        headX = 2; headY = -56;
+      } else if (pose === 'tuck') {
+        px(-15, -40, 30, 24, B);                                             // ball
+        px(2, -44, 20, 14, B);
+        px(4, -50, 5, 7, E); px(14, -50, 5, 7, E);
+        px(14, -40, 4, 4, EY); px(20, -36, 2, 2, N);
+        px(-10, -16, 6, 5, SH); px(6, -16, 6, 5, SH);                         // paws in
+        px(-18, -30, 7, 4, E);                                               // curled tail tip
+        headX = 8; headY = -50;
+      } else if (pose === 'dive') {
+        ctx.rotate(0.32);                                                     // nose-down tilt
+        px(-20, -28, 8, 4, E);
+        px(-14, -26, 28, 14, B);
+        px(10, -22, 20, 14, B);
+        px(12, -30, 5, 6, E); px(2, -28, 5, 6, E);                           // ears back
+        px(22, -18, 4, 4, EY); px(28, -12, 2, 2, N);
+        px(18, -10, 8, 5, SH);
+        headX = 18; headY = -30;
+      } else if (pose === 'slide') {
+        px(-30, -12, 8, 2, SH); px(-30, -8, 10, 2, SH);                       // motion lines
+        px(-22, -16, 40, 12, B);
+        px(12, -18, 22, 14, B);
+        px(4, -20, 5, 5, E); px(-4, -18, 5, 5, E);                           // ears back
+        px(24, -14, 4, 4, EY); px(31, -10, 2, 2, N);
+        px(28, -6, 10, 4, SH);                                               // front paws stretched
+        headX = 18; headY = -20;
+      } else if (pose === 'dash') {
+        for (let i = 0; i < 4; i += 1) px(-32 - i * 6, -24 + i * 3, 8, 2, `rgba(232,160,106,${0.5 - i * 0.1})`);
+        px(-26, -26, 48, 14, B);                                             // elongated body
+        px(14, -28, 20, 15, B);
+        px(16, -33, 5, 5, E); px(8, -31, 5, 5, E);                           // ears back
+        px(26, -22, 4, 3, EY); px(32, -18, 2, 2, N);
+        px(-26, -14, 6, 8, SH); px(-14, -14, 6, 8, SH);                       // trailing legs
+        headX = 20; headY = -33;
+      }
+
+      // Worn headphone shield (flickers during the ~0.5s break window)
+      const flickering = player.shieldBreakTimer > 0 && Math.floor(state.time * 20) % 2 === 0;
+      if (player.hasShield || flickering) {
+        drawHeadphones(headX, headY + 6, 0.7, false);
+      }
+
+      ctx.restore();
+    }
+
+    function drawUI() {
+      const width = canvas.clientWidth;
+      ctx.save();
+      ctx.textAlign = 'left';
+
+      // Distance (big)
+      ctx.fillStyle = '#5c4a33'; ctx.font = 'bold 26px monospace';
+      ctx.fillText(`${Math.floor(player.meters)}m`, 20, 40);
+
+      // Speed chevrons (more ▸ = faster)
+      const spd = Math.min(5, Math.max(1, Math.floor((state.scrollSpeed - CONFIG.baseScrollSpeed) / 60) + 1));
+      ctx.fillStyle = '#b8563e'; ctx.font = 'bold 13px monospace';
+      ctx.fillText(`SPD ${'▸'.repeat(spd)}`, 20, 60);
+
+      // Dash cooldown bar (refills; brighter orange when ready)
+      px(20, 68, 90, 8, '#d6c5a2');
+      const ready = player.dashCooldown <= 0;
+      const fill = ready ? 1 : 1 - player.dashCooldown / CONFIG.dashCooldown;
+      px(20, 68, 90 * fill, 8, ready ? '#f0b45c' : '#e8a06a');
+
+      // Pickup points
+      ctx.fillStyle = '#5c4a33'; ctx.font = 'bold 14px monospace';
+      ctx.fillText(`PTS ${player.points}`, 20, 98);
+
+      // Shield slot: gray headphones → lit (blue) when held
+      drawHeadphones(40, 120, 0.9, !player.hasShield);
+
+      // Mute speaker, top-right
+      drawMuteIcon(width - 30, 30);
+      ctx.restore();
+    }
+
+    function drawDebug() {
+      if (!CONFIG.debug) return;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.save();
+      ctx.font = '14px monospace';
+      ctx.fillStyle = 'rgba(0,0,0,0.76)';
+      ctx.fillRect(12, 96, 250, 162);
+      ctx.fillStyle = '#fbf6ea';
+      ctx.fillText(`vx ${player.vx.toFixed(1)} vy ${player.vy.toFixed(1)}`, 20, 118);
+      ctx.fillText(`ground ${player.onGround ? 'Y' : 'N'} slide ${player.isSliding ? 'Y' : 'N'}`, 20, 138);
+      ctx.fillText(`double ${player.doubleJumpsLeft > 0 ? 'Y' : 'N'}`, 20, 158);
+      ctx.fillText(`speed ${state.scrollSpeed.toFixed(1)} m/s`, 20, 178);
+      ctx.fillText(`stage ${state.stageIndex + 1}`, 20, 198);
+      ctx.fillText(`dash ${player.dashCooldown > 0 ? 'CD' : 'OK'}`, 20, 218);
+      ctx.fillText(`obs ${obstacles.length} ene ${enemies.length} pk ${pickups.length} ptcl ${countActiveParticles()}`, 20, 238);
+      ctx.restore();
+
+      // Hitboxes
+      ctx.strokeStyle = 'rgba(255,80,80,0.8)';
+      ctx.strokeRect(player.x - player.width / 2, player.y - player.height + 1, player.width, player.height * (player.isSliding ? CONFIG.slideHeight : 1));
+      ctx.strokeStyle = 'rgba(80,120,255,0.8)';
+      for (const obstacle of obstacles) {
+        const screenX = obstacle.worldX - player.cameraX;
+        ctx.strokeRect(screenX, canvas.clientHeight * 0.72 - obstacle.height, obstacle.width, obstacle.height);
+      }
+      ctx.strokeStyle = 'rgba(255,200,80,0.8)';
+      for (const enemy of enemies) {
+        const screenX = enemy.worldX - player.cameraX;
+        ctx.strokeRect(screenX, enemy.worldY, enemy.width, enemy.height);
+      }
+      ctx.strokeStyle = 'rgba(80,120,255,0.8)';
+      ctx.strokeRect(width * CONFIG.leftDeathX, 0, 2, height);
+    }
+
+    // Peaceful sleeping Blu, curled up and breathing, for the sleep screen.
+    function drawSleepingBlu(cx, baseY, scale) {
+      const B = CONFIG.bluBody, E = CONFIG.bluEar, N = CONFIG.bluNose, SH = CONFIG.bluShade;
+      const breathe = Math.sin(state.time * 2) * 1.5;
+      ctx.save();
+      ctx.translate(cx, baseY);
+      ctx.scale(scale, scale);
+      px(-42, 6 - breathe, 84, 22 + breathe, B);           // curled body
+      px(-8, 6 - breathe, 84, 22 + breathe, B);            // (offset lump for roundness)
+      px(56, 14, 12, 12, SH);                              // paw/tail curl
+      px(-30, -8, 30, 16, B);                              // head resting
+      px(-28, -14, 6, 8, E); px(-16, -14, 6, 8, E);        // ears
+      px(-24, -2, 6, 2, N);                                // closed eye (line)
+      px(-12, 0, 3, 3, N);                                 // nose
+      // Zzz rising
+      ctx.fillStyle = '#8a6f4d'; ctx.textAlign = 'left';
+      const zf = state.time % 3;
+      ctx.font = 'bold 14px monospace'; ctx.fillText('z', 40, -14 - zf * 6);
+      ctx.font = 'bold 18px monospace'; ctx.fillText('Z', 52, -24 - zf * 8);
+      ctx.restore();
+      // Dream bubble with a tiny spinning vinyl (gently bobs)
+      const bx = cx + 74 * scale, by = baseY - 40 * scale + Math.sin(state.time * 1.6) * 3;
+      ctx.fillStyle = '#faf3e3';
+      ctx.beginPath(); ctx.arc(bx, by, 16, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx - 14, by + 12, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx - 20, by + 20, 3, 0, Math.PI * 2); ctx.fill();
+      px(bx - 7, by - 7, 14, 14, CONFIG.dark);
+      px(bx - 2, by - 2, 4, 4, CONFIG.art.vinylLabel);
+    }
+
+    function drawSleepScreen() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const g = h * 0.72;
+      const over = state.sleepMode === 'gameover';
+
+      // Cozy dim shop scene
+      px(0, 0, w, g, '#d6c5a2');
+      px(0, g, w, h - g, '#a3855a');
+      for (let x = (w * 0.16); x < w; x += w * 0.2) px(x, g, 3, h - g, '#93764c');
+      // Dim Filament neon, top-right
+      px(w - 180, 24, 150, 44, '#c88a3f'); px(w - 176, 28, 142, 36, '#3a2f24');
+      ctx.fillStyle = '#e0894a'; ctx.textAlign = 'center';
+      ctx.font = 'bold 13px monospace'; ctx.fillText('FILAMENT', w - 105, 45);
+      ctx.font = 'bold 10px monospace'; ctx.fillText('AUDIO', w - 105, 58);
+
+      // Two-tone SHOP CAT logo (shrinks up in game-over state)
+      const logoSize = over ? 34 : 52;
+      const logoY = over ? h * 0.14 : h * 0.2;
+      ctx.textAlign = 'center';
+      ctx.font = `bold ${logoSize}px monospace`;
+      ctx.fillStyle = CONFIG.bluEar; ctx.fillText('SHOP CAT', w / 2 + 4, logoY + 4);
+      ctx.fillStyle = '#5c4a33'; ctx.fillText('SHOP CAT', w / 2, logoY);
+
+      if (over) {
+        // Death quip banner + YOUR TAKE
+        ctx.fillStyle = CONFIG.rust; ctx.fillRect(w / 2 - 150, h * 0.19, 300, 40);
+        ctx.fillStyle = '#f7efe0'; ctx.font = 'bold 24px monospace';
+        ctx.fillText(state.quip || player.deathCause, w / 2, h * 0.19 + 28);
+        ctx.fillStyle = '#5c4a33'; ctx.font = 'bold 17px monospace';
+        ctx.fillText(`YOUR TAKE: ${state.lastTake}m`, w / 2, h * 0.34);
+      } else {
+        ctx.fillStyle = '#8a6f4d'; ctx.font = '15px monospace';
+        ctx.fillText('help blu survive the shop', w / 2, logoY + 30);
+      }
+
+      // Sleeping Blu, center
+      drawSleepingBlu(w / 2, g - 36, over ? 1.0 : 1.15);
+
+      // BEST TAKES panel (left)
+      const bpx = w * 0.06, bpy = h * 0.42;
+      px(bpx, bpy, 210, 132, '#f7efe0');
+      px(bpx, bpy, 210, 20, CONFIG.bluEar);
+      ctx.fillStyle = '#3a2f24'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('BEST TAKES', bpx + 105, bpy + 14);
+      ctx.textAlign = 'left'; ctx.font = '14px monospace';
+      for (let i = 0; i < 3; i += 1) {
+        const t = bestTakes[i];
+        const rowY = bpy + 46 + i * 26;
+        if (i === state.newTakeIndex) { ctx.fillStyle = CONFIG.bluEar; ctx.fillRect(bpx + 6, rowY - 15, 198, 22); }
+        ctx.fillStyle = i === state.newTakeIndex ? '#2b2420' : '#5c4a33';
+        const ini = t ? t.initials : '---';
+        const val = t ? `${t.score}` : '---';
+        const mk = i === state.newTakeIndex ? ' ◀' : '';
+        ctx.fillText(`${i + 1}. ${ini}  ${val}${mk}`, bpx + 14, rowY);
+      }
+
+      // WAX PULLED WORLDWIDE panel (right). Hidden if a configured fetch failed.
+      if (!(waxConfigured() && state.waxOnline === false)) {
+        const wpx = w * 0.72, wpy = h * 0.5;
+        px(wpx, wpy, 210, 54, '#3a2f24');
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#c9b393'; ctx.font = '11px monospace';
+        ctx.fillText('WAX PULLED WORLDWIDE', wpx + 105, wpy + 20);
+        ctx.fillStyle = '#f5b862'; ctx.font = 'bold 19px monospace';
+        ctx.fillText(state.waxCount.toLocaleString('en-US'), wpx + 105, wpy + 44);
+      }
+
+      // Pulsing prompt (after the dead-zone) + controls legend on the floorboards
+      if (state.deadZoneTimer >= CONFIG.deadZone) {
+        ctx.fillStyle = `rgba(184,86,62,${0.6 + 0.4 * Math.abs(Math.sin(state.time * 3))})`;
+        ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center';
+        ctx.fillText(state.touchDevice ? 'TAP TO WAKE BLU' : 'PRESS ANY KEY TO WAKE BLU', w / 2, g + 34);
+      }
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f2e8d5'; ctx.font = '13px monospace';
+      if (state.touchDevice) {
+        ctx.fillText('TAP jump · SWIPE ←→ dash · SWIPE ↓ slide · HOLD a side to move', w / 2, g + 58);
+        if (window.innerHeight > window.innerWidth) {   // gentle rotate nudge in portrait
+          ctx.fillStyle = `rgba(245,184,98,${0.55 + 0.45 * Math.abs(Math.sin(state.time * 3))})`;
+          ctx.font = 'bold 13px monospace';
+          ctx.fillText('↻ rotate to landscape for the full view', w / 2, g + 78);
+        }
+      } else {
+        ctx.fillText('← → move · ↑ jump (×2 double) · ↓ dive/slide · D dash · M mute', w / 2, g + 60);
+      }
+
+      drawMuteIcon(w - 40, 30);
+    }
+
+    function drawInitials() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.save();
+      ctx.fillStyle = 'rgba(19,17,15,0.78)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.textAlign = 'center';
+
+      ctx.fillStyle = '#f5b862';
+      ctx.font = 'bold 26px monospace';
+      ctx.fillText('NEW BEST TAKE!', width / 2, height * 0.3);
+
+      ctx.fillStyle = '#fbf6ea';
+      ctx.font = '18px monospace';
+      ctx.fillText(`${state.pendingScore}`, width / 2, height * 0.3 + 30);
+
+      // Three letter slots with a blinking cursor on the current one
+      const slotW = 54;
+      const startX = width / 2 - slotW;
+      const slotY = height * 0.5;
+      const blink = Math.floor(state.time * 2) % 2 === 0;
+      for (let i = 0; i < 3; i += 1) {
+        const sx = startX + i * slotW;
+        ctx.strokeStyle = '#8a6f4d';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(sx - 20, slotY - 4, 40, 44);
+        const ch = state.initials[i];
+        ctx.fillStyle = '#fbf6ea';
+        ctx.font = 'bold 34px monospace';
+        if (ch) {
+          ctx.fillText(ch, sx, slotY + 30);
+        } else if (i === state.initialsPos && blink) {
+          ctx.fillText('_', sx, slotY + 30);
+        }
+      }
+
+      ctx.fillStyle = '#c9b79a';
+      ctx.font = '14px monospace';
+      ctx.fillText('TYPE 3 LETTERS   ENTER = OK   ESC = SKIP', width / 2, height * 0.72);
+      ctx.restore();
+    }
+
+    // Very light film-grain / tape-warmth overlay.
+    function drawTapeWarmth(w, h) {
+      ctx.save();
+      const grad = ctx.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, h * 0.8);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, 'rgba(40,26,12,0.16)');            // gentle vignette
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(245,220,180,0.03)';               // warm tint
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+    }
+
+    function draw() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      ctx.clearRect(0, 0, width, height);
+
+      if (state.mode === 'sleep') {
+        drawSleepScreen();
+        drawTapeWarmth(width, height);
+        return;
+      }
+
+      // Screen shake — offsets the world, not the HUD.
+      ctx.save();
+      if (state.shakeMag > 0.2) {
+        ctx.translate(rnd(-state.shakeMag, state.shakeMag), rnd(-state.shakeMag, state.shakeMag));
+      }
+
+      drawBackground();
+      drawObstacles();
+      drawPickups();
+      drawEnemies();
+      drawBlu();
+      drawParticles();
+
+      ctx.restore();
+
+      // Hit-freeze flash on the killing blow
+      if (player.dead && state.deathPhase === 'freeze') {
+        ctx.save();
+        ctx.fillStyle = `rgba(255,255,255,${0.5 * (1 - state.deathTimer / CONFIG.hitFreezeTime)})`;
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+      }
+
+      // Warm vinyl flash
+      if (state.flashTimer > 0) {
+        ctx.fillStyle = `rgba(245,184,98,${0.32 * (state.flashTimer / CONFIG.flashTime)})`;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // Danger glow on the left edge (under the HUD)
+      if (state.glowAmount > 0) {
+        const leftBand = width * 0.18;
+        const gradient = ctx.createLinearGradient(0, 0, leftBand, 0);
+        gradient.addColorStop(0, 'rgba(245,184,98,0.0)');
+        gradient.addColorStop(1, `rgba(245,184,98,${Math.min(0.28, state.glowAmount * 0.28)})`);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, leftBand, height);
+      }
+
+      drawTapeWarmth(width, height);
+      drawUI();
+      drawDebug();
+
+      // Arcade initials entry overlays the frozen run world
+      if (player.dead && state.deathPhase === 'initials') {
+        drawInitials();
+      }
+    }
+
+
+    function loop(ts) {
+      const dt = Math.min(0.032, (ts - state.lastTime) / 1000);
+      state.lastTime = ts;
+      state.time += dt;
+
+      updateInput(dt);
+      updateTouchHolds(dt);
+      if (state.mode === 'sleep') {
+        updateSleep(dt);
+      } else if (player.dead) {
+        updateDeath(dt);
+      } else {
+        updatePlayer(dt);
+      }
+      updateEffects(dt);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    loadBestTakes();
+    loadMute();
+    fetchWax();          // pull the global count for the sleep screen (no-op until configured)
+    resizeCanvas();
+    resetRun();
+    goToSleep(false);   // boot to the title sleep screen
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
