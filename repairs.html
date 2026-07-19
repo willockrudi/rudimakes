@@ -391,76 +391,152 @@
           <h2 class="section-title">Submit a Repair Inquiry</h2>
           <p class="section-note">Fill this out and I'll get back to you within 24 hours to confirm dropoff.</p>
         </div>
-        <form action="mailto:info@rudimakes.com" method="get" enctype="text/plain" style="max-width:680px;">
+        <form id="intakeForm" style="max-width:680px;" novalidate>
           <div class="grid-2" style="gap:1rem;">
             <div class="form-group">
-              <label for="fname">Your Name</label>
-              <input type="text" id="fname" name="name" placeholder="Full name" required />
+              <label for="fname">Your Full Name *</label>
+              <input type="text" id="fname" name="entry.227660613" placeholder="Full name" required />
             </div>
             <div class="form-group">
-              <label for="fphone">Phone</label>
-              <input type="tel" id="fphone" name="phone" placeholder="(317) 000-0000" />
+              <label for="fphone">Phone Number *</label>
+              <input type="tel" id="fphone" name="entry.1255241057" placeholder="(317) 000-0000" required />
             </div>
           </div>
           <div class="form-group">
-            <label for="femail">Email</label>
-            <input type="email" id="femail" name="email" placeholder="your@email.com" required />
+            <label for="femail">Email Address *</label>
+            <input type="email" id="femail" name="entry.1780355014" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label>Preferred Contact Method *</label>
+            <div style="display:flex; gap:1.5rem; flex-wrap:wrap; padding:0.35rem 0;">
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="radio" name="entry.1527558467" value="Phone Call" required style="width:auto;" /> Phone Call</label>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="radio" name="entry.1527558467" value="Email" style="width:auto;" /> Email</label>
+            </div>
           </div>
           <div class="grid-2" style="gap:1rem;">
             <div class="form-group">
-              <label for="fmake">Equipment Make / Brand</label>
-              <input type="text" id="fmake" name="make" placeholder="Fender, Marshall, Roland..." />
+              <label for="ftype">Equipment Type *</label>
+              <select id="ftype" name="entry.752791568" required style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
+                <option value="">Select type...</option>
+                <option>Tube Amplifier</option>
+                <option>Solid State Amplifier</option>
+                <option>Bass Amplifier</option>
+                <option>Electric Guitar</option>
+                <option>Bass Guitar</option>
+                <option>Synthesizer / Keyboard</option>
+                <option>Effects Pedal</option>
+                <option>Professional Audio Equipment</option>
+                <option>Other</option>
+              </select>
             </div>
             <div class="form-group">
-              <label for="fmodel">Model</label>
-              <input type="text" id="fmodel" name="model" placeholder="Deluxe Reverb, JCM800..." />
+              <label for="fservice">Service Needed *</label>
+              <select id="fservice" name="entry.248391648" required style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
+                <option value="">Select service...</option>
+                <option>Diagnose &amp; Repair</option>
+                <option>Retube &amp; Bias</option>
+                <option>Bias Only</option>
+                <option>Full Recap</option>
+                <option>Guitar Setup &amp; Intonation</option>
+                <option>Electronics Repair / Rewire</option>
+                <option>Speaker Replacement</option>
+                <option>Modification</option>
+                <option>Not Sure - Need Diagnosis</option>
+              </select>
             </div>
           </div>
           <div class="form-group">
-            <label for="ftype">Equipment Type</label>
-            <select id="ftype" name="type" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
-              <option value="">Select type...</option>
-              <option>Tube Amplifier — Combo</option>
-              <option>Tube Amplifier — Head</option>
-              <option>Solid State Amplifier</option>
-              <option>Bass Amplifier</option>
-              <option>Electric Guitar</option>
-              <option>Bass Guitar</option>
-              <option>Acoustic Guitar</option>
-              <option>Synthesizer / Keyboard</option>
-              <option>Effects Pedal</option>
-              <option>Professional Audio Equipment</option>
-              <option>Other</option>
-            </select>
+            <label for="fproblem">Describe the Problem *</label>
+            <textarea id="fproblem" name="entry.1740099007" required placeholder="What is it doing or not doing? When did it start? Be as specific as you can." style="min-height:140px;"></textarea>
           </div>
           <div class="form-group">
-            <label for="fservice">Service Needed</label>
-            <select id="fservice" name="service" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
-              <option value="">Select service...</option>
-              <option>Diagnose & repair</option>
-              <option>Retube + bias</option>
-              <option>Bias only</option>
-              <option>Full recap</option>
-              <option>Guitar setup + intonation</option>
-              <option>Electronics repair</option>
-              <option>Speaker replacement</option>
-              <option>Modification</option>
-              <option>Not sure — need diagnosis</option>
-            </select>
+            <label>Any History to Disclose?</label>
+            <div style="display:flex; flex-direction:column; gap:0.5rem; padding:0.35rem 0;">
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" name="entry.685104609" value="Drop or Impact Damage" style="width:auto;" /> Drop or impact damage</label>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" name="entry.685104609" value="Liquid Exposure" style="width:auto;" /> Liquid exposure</label>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" name="entry.685104609" value="Previous repair by another tech" style="width:auto;" /> Previous repair by another tech</label>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" name="entry.685104609" value="Modifications" style="width:auto;" /> Modifications</label>
+              <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" name="entry.685104609" value="None of the above" style="width:auto;" /> None of the above</label>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="fproblem">Describe the Problem</label>
-            <textarea id="fproblem" name="body" placeholder="What is it doing or not doing? When did it start? Any recent drops, liquid exposure, or prior repairs?" style="min-height:140px;"></textarea>
+          <div class="grid-2" style="gap:1rem;">
+            <div class="form-group">
+              <label>Rush Service *</label>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; padding:0.35rem 0;">
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="radio" name="entry.1174777392" value="Yes - 48-hour turnaround" required style="width:auto;" /> Yes — 48-hour turnaround</label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="radio" name="entry.1174777392" value="No - Standard Turnaround" style="width:auto;" /> No — standard turnaround</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="fheard">How Did You Hear About Us?</label>
+              <select id="fheard" name="entry.570308018" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
+                <option value="">Select one (optional)...</option>
+                <option>Word of Mouth</option>
+                <option>Google Search</option>
+                <option>Instagram</option>
+                <option>Youtube</option>
+                <option>Jonas Productions</option>
+                <option>Returning Customer</option>
+                <option>Other</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="frush">
-              <input type="checkbox" id="frush" name="rush" style="width:auto; margin-right:0.5rem;" />
-              Rush service (+$35) — 48 hour turnaround
-            </label>
+          <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1.25rem 1.5rem; margin:1.25rem 0;">
+            <p style="font-weight:600; margin-bottom:0.75rem;">Terms &amp; Agreements</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.6rem;"><strong>Bench Fee:</strong> A $45 diagnostic fee is charged on all jobs. This fee is applied toward your repair total if you approve the work. If you decline the repair after diagnosis, the $45 bench fee is non-refundable.</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.6rem;"><strong>Estimates:</strong> You will receive a written estimate before any repair work begins. No work proceeds without your approval unless the total falls under the threshold you specified.</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.6rem;"><strong>Warranty:</strong> All labor carries a 30-day warranty from the date of completion. Parts warranties vary by manufacturer.</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.6rem;"><strong>Storage:</strong> Equipment not picked up within 30 days of completion will accrue a $5/day storage fee. Equipment unclaimed after 90 days may be considered abandoned.</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;"><strong>Liability:</strong> Filament Audio is not responsible for pre-existing damage or failures unrelated to the work performed.</p>
+            <div class="form-group" style="margin-bottom:0.75rem;">
+              <label for="fsig">Type Your Full Name as Your Digital Signature *</label>
+              <input type="text" id="fsig" name="entry.1550746487" placeholder="Full name" required />
+            </div>
+            <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;"><input type="checkbox" id="fagree" name="entry.1640383654" value="I have read and agree to the terms above." required style="width:auto;" /> I have read and agree to the terms above. *</label>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Submit Repair Inquiry</button>
-          <p style="color:var(--text-muted); font-size:0.85rem; margin-top:1rem; text-align:center;">I'll reply within 24 hours to confirm your dropoff appointment.</p>
+          <button type="submit" id="intakeSubmitBtn" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Submit Repair Inquiry</button>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-top:1rem; text-align:center;">I'll reply within 24 hours to confirm your drop-off appointment.</p>
         </form>
+        <div id="intakeSuccess" style="display:none; max-width:680px; background:var(--bg-card); border:1px solid var(--accent); border-radius:8px; padding:2rem; text-align:center;">
+          <h3 style="margin-bottom:0.75rem;">Got it — your inquiry is in. &#10003;</h3>
+          <p style="color:var(--text-muted);">I'll get back to you within 24 hours to confirm your drop-off. Talk soon.</p>
+        </div>
+        <div id="intakeError" style="display:none; max-width:680px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1.5rem; text-align:center; margin-top:1rem;">
+          <p style="color:var(--text-muted);">Something went wrong sending the form. Please email me directly at <a href="mailto:info@rudimakes.com" style="color:var(--accent);">info@rudimakes.com</a> and I'll take it from there.</p>
+        </div>
+        <script>
+        (function () {
+          var FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeJ9EqQ2IcPUpnmHVJRLIFzzX_nJtjGRjIZHA7huxOcTekCBw/formResponse";
+          var form = document.getElementById("intakeForm");
+          if (!form) return;
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            if (!form.reportValidity()) return;
+            var btn = document.getElementById("intakeSubmitBtn");
+            btn.disabled = true;
+            btn.textContent = "Sending...";
+            var params = new URLSearchParams();
+            new FormData(form).forEach(function (value, key) {
+              if (value !== "") params.append(key, value);
+            });
+            params.append("pageHistory", "0,1");
+            fetch(FORM_URL, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: params.toString()
+            }).then(function () {
+              form.style.display = "none";
+              document.getElementById("intakeSuccess").style.display = "block";
+              document.getElementById("intakeSuccess").scrollIntoView({ behavior: "smooth", block: "center" });
+            }).catch(function () {
+              btn.disabled = false;
+              btn.textContent = "Submit Repair Inquiry";
+              document.getElementById("intakeError").style.display = "block";
+            });
+          });
+        })();
+        </script>
       </div>
     </section>
 
