@@ -308,7 +308,8 @@
             new FormData(form).forEach(function (value, key) {
               if (value !== "") params.append(key, value);
             });
-            params.append("pageHistory", "0,1");
+            params.append("fvv", "1");
+            params.append("pageHistory", "0");
             fetch(FORM_URL, {
               method: "POST",
               mode: "no-cors",
