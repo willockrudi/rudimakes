@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>SHOP CAT — an arcade endless runner starring Blu</title>
+  <title>SHOP CAT - an arcade endless runner starring Blu</title>
   <meta name="description" content="Help Blu, a flame point Siamese, sprint through an endless workday of amps, studios and stages. Dodge, dash and dig vinyl in this pixel-art arcade runner." />
   <meta property="og:title" content="SHOP CAT" />
-  <meta property="og:description" content="Help Blu survive the shop — a pixel-art arcade endless runner." />
+  <meta property="og:description" content="Help Blu survive the shop - a pixel-art arcade endless runner." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="preview.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -201,19 +201,19 @@
         shieldBand: '#e8a06a', shieldCup: '#2b2b2b', shieldAccent: '#4a90d9',
       },
 
-      // Audio (Phase 7) — mix levels + optional run-song intro loop point
+      // Audio (Phase 7) - mix levels + optional run-song intro loop point
       audio: {
         musicGain: 0.5,
         sfxGain: 0.6,
         runSongLoopStart: 0,   // seconds; if your run-song.mp3 has an intro, set its loop point here
       },
 
-      // Global WAX counter (Phase 10) — paste your Supabase values here after setup.
+      // Global WAX counter (Phase 10) - paste your Supabase values here after setup.
       // Leave blank to keep the local placeholder number. The anon key is meant to
       // be public; row-level security limits it to reading + incrementing the count.
       supabase: {
         url: 'https://usoogihxpsgemqevjdaj.supabase.co',
-        anonKey: 'sb_publishable_XQzBRfKPeUUzZt2NsXwo0A_yz8q7aED',   // publishable key — safe to expose (RLS limits it to read + increment_wax)
+        anonKey: 'sb_publishable_XQzBRfKPeUUzZt2NsXwo0A_yz8q7aED',   // publishable key - safe to expose (RLS limits it to read + increment_wax)
       },
 
       // Juice (Phase 8)
@@ -306,12 +306,13 @@
       initials: ['', '', ''],
       initialsPos: 0,
       pendingScore: 0,    // score awaiting initials entry
-      newTakeIndex: -1,   // index of the just-placed Best Take (for the ◀ marker)
       mode: 'sleep',      // 'sleep' (title = game over) | 'run'
       sleepMode: 'title', // 'title' (first visit) | 'gameover' (post-death)
       lastTake: 0,        // meters from the last run (YOUR TAKE)
-      waxCount: 12438,    // WAX PULLED WORLDWIDE — local placeholder until Supabase is configured
+      waxCount: 12438,    // WAX PULLED WORLDWIDE - local placeholder until Supabase is configured
       waxOnline: true,    // false = a configured fetch failed → hide the panel gracefully
+      takesOnline: false, // true once the global leaderboard has loaded
+      lastSubmit: null,   // { initials, score } just placed — highlighted with ◀
       muted: false,
       shakeMag: 0,        // current screen-shake magnitude
       flashTimer: 0,      // warm vinyl flash
@@ -324,7 +325,7 @@
     const enemies = [];
     const pickups = [];
 
-    // Fixed particle pool (object pooling — long runs never allocate mid-frame).
+    // Fixed particle pool (object pooling - long runs never allocate mid-frame).
     const particles = [];
     for (let i = 0; i < CONFIG.particlePool; i += 1) {
       particles.push({ active: false, wx: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 1, size: 2, color: '#fff', grav: 0 });
@@ -344,7 +345,7 @@
     function persistBestTakes() {
       try {
         localStorage.setItem(CONFIG.bestTakesKey, JSON.stringify(bestTakes));
-      } catch (e) { /* sandboxed preview — fail gracefully */ }
+      } catch (e) { /* sandboxed preview - fail gracefully */ }
     }
 
     function loadMute() {
@@ -385,7 +386,36 @@
       })
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(total => { state.waxCount = Number(total); state.waxOnline = true; })
-        .catch(() => { /* offline — local number stays; nothing breaks */ });
+        .catch(() => { /* offline - local number stays; nothing breaks */ });
+    }
+
+    // --- BEST TAKES (global top-3 leaderboard via Supabase) ---
+    let globalTakes = [];
+    // Which list the sleep screen shows + qualification checks against:
+    // the worldwide board when online, otherwise this device's local top 3.
+    function boardTakes() { return (waxConfigured() && state.takesOnline) ? globalTakes : bestTakes; }
+
+    function fetchTakes() {
+      if (!waxConfigured()) { state.takesOnline = false; return; }
+      fetch(CONFIG.supabase.url + '/rest/v1/takes?select=initials,score&order=score.desc&limit=3', { headers: waxHeaders() })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(rows => {
+          globalTakes = (rows || []).map(t => ({ initials: t.initials, score: Number(t.score) }));
+          state.takesOnline = true;
+        })
+        .catch(() => { state.takesOnline = false; });   // offline → fall back to local bestTakes
+    }
+
+    function submitTake(initials, score) {
+      if (!waxConfigured() || score <= 0) return;
+      fetch(CONFIG.supabase.url + '/rest/v1/rpc/submit_take', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, waxHeaders()),
+        body: JSON.stringify({ ini: initials, sc: Math.min(score, 100000000) }),
+      })
+        .then(r => r.ok ? Promise.resolve() : Promise.reject())
+        .then(() => fetchTakes())   // refresh the board with the new standing
+        .catch(() => { /* offline - local board still updated below */ });
     }
 
     const obstaclePatterns = [
@@ -428,6 +458,8 @@
       const rect = canvas.getBoundingClientRect();
       const width = Math.round(rect.width);
       const height = Math.round(rect.height);
+      // Layout not ready yet (0-size) — retry next frame so we never leave a blank canvas.
+      if (width === 0 || height === 0) { requestAnimationFrame(resizeCanvas); return; }
       canvas.width = Math.round(width * CONFIG.dpr);
       canvas.height = Math.round(height * CONFIG.dpr);
       ctx.setTransform(CONFIG.dpr, 0, 0, CONFIG.dpr, 0, 0);
@@ -485,7 +517,7 @@
       state.initials = ['', '', ''];
       state.initialsPos = 0;
       state.pendingScore = 0;
-      state.newTakeIndex = -1;
+      state.lastSubmit = null;
       pickups.length = 0;
       player.landTimer = 0;
       state.shakeMag = 0;
@@ -599,7 +631,7 @@
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       const groundY = height * 0.72;
-      // Early game stays simple — hold enemies back until the run has warmed up.
+      // Early game stays simple - hold enemies back until the run has warmed up.
       if (player.meters < CONFIG.enemyStartMeters) {
         state.nextEnemyWorldX = null;
         return;
@@ -669,7 +701,7 @@
 
     function pruneEnemies() {
       // Cull only after an enemy has scrolled off the LEFT. (Enemies spawn off
-      // the right at ~1.15×width and scroll in — a right-side cull would delete
+      // the right at ~1.15×width and scroll in - a right-side cull would delete
       // them the instant they spawn on any full-size screen.)
       for (let i = enemies.length - 1; i >= 0; i -= 1) {
         const enemy = enemies[i];
@@ -712,7 +744,7 @@
       });
     }
 
-    // A note trail — an arc, a jump-height line, or a low ground line.
+    // A note trail - an arc, a jump-height line, or a low ground line.
     function spawnNoteFormation(x, groundY) {
       const n = 3 + Math.floor(Math.random() * 3); // 3-5 notes
       const shape = Math.random();
@@ -897,7 +929,7 @@
 
         // Resting on / running across the top. Kept forgiving (a few px band) so
         // standing is stable even when the vertical overlap rounds to exactly 0
-        // — otherwise onGround flickers frame-to-frame and Blu jitters.
+        // - otherwise onGround flickers frame-to-frame and Blu jitters.
         const overTop = playerRight > obstacleLeft + 1 && playerLeft < obstacleRight - 1;
         if (!obstacle.passUnder && player.vy >= 0 && overTop
             && playerBottom >= obstacleTop - 2 && playerBottom <= obstacleTop + 10) {
@@ -973,7 +1005,7 @@
     }
 
     // Cause-specific quips, wired per-cause now (2-3 rotate at random).
-    // The final curated set lands in Phase 12 — this proves the plumbing.
+    // The final curated set lands in Phase 12 - this proves the plumbing.
     const QUIPS = {
       'LEFT BEHIND': ['LEFT BEHIND!', 'THE SHOP MOVED ON.', 'KEEP UP, BLU.'],
       "ROOMBA'D!": ["ROOMBA'D!", 'SWEPT AWAY.', 'CLEANED UP.'],
@@ -990,7 +1022,7 @@
     // ============================= AUDIO =============================
     // Drop-in architecture: on the first interaction, every slot below tries
     // to load audio/<name>.mp3. Any file that 404s silently uses a synthesized
-    // placeholder instead — so you can record your own sounds and drop them in
+    // placeholder instead - so you can record your own sounds and drop them in
     // with these EXACT lowercase names and ZERO code changes.
     //
     //   HOW TO ADD YOUR OWN AUDIO   (place files in an  audio/  folder)
@@ -1010,7 +1042,7 @@
     //   meow1.mp3 … meow9.mp3   happy meows (click Blu)           < 1s each
     //   ---------------------------------------------------------------
     //   MP3, 128–192 kbps. Songs loop gaplessly via buffer looping (not <audio>).
-    //   Audio won't load from a file:// open — serve over http (see Phase 11).
+    //   Audio won't load from a file:// open - serve over http (see Phase 11).
 
     const AUDIO = {
       ctx: null,
@@ -1168,7 +1200,7 @@
             const env = Math.min(1, l * 4) * Math.exp(-l * 2.5);
             return (0.16 * Math.sin(2 * Math.PI * f * t) + 0.05 * Math.sin(Math.PI * f * t)) * env;
           };
-        } else {  // run-song — lo-fi bass + tick
+        } else {  // run-song - lo-fi bass + tick
           const bpm = 92, beat = 60 / bpm, bar = beat * 4;
           seconds = bar * 2;
           const bass = [65.41, 65.41, 98.00, 87.31];       // C C G F
@@ -1233,17 +1265,21 @@
 
     function qualifiesForBestTake(score) {
       if (score <= 0) return false;
-      if (bestTakes.length < 3) return true;
-      return score > bestTakes[bestTakes.length - 1].score;
+      const board = boardTakes();   // worldwide top 3 if online, else this device's
+      if (board.length < 3) return true;
+      return score > board[board.length - 1].score;
     }
 
     function commitBestTake(initials) {
       const entry = { initials, score: state.pendingScore };
+      // Always keep a local copy (offline fallback + personal record)...
       bestTakes.push(entry);
       bestTakes.sort((a, b) => b.score - a.score);
       bestTakes = bestTakes.slice(0, 3);
-      state.newTakeIndex = bestTakes.indexOf(entry);
       persistBestTakes();
+      // ...and push it to the worldwide board.
+      submitTake(entry.initials, entry.score);
+      state.lastSubmit = entry;     // highlight this row with ◀ once it shows
       finalizeDeath();
     }
 
@@ -1315,7 +1351,7 @@
             state.initials = ['', '', ''];
             state.initialsPos = 0;
           } else {
-            state.newTakeIndex = -1;
+            state.lastSubmit = null;
             finalizeDeath();                 // straight back to the sleep screen
           }
         }
@@ -1370,7 +1406,7 @@
         return;
       }
 
-      if (key === 'm') {           // mute — never wakes/starts
+      if (key === 'm') {           // mute - never wakes/starts
         toggleMute();
         return;
       }
@@ -1407,6 +1443,7 @@
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('load', resizeCanvas);   // re-run once full layout is ready
 
     // Click the top-right speaker to toggle mute; click Blu for a random meow.
     // Neither ever wakes or restarts the game.
@@ -1533,7 +1570,7 @@
       input.jumpPressed = false;
       input.jumpReleased = false;
       input.anyPressed = false;
-      // NOTE: input.dashPressed is consumed in updatePlayer's dash block, not here —
+      // NOTE: input.dashPressed is consumed in updatePlayer's dash block, not here -
       // clearing it here would eat the press before the dash could ever fire.
     }
 
@@ -1606,7 +1643,7 @@
         }
       }
 
-      // Dash logic — the press is consumed here (see updateInput note).
+      // Dash logic - the press is consumed here (see updateInput note).
       if (input.dashPressed) {
         const canDash = player.dashCooldown <= 0 && player.dashTimer <= 0
           && (player.onGround || !player.airDashUsed);   // one air dash per airtime
@@ -1778,7 +1815,7 @@
 
     // The three rooms. Palette darkens room → room so white Blu keeps popping.
     const ROOMS = [
-      { // STAGE 1 — FILAMENT AUDIO repair shop
+      { // STAGE 1 - FILAMENT AUDIO repair shop
         wall: '#efe0c4', floor: '#b3925f', floorTop: '#c9995e', plank: '#a3855a',
         far(w, h, g) {
           repeatX(900, 0.15, w, (x) => {
@@ -1806,7 +1843,7 @@
           });
         },
       },
-      { // STAGE 2 — THE STUDIO
+      { // STAGE 2 - THE STUDIO
         wall: '#6e5a44', floor: '#55432f', floorTop: '#4a3a2b', plank: '#3f342a',
         far(w, h, g) {
           const off = ((player.cameraX * 0.15) % 40 + 40) % 40;                          // foam checker
@@ -1831,7 +1868,7 @@
           });
         },
       },
-      { // STAGE 3 — THE STAGE (live venue)
+      { // STAGE 3 - THE STAGE (live venue)
         wall: '#2e2822', floor: '#3a2e20', floorTop: '#f0b45c', plank: '#241c14',
         far(w, h, g) {
           px(0, 14, w, 8, '#1c1814');                                                     // truss bar
@@ -1884,7 +1921,7 @@
       for (let x = -plankOff; x < w; x += 90) px(x, g, 3, h - g, room.plank);
     }
 
-    // Fill a pixel rect (no outlines — soft flat shapes, per the sheet).
+    // Fill a pixel rect (no outlines - soft flat shapes, per the sheet).
     function px(x, y, w, h, color) {
       ctx.fillStyle = color;
       ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
@@ -2092,7 +2129,7 @@
       }
     }
 
-    // Pixel headphones (orange band, dark cups, blue accents) — shield pickup,
+    // Pixel headphones (orange band, dark cups, blue accents) - shield pickup,
     // worn Blu, and the HUD slot. `dim` greys it out for the empty HUD slot.
     function drawHeadphones(cx, cy, scale, dim) {
       const A = CONFIG.art;
@@ -2112,7 +2149,7 @@
       ctx.restore();
     }
 
-    // Speaker icon (top-right) — shows a slash / sound waves per mute state.
+    // Speaker icon (top-right) - shows a slash / sound waves per mute state.
     function drawMuteIcon(cx, cy) {
       ctx.save();
       ctx.translate(cx, cy);
@@ -2360,14 +2397,14 @@
       ctx.font = 'bold 14px monospace'; ctx.fillText('z', 40, -14 - zf * 6);
       ctx.font = 'bold 18px monospace'; ctx.fillText('Z', 52, -24 - zf * 8);
       ctx.restore();
-      // Dream bubble with a tiny spinning vinyl (gently bobs)
+      // Dream bubble with a tiny spinning vinyl (gently bobs), scaled to Blu
       const bx = cx + 74 * scale, by = baseY - 40 * scale + Math.sin(state.time * 1.6) * 3;
       ctx.fillStyle = '#faf3e3';
-      ctx.beginPath(); ctx.arc(bx, by, 16, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(bx - 14, by + 12, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(bx - 20, by + 20, 3, 0, Math.PI * 2); ctx.fill();
-      px(bx - 7, by - 7, 14, 14, CONFIG.dark);
-      px(bx - 2, by - 2, 4, 4, CONFIG.art.vinylLabel);
+      ctx.beginPath(); ctx.arc(bx, by, 16 * scale, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx - 14 * scale, by + 12 * scale, 5 * scale, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bx - 20 * scale, by + 20 * scale, 3 * scale, 0, Math.PI * 2); ctx.fill();
+      px(bx - 7 * scale, by - 7 * scale, 14 * scale, 14 * scale, CONFIG.dark);
+      px(bx - 2 * scale, by - 2 * scale, 4 * scale, 4 * scale, CONFIG.art.vinylLabel);
     }
 
     function drawSleepScreen() {
@@ -2375,86 +2412,92 @@
       const h = canvas.clientHeight;
       const g = h * 0.72;
       const over = state.sleepMode === 'gameover';
+      // Scale everything to the screen so panels don't crowd small/mobile views.
+      const S = Math.max(0.52, Math.min(1, w / 1180));
+      const f = (n, bold) => (bold ? 'bold ' : '') + Math.round(n * S) + 'px monospace';
+      ctx.textAlign = 'center';
 
       // Cozy dim shop scene
       px(0, 0, w, g, '#d6c5a2');
       px(0, g, w, h - g, '#a3855a');
       for (let x = (w * 0.16); x < w; x += w * 0.2) px(x, g, 3, h - g, '#93764c');
-      // Dim Filament neon, top-right
-      px(w - 180, 24, 150, 44, '#c88a3f'); px(w - 176, 28, 142, 36, '#3a2f24');
-      ctx.fillStyle = '#e0894a'; ctx.textAlign = 'center';
-      ctx.font = 'bold 13px monospace'; ctx.fillText('FILAMENT', w - 105, 45);
-      ctx.font = 'bold 10px monospace'; ctx.fillText('AUDIO', w - 105, 58);
+
+      // Dim Filament neon, top-right (below the mute icon)
+      const nw = 150 * S, nh = 44 * S, ny = 42 * S;
+      px(w - nw - 20, ny, nw, nh, '#c88a3f'); px(w - nw - 16, ny + 4, nw - 8, nh - 8, '#3a2f24');
+      ctx.fillStyle = '#e0894a';
+      ctx.font = f(13, true); ctx.fillText('FILAMENT', w - nw / 2 - 20, ny + nh * 0.48);
+      ctx.font = f(10, true); ctx.fillText('AUDIO', w - nw / 2 - 20, ny + nh * 0.82);
 
       // Two-tone SHOP CAT logo (shrinks up in game-over state)
-      const logoSize = over ? 34 : 52;
-      const logoY = over ? h * 0.14 : h * 0.2;
-      ctx.textAlign = 'center';
-      ctx.font = `bold ${logoSize}px monospace`;
-      ctx.fillStyle = CONFIG.bluEar; ctx.fillText('SHOP CAT', w / 2 + 4, logoY + 4);
+      const logoY = over ? h * 0.13 : h * 0.2;
+      ctx.font = f(over ? 34 : 52, true);
+      ctx.fillStyle = CONFIG.bluEar; ctx.fillText('SHOP CAT', w / 2 + 3 * S, logoY + 3 * S);
       ctx.fillStyle = '#5c4a33'; ctx.fillText('SHOP CAT', w / 2, logoY);
 
       if (over) {
-        // Death quip banner + YOUR TAKE
-        ctx.fillStyle = CONFIG.rust; ctx.fillRect(w / 2 - 150, h * 0.19, 300, 40);
-        ctx.fillStyle = '#f7efe0'; ctx.font = 'bold 24px monospace';
-        ctx.fillText(state.quip || player.deathCause, w / 2, h * 0.19 + 28);
-        ctx.fillStyle = '#5c4a33'; ctx.font = 'bold 17px monospace';
-        ctx.fillText(`YOUR TAKE: ${state.lastTake}m`, w / 2, h * 0.34);
+        const bw = 300 * S, bh = 40 * S, byq = h * 0.18;
+        ctx.fillStyle = CONFIG.rust; ctx.fillRect(w / 2 - bw / 2, byq, bw, bh);
+        ctx.fillStyle = '#f7efe0'; ctx.font = f(24, true);
+        ctx.fillText(state.quip || player.deathCause, w / 2, byq + bh * 0.7);
+        ctx.fillStyle = '#5c4a33'; ctx.font = f(17, true);
+        ctx.fillText(`YOUR TAKE: ${state.lastTake}m`, w / 2, h * 0.33);
       } else {
-        ctx.fillStyle = '#8a6f4d'; ctx.font = '15px monospace';
-        ctx.fillText('help blu survive the shop', w / 2, logoY + 30);
+        ctx.fillStyle = '#8a6f4d'; ctx.font = f(15, false);
+        ctx.fillText('help blu survive the shop', w / 2, logoY + 26 * S);
       }
 
-      // Sleeping Blu, center
-      drawSleepingBlu(w / 2, g - 36, over ? 1.0 : 1.15);
+      // Sleeping Blu, centre (scaled)
+      drawSleepingBlu(w / 2, g - 30 * S, (over ? 0.95 : 1.1) * S);
 
-      // BEST TAKES panel (left)
-      const bpx = w * 0.06, bpy = h * 0.42;
-      px(bpx, bpy, 210, 132, '#f7efe0');
-      px(bpx, bpy, 210, 20, CONFIG.bluEar);
-      ctx.fillStyle = '#3a2f24'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'center';
-      ctx.fillText('BEST TAKES', bpx + 105, bpy + 14);
-      ctx.textAlign = 'left'; ctx.font = '14px monospace';
+      // BEST TAKES panel (left) — worldwide when online, else this device's local top 3
+      const board = boardTakes();
+      const worldwide = waxConfigured() && state.takesOnline;
+      const pw = 210 * S, ph = 132 * S, bpx = w * 0.05, bpy = h * 0.42;
+      px(bpx, bpy, pw, ph, '#f7efe0');
+      px(bpx, bpy, pw, 20 * S, CONFIG.bluEar);
+      ctx.fillStyle = '#3a2f24'; ctx.font = f(13, true); ctx.textAlign = 'center';
+      ctx.fillText(worldwide ? 'BEST TAKES · WORLD' : 'BEST TAKES', bpx + pw / 2, bpy + 14 * S);
+      ctx.textAlign = 'left'; ctx.font = f(14, false);
       for (let i = 0; i < 3; i += 1) {
-        const t = bestTakes[i];
-        const rowY = bpy + 46 + i * 26;
-        if (i === state.newTakeIndex) { ctx.fillStyle = CONFIG.bluEar; ctx.fillRect(bpx + 6, rowY - 15, 198, 22); }
-        ctx.fillStyle = i === state.newTakeIndex ? '#2b2420' : '#5c4a33';
+        const t = board[i];
+        const rowY = bpy + 46 * S + i * 26 * S;
+        const isNew = state.lastSubmit && t && t.initials === state.lastSubmit.initials && t.score === state.lastSubmit.score;
+        if (isNew) { ctx.fillStyle = CONFIG.bluEar; ctx.fillRect(bpx + 6 * S, rowY - 14 * S, pw - 12 * S, 22 * S); }
+        ctx.fillStyle = isNew ? '#2b2420' : '#5c4a33';
         const ini = t ? t.initials : '---';
         const val = t ? `${t.score}` : '---';
-        const mk = i === state.newTakeIndex ? ' ◀' : '';
-        ctx.fillText(`${i + 1}. ${ini}  ${val}${mk}`, bpx + 14, rowY);
+        ctx.fillText(`${i + 1}. ${ini}  ${val}${isNew ? ' ◀' : ''}`, bpx + 14 * S, rowY);
       }
 
       // WAX PULLED WORLDWIDE panel (right). Hidden if a configured fetch failed.
       if (!(waxConfigured() && state.waxOnline === false)) {
-        const wpx = w * 0.72, wpy = h * 0.5;
-        px(wpx, wpy, 210, 54, '#3a2f24');
+        const ww = 210 * S, wh = 54 * S, wpx = w * 0.95 - ww, wpy = h * 0.5;
+        px(wpx, wpy, ww, wh, '#3a2f24');
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#c9b393'; ctx.font = '11px monospace';
-        ctx.fillText('WAX PULLED WORLDWIDE', wpx + 105, wpy + 20);
-        ctx.fillStyle = '#f5b862'; ctx.font = 'bold 19px monospace';
-        ctx.fillText(state.waxCount.toLocaleString('en-US'), wpx + 105, wpy + 44);
+        ctx.fillStyle = '#c9b393'; ctx.font = f(11, false);
+        ctx.fillText('WAX PULLED WORLDWIDE', wpx + ww / 2, wpy + 20 * S);
+        ctx.fillStyle = '#f5b862'; ctx.font = f(19, true);
+        ctx.fillText(state.waxCount.toLocaleString('en-US'), wpx + ww / 2, wpy + 44 * S);
       }
 
       // Pulsing prompt (after the dead-zone) + controls legend on the floorboards
+      ctx.textAlign = 'center';
       if (state.deadZoneTimer >= CONFIG.deadZone) {
         ctx.fillStyle = `rgba(184,86,62,${0.6 + 0.4 * Math.abs(Math.sin(state.time * 3))})`;
-        ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center';
-        ctx.fillText(state.touchDevice ? 'TAP TO WAKE BLU' : 'PRESS ANY KEY TO WAKE BLU', w / 2, g + 34);
+        ctx.font = f(16, true);
+        ctx.fillText(state.touchDevice ? 'TAP TO WAKE BLU' : 'PRESS ANY KEY TO WAKE BLU', w / 2, g + 26 * S + 12);
       }
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#f2e8d5'; ctx.font = '13px monospace';
+      ctx.fillStyle = '#f2e8d5'; ctx.font = f(13, false);
       if (state.touchDevice) {
-        ctx.fillText('TAP jump · SWIPE ←→ dash · SWIPE ↓ slide · HOLD a side to move', w / 2, g + 58);
-        if (window.innerHeight > window.innerWidth) {   // gentle rotate nudge in portrait
+        ctx.fillText('TAP jump · SWIPE ←→ dash · SWIPE ↓ slide · HOLD a side to move', w / 2, g + 48 * S + 12);
+        if (window.innerHeight > window.innerWidth) {
           ctx.fillStyle = `rgba(245,184,98,${0.55 + 0.45 * Math.abs(Math.sin(state.time * 3))})`;
-          ctx.font = 'bold 13px monospace';
-          ctx.fillText('↻ rotate to landscape for the full view', w / 2, g + 78);
+          ctx.font = f(13, true);
+          ctx.fillText('↻ rotate to landscape for the full view', w / 2, g + 68 * S + 12);
         }
       } else {
-        ctx.fillText('← → move · ↑ jump (×2 double) · ↓ dive/slide · D dash · M mute', w / 2, g + 60);
+        ctx.fillText('← → move · ↑ jump (×2 double) · ↓ dive/slide · D dash · M mute', w / 2, g + 48 * S + 12);
       }
 
       drawMuteIcon(w - 40, 30);
@@ -2526,7 +2569,7 @@
         return;
       }
 
-      // Screen shake — offsets the world, not the HUD.
+      // Screen shake - offsets the world, not the HUD.
       ctx.save();
       if (state.shakeMag > 0.2) {
         ctx.translate(rnd(-state.shakeMag, state.shakeMag), rnd(-state.shakeMag, state.shakeMag));
@@ -2597,7 +2640,8 @@
 
     loadBestTakes();
     loadMute();
-    fetchWax();          // pull the global count for the sleep screen (no-op until configured)
+    fetchWax();          // pull the global vinyl count (no-op until configured)
+    fetchTakes();        // pull the worldwide leaderboard for the sleep screen
     resizeCanvas();
     resetRun();
     goToSleep(false);   // boot to the title sleep screen
