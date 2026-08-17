@@ -1,5 +1,5 @@
 {
-  "next_sku": 1002,
+  "next_sku": 1003,
   "collections": [
     {
       "slug": "synths",
@@ -39,15 +39,59 @@
   ],
   "items": [
     {
+      "sku": "RM-1002",
+      "slug": "test-product",
+      "title": "Test Product",
+      "subtitle": "Checkout test listing - not a real product",
+      "collections": [],
+      "item_type": "part",
+      "brand": "",
+      "mpn": "",
+      "fits_models": [],
+      "year": "",
+      "condition": "New",
+      "price": 1.0,
+      "stock": 3,
+      "status": "active",
+      "cover_image": "",
+      "alt": "Test product listing",
+      "images": [],
+      "description": "This is a $1 test listing used to verify that checkout, order notifications, and shipping details all work end to end.\nIt is not a real product. Please don't buy it - if you did by mistake, email me and I'll refund you immediately.",
+      "bullets": [
+        "Not a real product - this listing exists to test the checkout pipeline",
+        "Any order placed here will be refunded"
+      ],
+      "service_notes": "",
+      "includes": [],
+      "tags": [
+        "test"
+      ],
+      "shipping": {
+        "weight_lb": 0.1,
+        "box_in": "6 x 4 x 2",
+        "ups_zone8_quote": 0.0,
+        "ship_price": 0.0,
+        "local_pickup": true
+      },
+      "stripe_url": "https://buy.stripe.com/aFa5kDdFr5427Xbg84c7u00",
+      "paypal_button_id": "",
+      "sold_date": null
+    },
+    {
       "sku": "RM-1001",
       "slug": "rhodes-germanium-transistor-kit",
       "title": "Rhodes Germanium Transistor Kit",
       "subtitle": "Drop-in replacement pair for the Peterson Rhodes power amp",
-      "collections": ["mod-kits"],
+      "collections": [
+        "mod-kits"
+      ],
       "item_type": "kit",
       "brand": "Fender Rhodes",
       "mpn": "",
-      "fits_models": ["Rhodes Suitcase", "Peterson power amp"],
+      "fits_models": [
+        "Rhodes Suitcase",
+        "Peterson power amp"
+      ],
       "year": "",
       "condition": "New",
       "price": 0.0,
@@ -66,7 +110,12 @@
         "Matched germanium transistor pair",
         "Installation notes"
       ],
-      "tags": ["rhodes", "germanium", "power amp", "kit"],
+      "tags": [
+        "rhodes",
+        "germanium",
+        "power amp",
+        "kit"
+      ],
       "shipping": {
         "weight_lb": 0.5,
         "box_in": "6 x 4 x 2",
