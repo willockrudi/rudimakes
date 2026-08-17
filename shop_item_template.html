@@ -8,9 +8,9 @@
   <meta property="og:title" content="{{ITEM_TITLE}} | Rudi Makes Shop" />
   <meta property="og:description" content="{{ITEM_META_DESCRIPTION}}" />
   <meta property="og:image" content="{{ITEM_OG_IMAGE}}" />
-  <meta property="og:url" content="https://www.rudimakes.com/shop/{{ITEM_SLUG}}.html" />
+  <meta property="og:url" content="{{SITE_URL}}/shop/{{ITEM_SLUG}}.html" />
   <meta property="og:type" content="product" />
-  <link rel="canonical" href="https://www.rudimakes.com/shop/{{ITEM_SLUG}}.html" />
+  <link rel="canonical" href="{{SITE_URL}}/shop/{{ITEM_SLUG}}.html" />
   <link rel="stylesheet" href="../style.css" />
   <script type="application/ld+json">
   {{ITEM_JSONLD}}
@@ -106,6 +106,9 @@
           <h3>Questions?</h3>
           <p>Email me before you buy - I'm happy to send more photos or talk through fitment.</p>
           <p><a href="mailto:{{EMAIL}}?subject={{ITEM_MAIL_SUBJECT}}">{{EMAIL}}</a></p>
+          <h3>Who You're Buying From</h3>
+          <p>Rudi Makes is the trading name of {{LEGAL_NAME}}. Your card statement will show
+          <strong>{{STATEMENT_DESCRIPTOR}}</strong>.</p>
         </aside>
       </div>
 

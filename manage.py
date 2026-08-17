@@ -48,7 +48,11 @@ SHOP_PATH = os.path.join(ROOT, "shop.json")
 IMAGES_DIR = os.path.join(ROOT, "images")
 BACKUPS_DIR = os.path.join(ROOT, ".backups")
 
-# Site URL (used for canonical URLs, OG tags, structured data)
+# Site URL (used for canonical URLs, OG tags, structured data).
+# Change this one line when the domain moves, then run `rebuild`. Every shop page
+# derives its canonical/OG URLs from it via the {{SITE_URL}} placeholder.
+# Also update CNAME, robots.txt, and the older non-shop templates, which still
+# have the domain written into them directly.
 SITE_URL = "https://www.rudimakes.com"
 
 # Markers
@@ -2620,6 +2624,9 @@ def replace_placeholders(content: str, site: dict) -> str:
         "{{EMAIL}}": html.escape(site.get("email", ""), quote=True),
         "{{INSTAGRAM_URL}}": html.escape(site.get("instagram_url", ""), quote=True),
         "{{YOUTUBE_URL}}": html.escape(site.get("youtube_url", ""), quote=True),
+        "{{LEGAL_NAME}}": html.escape(site.get("legal_name", "") or site.get("name", ""), quote=True),
+        "{{STATEMENT_DESCRIPTOR}}": html.escape(site.get("statement_descriptor", ""), quote=True),
+        "{{SITE_URL}}": SITE_URL,
     }
     for k, v in mapping.items():
         content = content.replace(k, v)
@@ -3178,7 +3185,8 @@ def _item_jsonld(item: dict, site: dict) -> str:
                             else "https://schema.org/OutOfStock",
             "itemCondition": "https://schema.org/UsedCondition" if item.get("item_type") == "gear"
                              else "https://schema.org/NewCondition",
-            "seller": {"@type": "Organization", "name": site.get("name", "Rudi Makes")},
+            "seller": {"@type": "Organization",
+                       "name": site.get("legal_name") or site.get("name", "Rudi Makes")},
         }
     return json.dumps(data, indent=2, ensure_ascii=False)
 
