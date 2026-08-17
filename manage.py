@@ -8,7 +8,16 @@ import subprocess
 import sys
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import parse_qs, urlencode, urlparse
+from urllib.parse import parse_qs, quote, urlencode, urlparse
+
+# This script prints emoji status markers. On Windows stdout defaults to cp1252,
+# which raises UnicodeEncodeError and kills the command (or 500s a web-UI request)
+# whenever output is redirected to a file or pipe.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,10 +31,18 @@ PROJECTS_DIR = os.path.join(ROOT, "projects")
 REPAIRS_INDEX_PATH = os.path.join(ROOT, "repairs.html")
 REPAIRS_TEMPLATE_PATH = os.path.join(ROOT, "repairs_template.html")
 
+# Shop
+SHOP_INDEX_PATH = os.path.join(ROOT, "shop.html")
+SHOP_TEMPLATE_PATH = os.path.join(ROOT, "shop_template.html")
+SHOP_COLLECTION_TEMPLATE_PATH = os.path.join(ROOT, "shop_collection_template.html")
+SHOP_ITEM_TEMPLATE_PATH = os.path.join(ROOT, "shop_item_template.html")
+SHOP_DIR = os.path.join(ROOT, "shop")
+
 # Data files
 DATA_PATH = os.path.join(ROOT, "projects.json")
 REPAIRS_PATH = os.path.join(ROOT, "repairs.json")
 SITE_PATH = os.path.join(ROOT, "site.json")
+SHOP_PATH = os.path.join(ROOT, "shop.json")
 
 # Assets
 IMAGES_DIR = os.path.join(ROOT, "images")
@@ -43,6 +60,27 @@ TAGS_START = "<!-- TAGS_START -->"
 TAGS_END = "<!-- TAGS_END -->"
 PROJECT_STEPS_START = "<!-- PROJECT_STEPS_START -->"
 PROJECT_STEPS_END = "<!-- PROJECT_STEPS_END -->"
+COLLECTIONS_START = "<!-- COLLECTIONS_START -->"
+COLLECTIONS_END = "<!-- COLLECTIONS_END -->"
+COLLECTION_NAV_START = "<!-- COLLECTION_NAV_START -->"
+COLLECTION_NAV_END = "<!-- COLLECTION_NAV_END -->"
+SHOP_ITEMS_START = "<!-- SHOP_ITEMS_START -->"
+SHOP_ITEMS_END = "<!-- SHOP_ITEMS_END -->"
+ITEM_GALLERY_START = "<!-- ITEM_GALLERY_START -->"
+ITEM_GALLERY_END = "<!-- ITEM_GALLERY_END -->"
+ITEM_BUY_START = "<!-- ITEM_BUY_START -->"
+ITEM_BUY_END = "<!-- ITEM_BUY_END -->"
+ITEM_SPECS_START = "<!-- ITEM_SPECS_START -->"
+ITEM_SPECS_END = "<!-- ITEM_SPECS_END -->"
+ITEM_SERVICE_START = "<!-- ITEM_SERVICE_START -->"
+ITEM_SERVICE_END = "<!-- ITEM_SERVICE_END -->"
+ITEM_INCLUDES_START = "<!-- ITEM_INCLUDES_START -->"
+ITEM_INCLUDES_END = "<!-- ITEM_INCLUDES_END -->"
+ITEM_FITS_START = "<!-- ITEM_FITS_START -->"
+ITEM_FITS_END = "<!-- ITEM_FITS_END -->"
+
+# Shipping markup applied to the UPS Zone 8 (worst-case) quote.
+SHIP_MARKUP = 1.2
 
 
 # ---------- Data IO ----------
@@ -64,7 +102,7 @@ def _save_json(path: str, obj):
 
 
 def _data_files() -> list[str]:
-    return [DATA_PATH, REPAIRS_PATH, SITE_PATH]
+    return [DATA_PATH, REPAIRS_PATH, SITE_PATH, SHOP_PATH]
 
 
 def create_backup(label: str) -> str:
@@ -602,6 +640,8 @@ def _web_layout(title: str, body: str, message: str = "", active_tab: str = "das
 
     tabs = [
         ("dashboard", "/", "Dashboard"),
+        ("shop", "/?tab=shop", "Shop"),
+        ("add-item", "/?tab=add-item", "Add Item"),
         ("add-build", "/?tab=add-build", "Add Build"),
         ("add-repair", "/?tab=add-repair", "Add Repair"),
         ("site", "/?tab=site", "Site Settings"),
@@ -651,7 +691,11 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
         length = int(handler.headers.get("Content-Length", "0") or "0")
         raw = handler.rfile.read(length).decode("utf-8") if length > 0 else ""
         parsed = parse_qs(raw, keep_blank_values=True)
-        return {k: (v[0] if v else "") for k, v in parsed.items()}
+        # Keep every value for multi-selects under a "<name>[]" key alongside the scalar.
+        out = {k: (v[0] if v else "") for k, v in parsed.items()}
+        for k, v in parsed.items():
+            out[f"{k}[]"] = v
+        return out
 
     class AdminHandler(BaseHTTPRequestHandler):
         def _send_html(self, content: str, status: int = 200):
@@ -671,10 +715,172 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
             self.send_header("Location", target)
             self.end_headers()
 
+        def _shop_rows(self, shop: dict) -> str:
+            items = shop.get("items", [])
+            if not items:
+                return '<div class="empty-state">Nothing listed yet - add one in the Add Item tab.</div>'
+            cmap = collection_map(shop)
+            rows = []
+            for i, it in enumerate(items):
+                t = html.escape(it.get("title") or "Untitled")
+                sku = html.escape(it.get("sku") or "")
+                state = item_state(it)
+                badge_cls = {"draft": "status-other", "sold_out": "status-other",
+                             "low": "status-progress", "in_stock": "status-complete"}[state]
+                badge_txt = {"draft": "DRAFT", "sold_out": "SOLD OUT",
+                             "low": f"LOW ({it.get('stock', 0)})", "in_stock": f"IN STOCK ({it.get('stock', 0)})"}[state]
+                price = fmt_price(it.get("price")) or "no price"
+                cols = html.escape(", ".join(
+                    (cmap.get(s) or {}).get("title", s) for s in (it.get("collections") or [])))
+                warn = ""
+                if item_needs_payment_link(it):
+                    warn = '<span class="entry-meta" style="color:#f0b429">no buy link</span>'
+                rows.append(f"""<li class="entry-item">
+  <span class="entry-num">{sku}</span>
+  <span class="entry-title">{t}</span>
+  <span class="entry-meta">{price}</span>
+  <span class="entry-meta">{cols}</span>
+  {warn}
+  <span class="status-badge {badge_cls}">{badge_txt}</span>
+  <span class="entry-actions">
+    <a href="/shop/edit?idx={i}" class="btn btn-ghost btn-sm">Edit</a>
+    <form method="post" action="/shop/sold" style="margin:0">
+      <input type="hidden" name="idx" value="{i}" />
+      <button type="submit" class="btn btn-ghost btn-sm" onclick="return confirm('Mark one sold?')">Sold</button>
+    </form>
+    <form method="post" action="/shop/stock" style="margin:0;display:flex;gap:4px">
+      <input type="hidden" name="idx" value="{i}" />
+      <input type="number" name="stock" min="0" value="{int(it.get('stock', 0) or 0)}"
+             style="width:64px;padding:4px 6px" />
+      <button type="submit" class="btn btn-ghost btn-sm">Set</button>
+    </form>
+    <form method="post" action="/shop/delete" style="margin:0">
+      <input type="hidden" name="idx" value="{i}" />
+      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this listing?')">Del</button>
+    </form>
+  </span>
+</li>""")
+            return f'<ul class="entry-list">{"".join(rows)}</ul>'
+
+        def _collection_options(self, shop: dict, selected=None) -> str:
+            selected = set(selected or [])
+            return "".join(
+                f'<option value="{html.escape(c.get("slug", ""))}"'
+                f'{" selected" if c.get("slug") in selected else ""}>'
+                f'{html.escape(c.get("title", ""))}</option>'
+                for c in sorted_collections(shop)
+            )
+
+        def _render_shop_edit(self, shop: dict, idx: int, message: str = ""):
+            if idx < 0:
+                self._redirect("/?tab=shop", "Invalid item selection")
+                return
+            it = shop["items"][idx]
+            ship = it.get("shipping") or {}
+            e = lambda v: html.escape(str(v if v is not None else ""), quote=True)  # noqa: E731
+            state = item_state(it)
+            coll_opts = self._collection_options(shop, it.get("collections"))
+
+            cover_note = f'<div class="hint">Current: {e(it.get("cover_image")) or "none"}</div>'
+            gallery_note = f'<div class="hint">{len(it.get("images") or [])} extra photo(s) - use the CLI to change these.</div>'
+
+            body = f"""
+<div class="card" style="max-width:680px">
+  <div class="section-header">
+    <div class="card-title" style="margin:0;border:none;padding:0">
+      {e(it.get('sku'))} &middot; {e(it.get('title'))}
+    </div>
+    <a href="/?tab=shop" class="btn btn-ghost btn-sm">&larr; Back</a>
+  </div>
+  <hr class="divider" style="margin:12px 0" />
+  <form method="post" action="/shop/save">
+    <input type="hidden" name="idx" value="{idx}" />
+    <div class="two-col">
+      <div class="form-group"><label>Title *</label>
+        <input name="title" required value="{e(it.get('title'))}" /></div>
+      <div class="form-group"><label>Type</label>
+        <select name="item_type">
+          <option value="gear"{' selected' if it.get('item_type') == 'gear' else ''}>Gear (one-of-a-kind)</option>
+          <option value="part"{' selected' if it.get('item_type') == 'part' else ''}>Part (restockable)</option>
+          <option value="kit"{' selected' if it.get('item_type') == 'kit' else ''}>Mod kit (restockable)</option>
+        </select></div>
+    </div>
+    <div class="form-group"><label>Subtitle</label>
+      <input name="subtitle" value="{e(it.get('subtitle'))}" /></div>
+    <div class="two-col">
+      <div class="form-group"><label>Price ($)</label>
+        <input name="price" type="number" step="0.01" min="0" value="{e(it.get('price'))}" /></div>
+      <div class="form-group"><label>Quantity in stock</label>
+        <input name="stock" type="number" min="0" value="{int(it.get('stock', 0) or 0)}" /></div>
+    </div>
+    <div class="form-group"><label>Collections</label>
+      <select name="collections" multiple size="5">{coll_opts}</select></div>
+    <div class="two-col">
+      <div class="form-group"><label>Brand</label>
+        <input name="brand" value="{e(it.get('brand'))}" /></div>
+      <div class="form-group"><label>Manufacturer part number</label>
+        <input name="mpn" value="{e(it.get('mpn'))}" /></div>
+    </div>
+    <div class="two-col">
+      <div class="form-group"><label>Year</label>
+        <input name="year" value="{e(it.get('year'))}" /></div>
+      <div class="form-group"><label>Condition</label>
+        <input name="condition" value="{e(it.get('condition'))}" /></div>
+    </div>
+    <div class="form-group"><label>Fits models</label>
+      <input name="fits_models" value="{e(', '.join(it.get('fits_models') or []))}" />
+      <div class="hint">Comma separated.</div></div>
+    <div class="form-group"><label>Description</label>
+      <textarea name="description">{e(it.get('description'))}</textarea></div>
+    <div class="form-group"><label>Bullets</label>
+      <textarea name="bullets" style="min-height:70px">{e(chr(10).join(it.get('bullets') or []))}</textarea></div>
+    <div class="form-group"><label>What you serviced</label>
+      <textarea name="service_notes" style="min-height:70px">{e(it.get('service_notes'))}</textarea></div>
+    <div class="form-group"><label>What's included</label>
+      <textarea name="includes" style="min-height:60px">{e(chr(10).join(it.get('includes') or []))}</textarea></div>
+    <div class="form-group"><label>Tags</label>
+      <input name="tags" value="{e(', '.join(it.get('tags') or []))}" /></div>
+    <div class="form-group"><label>Replace cover photo</label>
+      <input name="cover_image_path" placeholder="Leave blank to keep current" />
+      {cover_note}{gallery_note}</div>
+    <hr class="divider" style="margin:16px 0" />
+    <div class="card-title" style="font-size:14px">Shipping</div>
+    <div class="two-col">
+      <div class="form-group"><label>Weight (lb)</label>
+        <input name="weight_lb" type="number" step="0.1" min="0" value="{e(ship.get('weight_lb'))}" /></div>
+      <div class="form-group"><label>Box size (in)</label>
+        <input name="box_in" value="{e(ship.get('box_in'))}" /></div>
+    </div>
+    <div class="two-col">
+      <div class="form-group"><label>UPS Zone 8 quote ($)</label>
+        <input name="ups_zone8_quote" type="number" step="0.01" min="0" value="{e(ship.get('ups_zone8_quote'))}" /></div>
+      <div class="form-group"><label>Shipping to charge ($)</label>
+        <input name="ship_price" type="number" step="0.01" min="0" value="{e(ship.get('ship_price'))}" />
+        <div class="hint">Blank recomputes from the quote.</div></div>
+    </div>
+    <div class="form-group"><label>
+      <input type="checkbox" name="local_pickup" value="1"{' checked' if ship.get('local_pickup', True) else ''} />
+      Offer free local pickup</label></div>
+    <hr class="divider" style="margin:16px 0" />
+    <div class="card-title" style="font-size:14px">Payment Links</div>
+    <div class="form-group"><label>Stripe Payment Link URL</label>
+      <input name="stripe_url" value="{e(it.get('stripe_url'))}" /></div>
+    <div class="form-group"><label>PayPal hosted button ID</label>
+      <input name="paypal_button_id" value="{e(it.get('paypal_button_id'))}" /></div>
+    <div class="form-group"><label>
+      <input type="checkbox" name="published" value="1"{' checked' if it.get('status') != 'draft' else ''} />
+      Published (uncheck to hide from the site)</label>
+      <div class="hint">Currently: {state.replace('_', ' ')}</div></div>
+    <button type="submit" class="btn btn-primary">Save Item</button>
+  </form>
+</div>"""
+            self._send_html(_web_layout(f"Edit {it.get('title', 'Item')}", body, message, "shop"))
+
         def _render_home(self, message: str = "", active_tab: str = "dashboard"):
             projects = load_projects()
             repairs = load_repairs()
             site = load_site()
+            shop = load_shop()
 
             n_builds = len(projects)
             n_repairs = len(repairs)
@@ -729,6 +935,18 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 repair_list = f'<ul class="entry-list">{"".join(r_rows)}</ul>'
             else:
                 repair_list = '<div class="empty-state">No repairs yet - add one in the Add Repair tab.</div>'
+
+            shop_items = shop.get("items", [])
+            n_items = len(shop_items)
+            n_live = sum(1 for i in shop_items if item_state(i) in ("in_stock", "low"))
+            n_nolink = sum(1 for i in shop_items if item_needs_payment_link(i))
+            shop_list = self._shop_rows(shop)
+            coll_opts = self._collection_options(shop)
+            nolink_warn = ""
+            if n_nolink:
+                nolink_warn = (f'<div class="hint" style="color:#f0b429;margin-bottom:8px">'
+                               f'{n_nolink} listing(s) have no Stripe or PayPal link - they show '
+                               f'"email for price" instead of Buy buttons.</div>')
 
             body = f"""
 <div class="stat-row">
@@ -787,6 +1005,161 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
         <input type="text" name="commit_message" placeholder="Commit message (optional - leave blank for auto)" />
         <button type="submit" class="btn btn-publish">↑ Publish</button>
       </div>
+    </form>
+  </div>
+</div>
+
+<div id="tab-shop" class="tab-panel" style="display:none">
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin:0;border:none;padding:0">Inventory ({n_items} listed, {n_live} in stock)</div>
+      <a href="/?tab=add-item" class="btn btn-primary btn-sm">+ Add Item</a>
+    </div>
+    <hr class="divider" style="margin:12px 0" />
+    {nolink_warn}
+    {shop_list}
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">When Something Sells</div>
+    <div class="hint">
+      1. Hit <strong>Sold</strong> above (drops stock by one and rebuilds the page).<br />
+      2. If it hit zero, go deactivate the <strong>other</strong> processor's button so it can't sell
+         twice - Stripe: Payment Links &rarr; deactivate. PayPal: PayPal Buttons &rarr; remove.<br />
+      3. Publish, then pack it, ship it, and email the tracking number.
+    </div>
+  </div>
+</div>
+
+<div id="tab-add-item" class="tab-panel" style="display:none">
+  <div class="card" style="max-width:680px">
+    <div class="card-title">Add Shop Item</div>
+    <form method="post" action="/shop/add">
+      <div class="two-col">
+        <div class="form-group">
+          <label>Title *</label>
+          <input name="title" required placeholder="e.g. Roland Juno-106 80017A Voice Chip" />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select name="item_type">
+            <option value="gear">Gear (one-of-a-kind)</option>
+            <option value="part">Part (restockable)</option>
+            <option value="kit">Mod kit (restockable)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subtitle</label>
+        <input name="subtitle" placeholder="One line - what makes it worth buying" />
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Price ($)</label>
+          <input name="price" type="number" step="0.01" min="0" placeholder="36.99" />
+        </div>
+        <div class="form-group">
+          <label>Quantity in stock</label>
+          <input name="stock" type="number" min="0" value="1" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Collections</label>
+        <select name="collections" multiple size="5">{coll_opts}</select>
+        <div class="hint">Ctrl-click (Cmd-click on Mac) to pick more than one.</div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Brand</label>
+          <input name="brand" placeholder="Roland" />
+        </div>
+        <div class="form-group">
+          <label>Manufacturer part number</label>
+          <input name="mpn" placeholder="80017A" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Year</label>
+          <input name="year" placeholder="1984" />
+        </div>
+        <div class="form-group">
+          <label>Condition</label>
+          <input name="condition" placeholder="Excellent / New" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fits models</label>
+        <input name="fits_models" placeholder="Juno-106, Juno-106S, HS-60" />
+        <div class="hint">Comma separated. This is what people actually search for.</div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" placeholder="What it is, what shape it's in, what you did to it"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Bullets</label>
+        <textarea name="bullets" style="min-height:70px" placeholder="One per line&#10;Recapped power supply&#10;Six new voice chips"></textarea>
+      </div>
+      <div class="form-group">
+        <label>What you serviced</label>
+        <textarea name="service_notes" style="min-height:70px" placeholder="Bench notes - the thing that separates you from a Reverb listing"></textarea>
+      </div>
+      <div class="form-group">
+        <label>What's included</label>
+        <textarea name="includes" style="min-height:60px" placeholder="One per line&#10;Power cable&#10;Original manual"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Tags</label>
+        <input name="tags" placeholder="synth, roland, serviced" />
+      </div>
+      <div class="form-group">
+        <label>Cover photo path</label>
+        <input name="cover_image_path" placeholder="C:\\path\\to\\photo.jpg" />
+        <div class="hint">Copied into images/shop/ automatically.</div>
+      </div>
+      <hr class="divider" style="margin:16px 0" />
+      <div class="card-title" style="font-size:14px">Shipping</div>
+      <div class="hint" style="margin-bottom:10px">
+        Box it, weigh it, then get a UPS quote from Indianapolis to a west-coast ZIP (Zone 8 -
+        the worst case). Enter that number and the {SHIP_MARKUP}x markup is applied for you.
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>Weight (lb)</label>
+          <input name="weight_lb" type="number" step="0.1" min="0" placeholder="32" />
+        </div>
+        <div class="form-group">
+          <label>Box size (in)</label>
+          <input name="box_in" placeholder="34 x 18 x 10" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label>UPS Zone 8 quote ($)</label>
+          <input name="ups_zone8_quote" type="number" step="0.01" min="0" placeholder="78.40" />
+        </div>
+        <div class="form-group">
+          <label>Shipping to charge ($)</label>
+          <input name="ship_price" type="number" step="0.01" min="0" placeholder="blank = auto" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" name="local_pickup" value="1" checked /> Offer free local pickup</label>
+      </div>
+      <hr class="divider" style="margin:16px 0" />
+      <div class="card-title" style="font-size:14px">Payment Links</div>
+      <div class="hint" style="margin-bottom:10px">
+        Leave both blank to save as a draft, then paste them in once you've made the links.
+      </div>
+      <div class="form-group">
+        <label>Stripe Payment Link URL</label>
+        <input name="stripe_url" placeholder="https://buy.stripe.com/..." />
+      </div>
+      <div class="form-group">
+        <label>PayPal hosted button ID</label>
+        <input name="paypal_button_id" placeholder="ABCD1234EFGH" />
+      </div>
+      <button type="submit" class="btn btn-primary">Add Item</button>
     </form>
   </div>
 </div>
@@ -1241,6 +1614,13 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 self._render_repair_edit(idx, message)
                 return
 
+            if parsed.path == "/shop/edit":
+                idx_raw = (query.get("idx") or ["-1"])[0]
+                shop = load_shop()
+                idx = _safe_index(idx_raw, len(shop.get("items", [])))
+                self._render_shop_edit(shop, idx, message)
+                return
+
             if parsed.path == "/story/edit":
                 idx_raw = (query.get("idx") or ["-1"])[0]
                 step_raw = (query.get("step_idx") or ["-1"])[0]
@@ -1252,6 +1632,157 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 return
 
             self._send_html(_web_layout("Not Found", "<div class='card'><h2>404</h2></div>"), status=404)
+
+        def _shop_apply_form(self, it: dict, form: dict, shop: dict):
+            """Shared field mapping for both the add and edit shop forms."""
+            def num(key, default=0.0):
+                raw = (form.get(key) or "").strip().lstrip("$")
+                try:
+                    return float(raw) if raw else default
+                except ValueError:
+                    return default
+
+            title = (form.get("title") or "").strip()
+            if title:
+                it["title"] = title
+            it["subtitle"] = (form.get("subtitle") or "").strip()
+            kind = (form.get("item_type") or "gear").strip().lower()
+            it["item_type"] = kind if kind in ("gear", "part", "kit") else "gear"
+            it["collections"] = [s for s in (form.get("collections[]") or []) if s]
+            it["brand"] = (form.get("brand") or "").strip()
+            it["mpn"] = (form.get("mpn") or "").strip()
+            it["year"] = (form.get("year") or "").strip()
+            it["condition"] = (form.get("condition") or "").strip()
+            it["fits_models"] = _split_csv(form.get("fits_models") or "")
+            it["price"] = num("price")
+            stock_raw = (form.get("stock") or "").strip()
+            it["stock"] = int(stock_raw) if stock_raw.isdigit() else 0
+            it["description"] = (form.get("description") or "").strip()
+            it["bullets"] = _split_lines(form.get("bullets") or "")
+            it["service_notes"] = (form.get("service_notes") or "").strip()
+            it["includes"] = _split_lines(form.get("includes") or "")
+            it["tags"] = _split_csv(form.get("tags") or "")
+
+            cover_path = (form.get("cover_image_path") or "").strip()
+            if cover_path:
+                try:
+                    it["cover_image"] = copy_image_into_site(cover_path, it.get("title", "item"), subdir="shop")
+                    it.setdefault("alt", it.get("title", ""))
+                except FileNotFoundError:
+                    pass
+
+            quote_val = num("ups_zone8_quote")
+            ship_raw = (form.get("ship_price") or "").strip()
+            it["shipping"] = {
+                "weight_lb": num("weight_lb"),
+                "box_in": (form.get("box_in") or "").strip(),
+                "ups_zone8_quote": quote_val,
+                "ship_price": num("ship_price") if ship_raw else compute_ship_price(quote_val),
+                "local_pickup": form.get("local_pickup") == "1",
+            }
+
+            it["stripe_url"] = (form.get("stripe_url") or "").strip()
+            it["paypal_button_id"] = (form.get("paypal_button_id") or "").strip()
+            if it["stock"] == 0 and not it.get("sold_date"):
+                it["sold_date"] = datetime.now().strftime("%Y-%m-%d")
+            elif it["stock"] > 0:
+                it["sold_date"] = None
+
+        def _handle_shop_post(self, path: str, form: dict):
+            shop = load_shop()
+            items = shop.get("items", [])
+
+            if path == "/shop/add":
+                if not (form.get("title") or "").strip():
+                    self._redirect("/?tab=add-item", "Item title is required.")
+                    return
+                create_backup_note("web-shop-add")
+                shop = load_shop()
+                it = {
+                    "sku": next_sku(shop),
+                    "slug": slugify(form.get("title", "item")),
+                    "images": [],
+                    "cover_image": "",
+                    "sold_date": None,
+                    "created": datetime.now().isoformat(timespec="seconds"),
+                }
+                self._shop_apply_form(it, form, shop)
+                it["status"] = "active" if (it["stripe_url"] or it["paypal_button_id"]) else "draft"
+                shop["items"].insert(0, it)
+                save_shop(shop)
+                rebuild_all()
+                note = "" if it["status"] == "active" else " (saved as draft - no payment link yet)"
+                self._redirect("/?tab=shop", f"Added {it['sku']}{note}.")
+                return
+
+            idx = _safe_index(form.get("idx", "-1"), len(items))
+            if idx < 0:
+                self._redirect("/?tab=shop", "Invalid item selection.")
+                return
+
+            if path == "/shop/save":
+                create_backup_note("web-shop-save")
+                shop = load_shop()
+                it = shop["items"][idx]
+                self._shop_apply_form(it, form, shop)
+                if form.get("published") == "1" and (it["stripe_url"] or it["paypal_button_id"]):
+                    it["status"] = "active"
+                elif form.get("published") == "1":
+                    it["status"] = "active"
+                else:
+                    it["status"] = "draft"
+                it["updated"] = datetime.now().isoformat(timespec="seconds")
+                save_shop(shop)
+                rebuild_all()
+                self._redirect("/?tab=shop", f"Saved {it.get('sku', 'item')}.")
+                return
+
+            if path == "/shop/stock":
+                create_backup_note("web-shop-stock")
+                shop = load_shop()
+                it = shop["items"][idx]
+                raw = (form.get("stock") or "").strip()
+                if not raw.isdigit():
+                    self._redirect("/?tab=shop", "Stock must be a whole number.")
+                    return
+                it["stock"] = int(raw)
+                it["sold_date"] = datetime.now().strftime("%Y-%m-%d") if it["stock"] == 0 else None
+                save_shop(shop)
+                rebuild_all()
+                self._redirect("/?tab=shop", f"{it.get('sku')} stock set to {it['stock']}.")
+                return
+
+            if path == "/shop/sold":
+                create_backup_note("web-shop-sold")
+                shop = load_shop()
+                it = shop["items"][idx]
+                if it.get("item_type") == "gear":
+                    it["stock"] = 0
+                else:
+                    it["stock"] = max(0, int(it.get("stock", 0) or 0) - 1)
+                if it["stock"] == 0:
+                    it["sold_date"] = datetime.now().strftime("%Y-%m-%d")
+                save_shop(shop)
+                rebuild_all()
+                tail = " - now deactivate the other processor's button!" if it["stock"] == 0 else ""
+                self._redirect("/?tab=shop", f"{it.get('sku')}: {it['stock']} left{tail}")
+                return
+
+            if path == "/shop/delete":
+                create_backup_note("web-shop-delete")
+                shop = load_shop()
+                it = shop["items"][idx]
+                slug = it.get("slug", "")
+                shop["items"].pop(idx)
+                save_shop(shop)
+                page = os.path.join(SHOP_DIR, f"{slug}.html")
+                if slug and os.path.exists(page):
+                    os.remove(page)
+                rebuild_all()
+                self._redirect("/?tab=shop", "Deleted listing.")
+                return
+
+            self._redirect("/?tab=shop", "Unknown shop action.")
 
         def do_POST(self):
             form = parse_form(self)
@@ -1425,6 +1956,10 @@ def start_web_ui(host: str = "127.0.0.1", port: int = 8081):
                 save_repairs(repairs)
                 rebuild_all()
                 self._redirect("/", "Saved repair entry.")
+                return
+
+            if path.startswith("/shop/"):
+                self._handle_shop_post(path, form)
                 return
 
             if path == "/story/add":
@@ -1735,7 +2270,7 @@ def prompt_links(default_links=None):
     return links
 
 
-def collect_extra_images(title: str, existing_images=None):
+def collect_extra_images(title: str, existing_images=None, subdir: str = ""):
     if existing_images is None:
         existing_images = []
 
@@ -1758,7 +2293,7 @@ def collect_extra_images(title: str, existing_images=None):
         if not image_path:
             break
         try:
-            image_rel = copy_image_into_site(image_path, title)
+            image_rel = copy_image_into_site(image_path, title, subdir=subdir)
             images.append(image_rel)
             print(f"  added: {image_rel}")
         except FileNotFoundError as e:
@@ -1812,8 +2347,9 @@ def ensure_project_slugs(projects: list[dict]) -> bool:
     return changed
 
 
-def copy_image_into_site(image_path: str, title: str) -> str:
-    os.makedirs(IMAGES_DIR, exist_ok=True)
+def copy_image_into_site(image_path: str, title: str, subdir: str = "") -> str:
+    dest_dir = os.path.join(IMAGES_DIR, subdir) if subdir else IMAGES_DIR
+    os.makedirs(dest_dir, exist_ok=True)
 
     # PowerShell drag/drop often includes quotes
     image_path = (image_path or "").strip().strip('"')
@@ -1825,16 +2361,17 @@ def copy_image_into_site(image_path: str, title: str) -> str:
     date_prefix = datetime.now().strftime("%Y-%m-%d")
     base = slugify(title)
     dest_name = f"{date_prefix}-{base}{ext}"
-    dest_path = os.path.join(IMAGES_DIR, dest_name)
+    dest_path = os.path.join(dest_dir, dest_name)
 
     i = 2
     while os.path.exists(dest_path):
         dest_name = f"{date_prefix}-{base}-{i}{ext}"
-        dest_path = os.path.join(IMAGES_DIR, dest_name)
+        dest_path = os.path.join(dest_dir, dest_name)
         i += 1
 
     shutil.copy2(image_path, dest_path)
-    return f"images/{dest_name}"
+    rel = f"{subdir}/{dest_name}" if subdir else dest_name
+    return f"images/{rel}"
 
 
 # ---------- HTML generation ----------
@@ -2208,6 +2745,634 @@ def rebuild_all(projects=None):
     rebuild_index_from_projects(projects)
     rebuild_project_pages(projects)
     rebuild_repairs_page()
+    rebuild_shop()
+
+
+# ---------- Shop: data ----------
+def _default_shop() -> dict:
+    return {"next_sku": 1001, "collections": [], "items": []}
+
+
+def load_shop() -> dict:
+    if not os.path.exists(SHOP_PATH):
+        return _default_shop()
+    try:
+        with open(SHOP_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except json.JSONDecodeError:
+        print("⚠️  JSON parse error in shop.json. Using empty shop.")
+        return _default_shop()
+    if not isinstance(data, dict):
+        return _default_shop()
+    data.setdefault("next_sku", 1001)
+    data.setdefault("collections", [])
+    data.setdefault("items", [])
+    return data
+
+
+def save_shop(shop: dict):
+    _save_json(SHOP_PATH, shop)
+
+
+def next_sku(shop: dict) -> str:
+    """Assign the next sequential part number. Numbers are never reused."""
+    n = int(shop.get("next_sku", 1001))
+    shop["next_sku"] = n + 1
+    return f"RM-{n}"
+
+
+def compute_ship_price(zone8_quote: float) -> float:
+    """Worst-case UPS quote plus markup, rounded to a whole dollar."""
+    try:
+        return float(round(float(zone8_quote) * SHIP_MARKUP))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def ensure_shop_slugs(shop: dict) -> bool:
+    """Fill in missing slugs and SKUs. Returns True if anything changed."""
+    changed = False
+    seen = set()
+    for item in shop.get("items", []):
+        slug = (item.get("slug") or "").strip()
+        if not slug:
+            slug = slugify(item.get("title", "item"))
+            changed = True
+        base = slug
+        i = 2
+        while slug in seen:
+            slug = f"{base}-{i}"
+            i += 1
+            changed = True
+        seen.add(slug)
+        if item.get("slug") != slug:
+            item["slug"] = slug
+            changed = True
+        if not (item.get("sku") or "").strip():
+            item["sku"] = next_sku(shop)
+            changed = True
+    for c in shop.get("collections", []):
+        if not (c.get("slug") or "").strip():
+            c["slug"] = slugify(c.get("title", "collection"))
+            changed = True
+    return changed
+
+
+def collection_map(shop: dict) -> dict:
+    return {c.get("slug"): c for c in shop.get("collections", []) if c.get("slug")}
+
+
+def sorted_collections(shop: dict) -> list:
+    return sorted(shop.get("collections", []), key=lambda c: (c.get("order", 999), c.get("title", "")))
+
+
+def visible_items(shop: dict) -> list:
+    """Everything except drafts, in-stock first, then newest sold last."""
+    items = [i for i in shop.get("items", []) if (i.get("status") or "active") != "draft"]
+    return sorted(items, key=lambda i: (0 if int(i.get("stock", 0) or 0) > 0 else 1, i.get("title", "")))
+
+
+def items_in_collection(shop: dict, slug: str) -> list:
+    return [i for i in visible_items(shop) if slug in (i.get("collections") or [])]
+
+
+# ---------- Shop: presentation helpers ----------
+def item_state(item: dict) -> str:
+    """One of: draft, sold_out, low, in_stock."""
+    if (item.get("status") or "active") == "draft":
+        return "draft"
+    stock = int(item.get("stock", 0) or 0)
+    if stock <= 0:
+        return "sold_out"
+    if item.get("item_type") != "gear" and stock <= 2:
+        return "low"
+    return "in_stock"
+
+
+def item_badge(item: dict) -> tuple[str, str]:
+    state = item_state(item)
+    stock = int(item.get("stock", 0) or 0)
+    if state == "sold_out":
+        return ("status-sold", "Sold" if item.get("item_type") == "gear" else "Sold out")
+    if state == "low":
+        return ("status-low", f"Only {stock} left")
+    if state == "draft":
+        return ("status-archived", "Draft")
+    return ("status-instock", "In stock")
+
+
+def item_has_payment_link(item: dict) -> bool:
+    return bool((item.get("stripe_url") or "").strip() or (item.get("paypal_button_id") or "").strip())
+
+
+def item_needs_payment_link(item: dict) -> bool:
+    """In stock but with nothing to click - the case worth warning about."""
+    return item_state(item) in ("in_stock", "low") and not item_has_payment_link(item)
+
+
+def item_is_buyable(item: dict) -> bool:
+    if item_state(item) not in ("in_stock", "low"):
+        return False
+    try:
+        price = float(item.get("price", 0) or 0)
+    except (TypeError, ValueError):
+        return False
+    if price <= 0:
+        return False
+    return item_has_payment_link(item)
+
+
+def fmt_price(value) -> str:
+    try:
+        p = float(value or 0)
+    except (TypeError, ValueError):
+        return ""
+    if p <= 0:
+        return ""
+    return f"${p:,.0f}" if abs(p - round(p)) < 0.005 else f"${p:,.2f}"
+
+
+def item_ship_note(item: dict) -> str:
+    ship = item.get("shipping") or {}
+    price = fmt_price(ship.get("ship_price"))
+    pickup = " · free local pickup" if ship.get("local_pickup", True) else ""
+    if price:
+        return f"+ {price} shipping{pickup}"
+    return f"Shipping quoted at checkout{pickup}"
+
+
+def _mailto(site: dict, subject: str) -> str:
+    email = (site.get("email") or "").strip()
+    if not email:
+        return ""
+    return f"mailto:{email}?subject={quote(subject, safe='')}"
+
+
+def _item_search_text(item: dict, cmap: dict) -> str:
+    parts = [
+        item.get("sku", ""),
+        item.get("mpn", ""),
+        item.get("brand", ""),
+        item.get("condition", ""),
+        str(item.get("year", "")),
+        item.get("item_type", ""),
+    ]
+    parts += list(item.get("fits_models") or [])
+    parts += list(item.get("tags") or [])
+    parts += [(cmap.get(s) or {}).get("title", s) for s in (item.get("collections") or [])]
+    return " ".join(str(p) for p in parts if p)
+
+
+def shop_buy_row_html(item: dict, site: dict, indent: str = "          ") -> str:
+    """Buy buttons. Only rendered when the item is actually purchasable."""
+    parts = []
+    title = item.get("title", "this item")
+    if item_is_buyable(item):
+        stripe_url = (item.get("stripe_url") or "").strip()
+        if stripe_url:
+            parts.append(
+                f'{indent}<a class="btn btn-primary btn-sm" href="{html.escape(stripe_url, quote=True)}"'
+                f' target="_blank" rel="noopener">Buy — {fmt_price(item.get("price"))}</a>'
+            )
+        pp = (item.get("paypal_button_id") or "").strip()
+        if pp:
+            parts.append(
+                f'{indent}<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" rel="noopener">\n'
+                f'{indent}  <input type="hidden" name="cmd" value="_s-xclick">\n'
+                f'{indent}  <input type="hidden" name="hosted_button_id" value="{html.escape(pp, quote=True)}">\n'
+                f'{indent}  <button type="submit" class="btn btn-paypal btn-sm">PayPal</button>\n'
+                f'{indent}</form>'
+            )
+    else:
+        state = item_state(item)
+        if state == "sold_out":
+            msg = "Sold — email me if you want one like it" if item.get("item_type") == "gear" \
+                else "Out of stock — email me to be notified"
+        else:
+            msg = "Email for price and availability"
+        parts.append(f'{indent}<span class="shop-unavailable">{html.escape(msg, quote=True)}</span>')
+
+    mail = _mailto(site, f"{title} ({item.get('sku', '')})".strip())
+    if mail:
+        parts.append(f'{indent}<a class="btn btn-outline btn-sm" href="{html.escape(mail, quote=True)}">Email</a>')
+
+    return "\n".join(parts)
+
+
+def shop_card_html(item: dict, site: dict, cmap: dict, asset_prefix: str = "", item_href: str = "") -> str:
+    slug = item.get("slug") or slugify(item.get("title", "item"))
+    href = item_href or f"{asset_prefix}shop/{slug}.html"
+    raw_title = item.get("title", "Untitled")
+    title = html.escape(raw_title, quote=True)
+    alt = html.escape(item.get("alt", raw_title), quote=True)
+    badge_class, badge_text = item_badge(item)
+    state = item_state(item)
+
+    cover = (item.get("cover_image") or "").strip()
+    if cover:
+        media_inner = f'<img class="shop-thumb" src="{html.escape(asset_prefix + cover, quote=True)}" alt="{alt}">'
+    else:
+        media_inner = '<div class="shop-thumb-empty">◎</div>'
+    if state == "sold_out":
+        label = "Sold" if item.get("item_type") == "gear" else "Sold out"
+        media_inner += f'\n          <div class="sold-overlay">{label}</div>'
+
+    meta_bits = []
+    if item.get("brand"):
+        meta_bits.append(f'<span><strong>{html.escape(str(item["brand"]), quote=True)}</strong></span>')
+    if item.get("year"):
+        meta_bits.append(f'<span>{html.escape(str(item["year"]), quote=True)}</span>')
+    if item.get("condition"):
+        meta_bits.append(f'<span>{html.escape(str(item["condition"]), quote=True)}</span>')
+    if item.get("mpn"):
+        meta_bits.append(f'<span>PN {html.escape(str(item["mpn"]), quote=True)}</span>')
+    meta_html = ""
+    if meta_bits:
+        meta_html = '\n            <div class="shop-meta">' + " ".join(meta_bits) + "</div>"
+
+    subtitle = item.get("subtitle") or ""
+    subtitle_html = ""
+    if subtitle:
+        subtitle_html = f'\n            <p class="shop-subtitle">{html.escape(subtitle, quote=True)}</p>'
+
+    price = fmt_price(item.get("price"))
+    price_html = price if price else '<span class="shop-price-tbd">Email for price</span>'
+
+    coll_slugs = [s for s in (item.get("collections") or []) if s]
+    coll_labels = [(cmap.get(s) or {}).get("title", s) for s in coll_slugs]
+
+    sku = html.escape(item.get("sku", ""), quote=True)
+    sku_html = f'\n            <p class="shop-sku">{sku}</p>' if sku else ""
+
+    return f"""
+        <div class="shop-card{' is-sold' if state == 'sold_out' else ''}"
+             data-collections="{html.escape(','.join(coll_slugs), quote=True)}"
+             data-collection-labels="{html.escape(','.join(coll_labels), quote=True)}"
+             data-in-stock="{'0' if state == 'sold_out' else '1'}"
+             data-search-text="{html.escape(_item_search_text(item, cmap), quote=True)}">
+          <a class="shop-card-media" href="{html.escape(href, quote=True)}">
+          {media_inner}
+          </a>
+          <div class="shop-card-body">{sku_html}
+            <h3><a href="{html.escape(href, quote=True)}">{title}</a> <span class="status-badge {badge_class}">{badge_text}</span></h3>{subtitle_html}{meta_html}
+            <p class="shop-price">{price_html}</p>
+            <p class="shop-ship-note">{html.escape(item_ship_note(item), quote=True)}</p>
+            <div class="shop-buy-row">
+{shop_buy_row_html(item, site)}
+            </div>
+          </div>
+        </div>
+"""
+
+
+def collection_card_html(c: dict, count: int, in_stock: int) -> str:
+    slug = c.get("slug", "")
+    title = html.escape(c.get("title", slug), quote=True)
+    blurb = html.escape(c.get("blurb", ""), quote=True)
+    cover = (c.get("cover_image") or "").strip()
+    if cover:
+        media = f'<img class="collection-thumb" src="{html.escape(cover, quote=True)}" alt="{title}">'
+    else:
+        media = f'<div class="collection-thumb-empty">{title[:1].upper()}</div>'
+    if count == 0:
+        count_label = "Nothing listed yet"
+    elif in_stock == 0:
+        count_label = f"{count} listed · all sold"
+    else:
+        count_label = f"{in_stock} in stock"
+    return f"""
+          <a class="collection-card" href="shop/{html.escape(slug, quote=True)}.html">
+            {media}
+            <div class="collection-body">
+              <h3>{title}</h3>
+              <p>{blurb}</p>
+              <span class="collection-count">{count_label}</span>
+            </div>
+          </a>
+"""
+
+
+def _splice(content: str, start_marker: str, end_marker: str, inner: str, label: str) -> str:
+    if start_marker not in content or end_marker not in content:
+        raise ValueError(f"Markers not found in {label}.\nAdd:\n{start_marker}\n{end_marker}")
+    s = content.index(start_marker) + len(start_marker)
+    e = content.index(end_marker)
+    return content[:s] + "\n" + inner + content[e:]
+
+
+# ---------- Shop: page generation ----------
+def rebuild_shop_index(shop: dict, site: dict):
+    if not os.path.isfile(SHOP_TEMPLATE_PATH):
+        raise FileNotFoundError(f"shop_template.html not found at {SHOP_TEMPLATE_PATH}")
+
+    with open(SHOP_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    cmap = collection_map(shop)
+    items = visible_items(shop)
+
+    cards = []
+    for c in sorted_collections(shop):
+        slug = c.get("slug", "")
+        in_coll = items_in_collection(shop, slug)
+        in_stock = sum(1 for i in in_coll if item_state(i) != "sold_out")
+        cards.append(collection_card_html(c, len(in_coll), in_stock))
+    content = _splice(content, COLLECTIONS_START, COLLECTIONS_END, "".join(cards), "shop_template.html")
+
+    item_cards = "".join(shop_card_html(i, site, cmap) for i in items)
+    content = _splice(content, SHOP_ITEMS_START, SHOP_ITEMS_END, item_cards, "shop_template.html")
+
+    content = replace_placeholders(content, site)
+    with open(SHOP_INDEX_PATH, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
+def rebuild_shop_collection_pages(shop: dict, site: dict) -> list[str]:
+    if not os.path.isfile(SHOP_COLLECTION_TEMPLATE_PATH):
+        raise FileNotFoundError(f"shop_collection_template.html not found at {SHOP_COLLECTION_TEMPLATE_PATH}")
+
+    with open(SHOP_COLLECTION_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    cmap = collection_map(shop)
+    os.makedirs(SHOP_DIR, exist_ok=True)
+    written = []
+
+    all_cols = sorted_collections(shop)
+    for c in all_cols:
+        slug = c.get("slug", "")
+        title = c.get("title", slug)
+        items = items_in_collection(shop, slug)
+
+        nav_links = []
+        for other in all_cols:
+            oslug = other.get("slug", "")
+            cls = ' class="is-active"' if oslug == slug else ""
+            nav_links.append(
+                f'        <a href="{html.escape(oslug, quote=True)}.html"{cls}>'
+                f'{html.escape(other.get("title", oslug), quote=True)}</a>'
+            )
+        content = _splice(template, COLLECTION_NAV_START, COLLECTION_NAV_END,
+                          "\n".join(nav_links) + "\n", "shop_collection_template.html")
+
+        if items:
+            cards = "".join(
+                shop_card_html(i, site, cmap, asset_prefix="../", item_href=f"{i.get('slug')}.html")
+                for i in items
+            )
+        else:
+            cards = ('        <p class="shop-empty">Nothing listed in this collection right now — '
+                     'check back, or email me and I\'ll tell you what I have on the shelf.</p>\n')
+        content = _splice(content, SHOP_ITEMS_START, SHOP_ITEMS_END, cards, "shop_collection_template.html")
+
+        blurb = c.get("blurb", "")
+        cover = (c.get("cover_image") or "").strip()
+        mapping = {
+            "{{COLLECTION_TITLE}}": html.escape(title, quote=True),
+            "{{COLLECTION_SLUG}}": html.escape(slug, quote=True),
+            "{{COLLECTION_BLURB}}": html.escape(blurb, quote=True),
+            "{{COLLECTION_META_DESCRIPTION}}": html.escape(
+                (blurb or f"{title} for sale from Rudi Makes in Indianapolis.")[:160], quote=True),
+            "{{COLLECTION_OG_IMAGE}}": f"{SITE_URL}/{cover}" if cover else f"{SITE_URL}/images/og.png",
+        }
+        content = replace_placeholders(content, site)
+        for k, v in mapping.items():
+            content = content.replace(k, v)
+
+        out_name = f"{slug}.html"
+        with open(os.path.join(SHOP_DIR, out_name), "w", encoding="utf-8") as f:
+            f.write(content)
+        written.append(out_name)
+
+    return written
+
+
+def _item_jsonld(item: dict, site: dict) -> str:
+    slug = item.get("slug", "")
+    cover = (item.get("cover_image") or "").strip()
+    state = item_state(item)
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": item.get("title", ""),
+        "sku": item.get("sku", ""),
+        "description": re.sub(r"\s+", " ", (item.get("description") or "")).strip()[:400],
+        "url": f"{SITE_URL}/shop/{slug}.html",
+    }
+    if item.get("brand"):
+        data["brand"] = {"@type": "Brand", "name": item["brand"]}
+    if item.get("mpn"):
+        data["mpn"] = item["mpn"]
+    if cover:
+        data["image"] = f"{SITE_URL}/{cover}"
+    try:
+        price = float(item.get("price", 0) or 0)
+    except (TypeError, ValueError):
+        price = 0.0
+    if price > 0:
+        data["offers"] = {
+            "@type": "Offer",
+            "price": f"{price:.2f}",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock" if state in ("in_stock", "low")
+                            else "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/UsedCondition" if item.get("item_type") == "gear"
+                             else "https://schema.org/NewCondition",
+            "seller": {"@type": "Organization", "name": site.get("name", "Rudi Makes")},
+        }
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
+
+def shop_item_detail_html(item: dict, shop: dict, site: dict, template: str) -> str:
+    cmap = collection_map(shop)
+    slug = item.get("slug", "")
+    raw_title = item.get("title", "Untitled")
+    title = html.escape(raw_title, quote=True)
+    alt = html.escape(item.get("alt", raw_title), quote=True)
+    badge_class, badge_text = item_badge(item)
+    cover = (item.get("cover_image") or "").strip()
+
+    content = template
+
+    # Gallery thumbs
+    images = [img.strip() for img in (item.get("images") or []) if isinstance(img, str) and img.strip()]
+    if images:
+        thumbs = "\n".join(
+            f'            <img src="../{html.escape(img, quote=True)}" alt="{alt}">' for img in images
+        )
+        gallery = f'          <div class="item-thumbs">\n{thumbs}\n          </div>\n'
+    else:
+        gallery = ""
+    content = _splice(content, ITEM_GALLERY_START, ITEM_GALLERY_END, gallery, "shop_item_template.html")
+
+    # Buy row
+    content = _splice(content, ITEM_BUY_START, ITEM_BUY_END,
+                      f'          <div class="shop-buy-row">\n{shop_buy_row_html(item, site)}\n          </div>\n',
+                      "shop_item_template.html")
+
+    # Spec table
+    specs = []
+    ship = item.get("shipping") or {}
+    for label, value in (
+        ("Part number", item.get("sku")),
+        ("Manufacturer PN", item.get("mpn")),
+        ("Brand", item.get("brand")),
+        ("Year", item.get("year")),
+        ("Condition", item.get("condition")),
+        ("In stock", item.get("stock") if item.get("item_type") != "gear" else None),
+        ("Ships in", ship.get("box_in")),
+        ("Shipping weight", f'{ship.get("weight_lb")} lb' if ship.get("weight_lb") else None),
+    ):
+        if value in (None, "", 0):
+            continue
+        specs.append(
+            f'            <li><span>{html.escape(str(label), quote=True)}</span>'
+            f'<span>{html.escape(str(value), quote=True)}</span></li>'
+        )
+    specs_html = f'          <ul class="item-specs">\n' + "\n".join(specs) + "\n          </ul>\n" if specs else ""
+    content = _splice(content, ITEM_SPECS_START, ITEM_SPECS_END, specs_html, "shop_item_template.html")
+
+    # Service notes
+    service = (item.get("service_notes") or "").strip()
+    service_html = f"          <h3>What I Did To It</h3>\n          <p>{_lines_to_br(service)}</p>\n" if service else ""
+    content = _splice(content, ITEM_SERVICE_START, ITEM_SERVICE_END, service_html, "shop_item_template.html")
+
+    # Includes
+    includes = [str(x) for x in (item.get("includes") or []) if str(x).strip()]
+    if includes:
+        lis = "\n".join(f'            <li>{html.escape(x, quote=True)}</li>' for x in includes)
+        includes_html = f'          <h3>What\'s Included</h3>\n          <ul class="bullets">\n{lis}\n          </ul>\n'
+    else:
+        includes_html = ""
+    content = _splice(content, ITEM_INCLUDES_START, ITEM_INCLUDES_END, includes_html, "shop_item_template.html")
+
+    # Fitment
+    fits = [str(x) for x in (item.get("fits_models") or []) if str(x).strip()]
+    if fits:
+        lis = "\n".join(f'            <li>{html.escape(x, quote=True)}</li>' for x in fits)
+        fits_html = f'          <h3>Fits</h3>\n          <ul class="fits-list">\n{lis}\n          </ul>\n'
+    else:
+        fits_html = ""
+    content = _splice(content, ITEM_FITS_START, ITEM_FITS_END, fits_html, "shop_item_template.html")
+
+    # Breadcrumb collection link
+    coll_slugs = [s for s in (item.get("collections") or []) if s in cmap]
+    if coll_slugs:
+        c = cmap[coll_slugs[0]]
+        crumb = (f'<a href="{html.escape(c.get("slug", ""), quote=True)}.html">'
+                 f'{html.escape(c.get("title", ""), quote=True)}</a>\n        <span>→</span>')
+    else:
+        crumb = ""
+
+    _, tags_html = _card_tags_block(item.get("tags") or [])
+
+    plain = re.sub(r"<[^>]+>", "", item.get("description", "")).strip()
+    plain = re.sub(r"\s+", " ", plain)
+    meta_desc = (plain[:157] + "...") if len(plain) > 160 else plain
+
+    content = replace_placeholders(content, site)
+    mapping = {
+        "{{ITEM_TITLE}}": title,
+        "{{ITEM_SLUG}}": html.escape(slug, quote=True),
+        "{{ITEM_SKU}}": html.escape(item.get("sku", ""), quote=True),
+        "{{ITEM_SUBTITLE}}": html.escape(item.get("subtitle", ""), quote=True),
+        "{{ITEM_ALT}}": alt,
+        "{{ITEM_DESCRIPTION}}": _lines_to_br(item.get("description", "")),
+        "{{ITEM_BULLETS}}": _shop_bullets_html(item.get("bullets") or []),
+        "{{ITEM_CARD_TAGS}}": (tags_html or "").strip(),
+        "{{ITEM_COVER_IMAGE}}": f"../{html.escape(cover, quote=True)}" if cover else "",
+        "{{ITEM_BADGE_CLASS}}": badge_class,
+        "{{ITEM_BADGE_TEXT}}": badge_text,
+        "{{ITEM_PRICE}}": fmt_price(item.get("price")) or '<span class="shop-price-tbd">Email for price</span>',
+        "{{ITEM_SHIP_NOTE}}": html.escape(item_ship_note(item), quote=True),
+        "{{ITEM_META_DESCRIPTION}}": html.escape(meta_desc, quote=True),
+        "{{ITEM_OG_IMAGE}}": f"{SITE_URL}/{cover}" if cover else f"{SITE_URL}/images/og.png",
+        "{{ITEM_BREADCRUMB_COLLECTION}}": crumb,
+        "{{ITEM_MAIL_SUBJECT}}": quote(f"{raw_title} ({item.get('sku', '')})".strip(), safe=""),
+        "{{ITEM_JSONLD}}": _item_jsonld(item, site),
+    }
+    for k, v in mapping.items():
+        content = content.replace(k, v)
+    return content
+
+
+def _shop_bullets_html(bullets: list) -> str:
+    items = [str(b) for b in bullets if str(b).strip()]
+    if not items:
+        return ""
+    lis = "\n".join(f'            <li>{html.escape(b, quote=True)}</li>' for b in items)
+    return f'<ul class="bullets project-bullets">\n{lis}\n          </ul>'
+
+
+def rebuild_shop_item_pages(shop: dict, site: dict) -> list[str]:
+    if not os.path.isfile(SHOP_ITEM_TEMPLATE_PATH):
+        raise FileNotFoundError(f"shop_item_template.html not found at {SHOP_ITEM_TEMPLATE_PATH}")
+
+    with open(SHOP_ITEM_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    os.makedirs(SHOP_DIR, exist_ok=True)
+    written = []
+    for item in visible_items(shop):
+        slug = item.get("slug") or slugify(item.get("title", "item"))
+        out_name = f"{slug}.html"
+        with open(os.path.join(SHOP_DIR, out_name), "w", encoding="utf-8") as f:
+            f.write(shop_item_detail_html(item, shop, site, template))
+        written.append(out_name)
+    return written
+
+
+def rebuild_shop():
+    """Regenerate shop.html, shop/<collection>.html, and shop/<item>.html."""
+    shop = load_shop()
+    if ensure_shop_slugs(shop):
+        save_shop(shop)
+    site = load_site()
+
+    rebuild_shop_index(shop, site)
+    keep = set()
+    keep.update(rebuild_shop_collection_pages(shop, site))
+    keep.update(rebuild_shop_item_pages(shop, site))
+
+    # Drop pages whose collection or item no longer exists
+    if os.path.isdir(SHOP_DIR):
+        for name in os.listdir(SHOP_DIR):
+            if name.endswith(".html") and name not in keep:
+                os.remove(os.path.join(SHOP_DIR, name))
+
+    update_sitemap(shop)
+
+
+def update_sitemap(shop: dict | None = None):
+    """Keep sitemap.xml in step with the generated shop pages."""
+    sitemap_path = os.path.join(ROOT, "sitemap.xml")
+    if not os.path.isfile(sitemap_path):
+        return
+    if shop is None:
+        shop = load_shop()
+
+    with open(sitemap_path, "r", encoding="utf-8") as f:
+        xml = f.read()
+
+    # Strip any previously generated shop block, then re-add it.
+    xml = re.sub(r"\n?  <!-- SHOP_URLS_START -->.*?<!-- SHOP_URLS_END -->", "", xml, flags=re.DOTALL)
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    urls = [f"{SITE_URL}/shop.html"]
+    urls += [f"{SITE_URL}/shop/{c.get('slug')}.html" for c in sorted_collections(shop) if c.get("slug")]
+    urls += [f"{SITE_URL}/shop/{i.get('slug')}.html" for i in visible_items(shop) if i.get("slug")]
+
+    entries = "\n".join(
+        f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>"
+        for u in urls
+    )
+    block = f"\n  <!-- SHOP_URLS_START -->\n{entries}\n  <!-- SHOP_URLS_END -->"
+
+    if "</urlset>" not in xml:
+        return
+    xml = xml.replace("</urlset>", f"{block}\n</urlset>")
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write(xml)
 
 
 # ---------- Commands ----------
@@ -2646,6 +3811,448 @@ def restore_backup_interactive():
     print(f"\nRestored backup: {target} ✅")
 
 
+# ---------- Shop commands ----------
+def _shop_choose_item(shop: dict, action: str = "choose") -> int:
+    items = shop.get("items", [])
+    if not items:
+        print("No shop items yet.")
+        return -1
+    list_items(shop)
+    raw = prompt(f"\nNumber to {action} (blank to cancel)", optional=True).strip()
+    if not raw:
+        return -1
+    return _safe_index(raw, len(items))
+
+
+def _prompt_collections(shop: dict, default_list=None) -> list:
+    cols = sorted_collections(shop)
+    if not cols:
+        print("No collections defined yet — run edit-collections first.")
+        return []
+    print("\nCollections:")
+    for i, c in enumerate(cols, start=1):
+        print(f"  {i}. {c.get('title')}  ({c.get('slug')})")
+    default_slugs = list(default_list or [])
+    default_nums = ",".join(
+        str(i) for i, c in enumerate(cols, start=1) if c.get("slug") in default_slugs
+    )
+    raw = prompt("Collection numbers (comma separated)", default=default_nums, optional=True).strip()
+    if not raw:
+        return default_slugs
+    chosen = []
+    for part in raw.split(","):
+        part = part.strip()
+        if part.isdigit() and 1 <= int(part) <= len(cols):
+            slug = cols[int(part) - 1].get("slug")
+            if slug and slug not in chosen:
+                chosen.append(slug)
+    return chosen
+
+
+def _prompt_shipping(title: str, existing=None) -> dict:
+    ship = dict(existing or {})
+    print("\n--- Shipping ---")
+    print("Box it, weigh it, then get a UPS quote from Indianapolis to a west-coast ZIP")
+    print("(that's Zone 8, the worst case). Enter that quote and I'll add the 20% markup.")
+    weight = prompt("Shipping weight (lb)", default=str(ship.get("weight_lb", "") or ""), optional=True).strip()
+    box = prompt("Box size (L x W x H in)", default=str(ship.get("box_in", "") or ""), optional=True).strip()
+    quote_raw = prompt("UPS Zone 8 quote ($)", default=str(ship.get("ups_zone8_quote", "") or ""), optional=True).strip()
+
+    try:
+        ship["weight_lb"] = float(weight) if weight else 0.0
+    except ValueError:
+        ship["weight_lb"] = 0.0
+    ship["box_in"] = box
+    try:
+        ship["ups_zone8_quote"] = float(quote_raw.lstrip("$")) if quote_raw else 0.0
+    except ValueError:
+        ship["ups_zone8_quote"] = 0.0
+
+    computed = compute_ship_price(ship["ups_zone8_quote"])
+    if computed:
+        print(f"  → shipping price: ${computed:,.0f}  (${ship['ups_zone8_quote']:,.2f} x {SHIP_MARKUP})")
+    override = prompt("Shipping price to charge ($)", default=f"{computed:.0f}" if computed else "", optional=True).strip()
+    try:
+        ship["ship_price"] = float(override.lstrip("$")) if override else computed
+    except ValueError:
+        ship["ship_price"] = computed
+    ship["local_pickup"] = prompt_yes_no("Offer free local pickup? (y/n)",
+                                         default="y" if ship.get("local_pickup", True) else "n")
+    return ship
+
+
+def list_items(shop: dict):
+    items = shop.get("items", [])
+    if not items:
+        print("No shop items yet.")
+        return
+    cmap = collection_map(shop)
+    print("\nShop items:")
+    for i, item in enumerate(items, start=1):
+        state = item_state(item)
+        flag = {"draft": "DRAFT ", "sold_out": "SOLD  ", "low": "LOW   ", "in_stock": "STOCK "}[state]
+        price = fmt_price(item.get("price")) or "no price"
+        cols = ", ".join((cmap.get(s) or {}).get("title", s) for s in (item.get("collections") or []))
+        stock = item.get("stock", 0)
+        warn = "  ⚠ no buy link" if item_needs_payment_link(item) else ""
+        print(f"  {i}. [{flag}] {item.get('sku', '?'):<9} {item.get('title', 'Untitled')}")
+        print(f"      {price} · qty {stock} · {cols or 'no collection'}{warn}")
+
+
+def input_item():
+    create_backup_note("input-item")
+    shop = load_shop()
+
+    print("\n=== Add Shop Item ===")
+    title = prompt("Title (e.g. Roland Juno-106)")
+    subtitle = prompt("One-line subtitle", optional=True)
+
+    kind = prompt("Type (gear / part / kit)", default="gear", optional=True).strip().lower()
+    if kind not in ("gear", "part", "kit"):
+        kind = "gear"
+
+    collections = _prompt_collections(shop)
+    brand = prompt("Brand / manufacturer", optional=True)
+    mpn = prompt("Manufacturer part number (e.g. 80017A)", optional=True)
+    year = prompt("Year", optional=True)
+    condition = prompt("Condition", default="Excellent" if kind == "gear" else "New", optional=True)
+
+    print("\nModels this fits (helps people search - e.g. Juno-106, HS-60)")
+    fits = _split_csv(prompt("Fits models (comma separated)", optional=True))
+
+    price_raw = prompt("Price ($)", optional=True).strip()
+    try:
+        price = float(price_raw.lstrip("$")) if price_raw else 0.0
+    except ValueError:
+        price = 0.0
+
+    stock_default = "1" if kind == "gear" else "0"
+    stock_raw = prompt("Quantity in stock", default=stock_default, optional=True).strip()
+    stock = int(stock_raw) if stock_raw.isdigit() else int(stock_default)
+
+    description = prompt_multiline("Description (multi-line)")
+    bullets = prompt_bullets()
+    service_notes = prompt_multiline("What you serviced/did to it (optional)", default="")
+    includes = _split_lines(prompt_multiline("What's included (one per line, optional)", default=""))
+    tags = prompt_tags()
+
+    cover = ""
+    alt = title
+    cover_path = prompt("Cover photo path (blank to skip)", optional=True)
+    if cover_path:
+        try:
+            cover = copy_image_into_site(cover_path, title, subdir="shop")
+            alt = prompt("Cover image alt text", default=title, optional=True)
+        except FileNotFoundError as e:
+            print(e)
+    images = collect_extra_images(title, subdir="shop")
+
+    shipping = _prompt_shipping(title)
+
+    print("\n--- Payment links ---")
+    print("Leave both blank for now and the item saves as a DRAFT (not published).")
+    stripe_url = prompt("Stripe Payment Link URL", optional=True).strip()
+    paypal_id = prompt("PayPal hosted button ID", optional=True).strip()
+
+    status = "active" if (stripe_url or paypal_id) else "draft"
+    if status == "draft":
+        print("  → saved as DRAFT (add a payment link with edit-item to publish)")
+
+    item = {
+        "sku": next_sku(shop),
+        "slug": slugify(title),
+        "title": title,
+        "subtitle": subtitle,
+        "collections": collections,
+        "item_type": kind,
+        "brand": brand,
+        "mpn": mpn,
+        "fits_models": fits,
+        "year": year,
+        "condition": condition,
+        "price": price,
+        "stock": stock,
+        "status": status,
+        "cover_image": cover,
+        "alt": alt,
+        "images": images,
+        "description": description,
+        "bullets": bullets,
+        "service_notes": service_notes,
+        "includes": includes,
+        "tags": tags,
+        "shipping": shipping,
+        "stripe_url": stripe_url,
+        "paypal_button_id": paypal_id,
+        "sold_date": None,
+        "created": datetime.now().isoformat(timespec="seconds"),
+    }
+
+    shop["items"].insert(0, item)
+    save_shop(shop)
+    rebuild_all()
+    print(f"\nAdded {item['sku']} — {title} ✅")
+    if status == "active":
+        print(f"View at shop/{item['slug']}.html")
+
+
+def edit_item():
+    create_backup_note("edit-item")
+    shop = load_shop()
+    print("\n=== Edit Shop Item ===")
+    idx = _shop_choose_item(shop, "edit")
+    if idx < 0:
+        print("Cancelled.")
+        return
+
+    it = shop["items"][idx]
+    print(f"\nEditing {it.get('sku')} — {it.get('title')}")
+
+    it["title"] = prompt("Title", default=it.get("title", ""), optional=True)
+    it["subtitle"] = prompt("Subtitle", default=it.get("subtitle", ""), optional=True)
+    kind = prompt("Type (gear / part / kit)", default=it.get("item_type", "gear"), optional=True).strip().lower()
+    it["item_type"] = kind if kind in ("gear", "part", "kit") else it.get("item_type", "gear")
+    it["collections"] = _prompt_collections(shop, it.get("collections"))
+    it["brand"] = prompt("Brand", default=it.get("brand", ""), optional=True)
+    it["mpn"] = prompt("Manufacturer part number", default=it.get("mpn", ""), optional=True)
+    it["year"] = prompt("Year", default=str(it.get("year", "")), optional=True)
+    it["condition"] = prompt("Condition", default=it.get("condition", ""), optional=True)
+
+    fits_default = ", ".join(it.get("fits_models") or [])
+    it["fits_models"] = _split_csv(prompt("Fits models (comma separated)", default=fits_default, optional=True))
+
+    price_raw = prompt("Price ($)", default=str(it.get("price", 0) or ""), optional=True).strip()
+    try:
+        it["price"] = float(price_raw.lstrip("$")) if price_raw else 0.0
+    except ValueError:
+        pass
+
+    stock_raw = prompt("Quantity in stock", default=str(it.get("stock", 0)), optional=True).strip()
+    if stock_raw.isdigit():
+        it["stock"] = int(stock_raw)
+
+    it["description"] = prompt_multiline("Description", default=it.get("description", ""))
+    it["service_notes"] = prompt_multiline("What you serviced/did to it", default=it.get("service_notes", ""))
+
+    bullets_mode = prompt("Bullets (keep / edit / clear)", default="keep", optional=True).strip().lower()
+    if bullets_mode in ["edit", "e"]:
+        it["bullets"] = prompt_bullets(default_list=it.get("bullets", []))
+    elif bullets_mode in ["clear", "remove"]:
+        it["bullets"] = []
+
+    includes_mode = prompt("Included items (keep / edit / clear)", default="keep", optional=True).strip().lower()
+    if includes_mode in ["edit", "e"]:
+        it["includes"] = _split_lines(prompt_multiline("What's included (one per line)",
+                                                       default="\n".join(it.get("includes") or [])))
+    elif includes_mode in ["clear", "remove"]:
+        it["includes"] = []
+
+    tags_mode = prompt("Tags (keep / edit / clear)", default="keep", optional=True).strip().lower()
+    if tags_mode in ["edit", "e"]:
+        it["tags"] = prompt_tags(default_list=it.get("tags", []))
+    elif tags_mode in ["clear", "remove"]:
+        it["tags"] = []
+
+    cover_mode = prompt("Cover photo (keep / replace / clear)", default="keep", optional=True).strip().lower()
+    if cover_mode in ["replace", "r"]:
+        p = prompt("Path to image file")
+        try:
+            it["cover_image"] = copy_image_into_site(p, it.get("title", "item"), subdir="shop")
+            it["alt"] = prompt("Alt text", default=it.get("alt", it.get("title", "")), optional=True)
+        except FileNotFoundError as e:
+            print(e)
+            print("Keeping existing cover.")
+    elif cover_mode in ["clear", "remove"]:
+        it["cover_image"] = ""
+
+    it["images"] = collect_extra_images(it.get("title", "item"), it.get("images", []), subdir="shop")
+
+    if prompt_yes_no("Update shipping? (y/n)", default="n"):
+        it["shipping"] = _prompt_shipping(it.get("title", "item"), it.get("shipping"))
+
+    it["stripe_url"] = prompt("Stripe Payment Link URL", default=it.get("stripe_url", ""), optional=True).strip()
+    it["paypal_button_id"] = prompt("PayPal hosted button ID", default=it.get("paypal_button_id", ""), optional=True).strip()
+
+    if it.get("stripe_url") or it.get("paypal_button_id"):
+        if it.get("status") == "draft" and prompt_yes_no("Publish this item now? (y/n)", default="y"):
+            it["status"] = "active"
+    else:
+        print("  ⚠ No payment link — item will show 'email for price' instead of Buy buttons.")
+
+    it["updated"] = datetime.now().isoformat(timespec="seconds")
+    save_shop(shop)
+    rebuild_all()
+    print("\nUpdated shop item ✅")
+
+
+def set_stock():
+    """Fast restock for parts and kits."""
+    create_backup_note("set-stock")
+    shop = load_shop()
+    print("\n=== Set Stock ===")
+    idx = _shop_choose_item(shop, "restock")
+    if idx < 0:
+        print("Cancelled.")
+        return
+
+    it = shop["items"][idx]
+    print(f"\n{it.get('sku')} — {it.get('title')}  (currently {it.get('stock', 0)})")
+    raw = prompt("New quantity", default=str(it.get("stock", 0))).strip()
+    if not raw.isdigit():
+        print("Not a number. Cancelled.")
+        return
+
+    it["stock"] = int(raw)
+    if it["stock"] > 0:
+        it["sold_date"] = None
+    it["updated"] = datetime.now().isoformat(timespec="seconds")
+    save_shop(shop)
+    rebuild_all()
+    print(f"\n{it.get('sku')} stock set to {it['stock']} ✅")
+
+
+def mark_sold():
+    """Run this the moment a sale notification lands."""
+    create_backup_note("mark-sold")
+    shop = load_shop()
+    print("\n=== Mark Sold ===")
+    idx = _shop_choose_item(shop, "mark sold")
+    if idx < 0:
+        print("Cancelled.")
+        return
+
+    it = shop["items"][idx]
+    kind = it.get("item_type", "gear")
+    if kind == "gear":
+        it["stock"] = 0
+    else:
+        sold_raw = prompt("How many sold?", default="1").strip()
+        sold = int(sold_raw) if sold_raw.isdigit() else 1
+        it["stock"] = max(0, int(it.get("stock", 0) or 0) - sold)
+
+    if it["stock"] == 0:
+        it["sold_date"] = datetime.now().strftime("%Y-%m-%d")
+
+    save_shop(shop)
+    rebuild_all()
+    print(f"\n{it.get('sku')} — {it.get('title')}: {it['stock']} left ✅")
+    if it["stock"] == 0:
+        print("\n⚠ Now go deactivate the OTHER processor's button so it can't sell twice:")
+        if it.get("stripe_url"):
+            print("   Stripe:  dashboard.stripe.com → Payment Links → deactivate")
+        if it.get("paypal_button_id"):
+            print("   PayPal:  paypal.com → Pay & Get Paid → PayPal Buttons → remove")
+    print("Then pack it, ship it, and email the tracking number.")
+
+
+def delete_item():
+    create_backup_note("delete-item")
+    shop = load_shop()
+    print("\n=== Delete Shop Item ===")
+    idx = _shop_choose_item(shop, "delete")
+    if idx < 0:
+        print("Cancelled.")
+        return
+
+    it = shop["items"][idx]
+    title = it.get("title", "Untitled")
+    if not prompt_yes_no(f"Delete '{title}' ({it.get('sku')}) permanently? (y/n)", default="n"):
+        print("Cancelled.")
+        return
+
+    slug = it.get("slug", "")
+    shop["items"].pop(idx)
+    save_shop(shop)
+
+    page = os.path.join(SHOP_DIR, f"{slug}.html")
+    if slug and os.path.exists(page):
+        os.remove(page)
+
+    rebuild_all()
+    print("\nDeleted shop item ✅  (its part number is retired, not reused)")
+
+
+def edit_collections():
+    create_backup_note("edit-collections")
+    shop = load_shop()
+
+    while True:
+        cols = sorted_collections(shop)
+        print("\n=== Collections ===")
+        if cols:
+            for i, c in enumerate(cols, start=1):
+                n = len(items_in_collection(shop, c.get("slug", "")))
+                print(f"  {i}. {c.get('title')}  ({c.get('slug')}) — {n} item(s)")
+        else:
+            print("  none yet")
+        print("\n  a) add   e) edit   d) delete   q) done")
+        cmd = prompt("Choose", default="q", optional=True).strip().lower()
+
+        if cmd in ("q", "", "done"):
+            break
+        elif cmd == "a":
+            title = prompt("Collection title")
+            if not title:
+                continue
+            c = {
+                "slug": slugify(title),
+                "title": title,
+                "blurb": prompt("Short blurb", optional=True),
+                "cover_image": "",
+                "order": len(shop["collections"]) + 1,
+            }
+            cover = prompt("Cover photo path (blank to skip)", optional=True)
+            if cover:
+                try:
+                    c["cover_image"] = copy_image_into_site(cover, title, subdir="shop/collections")
+                except FileNotFoundError as e:
+                    print(e)
+            shop["collections"].append(c)
+        elif cmd == "e" and cols:
+            raw = prompt("Number to edit", optional=True).strip()
+            i = _safe_index(raw, len(cols))
+            if i < 0:
+                continue
+            c = cols[i]
+            c["title"] = prompt("Title", default=c.get("title", ""), optional=True)
+            c["blurb"] = prompt("Blurb", default=c.get("blurb", ""), optional=True)
+            order_raw = prompt("Sort order", default=str(c.get("order", 999)), optional=True).strip()
+            if order_raw.isdigit():
+                c["order"] = int(order_raw)
+            mode = prompt("Cover photo (keep / replace / clear)", default="keep", optional=True).strip().lower()
+            if mode in ("replace", "r"):
+                p = prompt("Path to image file")
+                try:
+                    c["cover_image"] = copy_image_into_site(p, c.get("title", "collection"),
+                                                            subdir="shop/collections")
+                except FileNotFoundError as e:
+                    print(e)
+            elif mode in ("clear", "remove"):
+                c["cover_image"] = ""
+        elif cmd == "d" and cols:
+            raw = prompt("Number to delete", optional=True).strip()
+            i = _safe_index(raw, len(cols))
+            if i < 0:
+                continue
+            c = cols[i]
+            n = len(items_in_collection(shop, c.get("slug", "")))
+            if n and not prompt_yes_no(f"{n} item(s) reference this. Delete anyway? (y/n)", default="n"):
+                continue
+            if not prompt_yes_no(f"Delete '{c.get('title')}'? (y/n)", default="n"):
+                continue
+            slug = c.get("slug", "")
+            shop["collections"] = [x for x in shop["collections"] if x.get("slug") != slug]
+            for item in shop["items"]:
+                item["collections"] = [s for s in (item.get("collections") or []) if s != slug]
+            page = os.path.join(SHOP_DIR, f"{slug}.html")
+            if slug and os.path.exists(page):
+                os.remove(page)
+
+    save_shop(shop)
+    rebuild_all()
+    print("\nCollections updated ✅")
+
+
 def print_menu():
     print("\nCommands:")
     print("  1) input-project   (add new build)")
@@ -2664,6 +4271,14 @@ def print_menu():
     print(" 14) restore-backup  (choose backup to restore)")
     print(" 15) publish-github  (git add/commit/push all changes)")
     print(" 16) web-ui          (open browser admin menu)")
+    print("  --- shop ---")
+    print(" 17) list-items      (show shop inventory)")
+    print(" 18) input-item      (add gear, part, or mod kit)")
+    print(" 19) edit-item       (edit a listing / add payment links)")
+    print(" 20) mark-sold       (someone bought it - run this first)")
+    print(" 21) set-stock       (restock a part or kit)")
+    print(" 22) delete-item     (remove a listing + its page)")
+    print(" 23) edit-collections(add/edit/remove shop collections)")
     print("  q) quit")
 
 
@@ -2697,7 +4312,7 @@ def main():
             list_projects(load_projects())
         elif cmd in ["5", "rebuild", "build"]:
             rebuild_all()
-            print("\nRebuilt index.html + repairs.html + projects/*.html ✅")
+            print("\nRebuilt index.html + repairs.html + shop.html + projects/*.html + shop/*.html ✅")
         elif cmd in ["6", "edit-site", "site"]:
             edit_site()
         elif cmd in ["7", "input-repair", "repair", "new-repair"]:
@@ -2725,6 +4340,20 @@ def main():
             if port_raw.isdigit():
                 port = int(port_raw)
             start_web_ui(host=host or "127.0.0.1", port=port)
+        elif cmd in ["17", "list-items", "items", "inventory"]:
+            list_items(load_shop())
+        elif cmd in ["18", "input-item", "add-item", "new-item"]:
+            input_item()
+        elif cmd in ["19", "edit-item"]:
+            edit_item()
+        elif cmd in ["20", "mark-sold", "sold"]:
+            mark_sold()
+        elif cmd in ["21", "set-stock", "restock", "stock"]:
+            set_stock()
+        elif cmd in ["22", "delete-item", "remove-item"]:
+            delete_item()
+        elif cmd in ["23", "edit-collections", "collections"]:
+            edit_collections()
         else:
             print("Unknown command.")
 

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop | Rudi Makes - Serviced Synths, Amps, Pedals & Parts</title>
+  <meta name="description" content="Refurbished synths, amps, and pedals plus replacement synth parts and mod kits - serviced on a real bench in Indianapolis and shipped with a 30-day warranty." />
+  <meta property="og:title" content="Shop | Rudi Makes" />
+  <meta property="og:description" content="Refurbished synths, amps, and pedals plus replacement synth parts and mod kits - serviced on a real bench in Indianapolis." />
+  <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
+  <meta property="og:url" content="https://www.rudimakes.com/shop.html" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://www.rudimakes.com/shop.html" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="repairs.html">Repair Log</a></li>
+        <li><a href="shop.html" class="active">Shop</a></li>
+        <li><a href="index.html#builds">Builds</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero shop-hero">
+    <div class="container">
+      <p class="hero-eyebrow">Shop</p>
+      <h1 class="hero-title">Gear &amp; Parts</h1>
+      <p class="hero-subtitle">Serviced Instruments &nbsp;·&nbsp; Replacement Parts &nbsp;·&nbsp; Mod Kits</p>
+      <p class="hero-bio">
+        Everything here came across my bench. Instruments are tested and serviced before they're
+        listed, and parts are the ones I actually use on repairs - including a few things that are
+        supposed to be unobtainable. Ships from Indianapolis, or pick up locally.
+      </p>
+      <div class="hero-cta">
+        <a href="#collections" class="btn btn-primary">Browse Collections</a>
+        <a href="#all" class="btn btn-outline">See Everything</a>
+      </div>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- COLLECTIONS -->
+    <section id="collections" class="section">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Collections</p>
+          <h2 class="section-title">Browse by Category</h2>
+        </div>
+        <div class="collection-grid">
+          <!-- COLLECTIONS_START -->
+          <!-- COLLECTIONS_END -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL ITEMS -->
+    <section id="all" class="projects">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Everything In Stock</p>
+          <h2 class="section-title">All Listings</h2>
+          <p class="section-note">Search by name, brand, part number, or the model it fits - try "Juno-106" or a part number like RM-1001.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <input id="search" class="search" type="search" placeholder="Search gear, parts, part numbers, or a model it fits..." />
+          <div id="tagFilters" class="tag-filters"></div>
+          <label class="stock-toggle">
+            <input type="checkbox" id="inStockOnly"> In stock only
+          </label>
+        </div>
+
+        <div class="shop-grid">
+          <!-- SHOP_ITEMS_START -->
+          <!-- SHOP_ITEMS_END -->
+        </div>
+        <p id="noResults" class="shop-empty" hidden>Nothing matches that. Try a broader search, or <a href="mailto:{{EMAIL}}">email me</a> - I have stock that isn't listed yet.</p>
+      </div>
+    </section>
+
+    <!-- HOW BUYING WORKS -->
+    <section id="how" class="section">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">How It Works</p>
+          <h2 class="section-title">Buying From Me</h2>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Check Out</h3>
+              <p>Pay by card, Apple Pay, or Google Pay through Stripe, or use PayPal - whichever you prefer. Shipping is priced per item and shown at checkout. Local pickup in Indianapolis is free.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>I Pack It Properly</h3>
+              <p>Orders go out within 2 business days. Instruments get double-boxed with real packing material - I've shipped enough gear to know what UPS does to a single box.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>You Get Tracking</h3>
+              <p>I email you the tracking number personally once it's on the truck. Questions before or after? Email me directly - you're talking to the tech, not a storefront.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POLICY -->
+    <section id="policy" class="section">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">The Fine Print</p>
+          <h2 class="section-title">Shipping, Returns &amp; Warranty</h2>
+        </div>
+        <div class="shop-policy">
+          <div class="policy-item">
+            <h3>30-Day Functional Warranty</h3>
+            <p>Every instrument is serviced and tested before listing. If something I sold you stops working within 30 days, contact me and I'll make it right - repair, replacement, or refund.</p>
+          </div>
+          <div class="policy-item">
+            <h3>Returns</h3>
+            <p>14-day returns on instruments if the item isn't as described. Buyer covers return shipping unless I got the description wrong, in which case I cover it. Items must come back in the condition they left. Parts and kits are non-returnable once installed - check the fitment list before you order, and email me if you're unsure.</p>
+          </div>
+          <div class="policy-item">
+            <h3>Shipping</h3>
+            <p>Ships from Indianapolis via UPS, insured for the full purchase price. Shipping is calculated per item based on real weight and box size. Orders ship within 2 business days and you'll get tracking by email. Free local pickup by appointment.</p>
+          </div>
+          <div class="policy-item">
+            <h3>Used Vintage Electronics</h3>
+            <p>Most of this gear is decades old. I document condition honestly, including the cosmetic flaws, and I tell you exactly what was serviced. If you want more photos or details on anything before you buy, just ask.</p>
+          </div>
+          <div class="policy-item">
+            <h3>Sales Tax</h3>
+            <p>Indiana sales tax is collected on orders shipped within Indiana.</p>
+          </div>
+          <div class="policy-item">
+            <h3>Questions About Anything</h3>
+            <p>Email <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>. I'm also happy to quote pricing on parts that aren't listed, or track down something specific you're looking for.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Contact</p>
+          <h2 class="section-title">Looking For Something Specific?</h2>
+        </div>
+        <p class="contact-lead">I have parts and gear that never make it onto this page. If you need something for a repair - a chip, a keybed part, a whole instrument - email me and I'll tell you what I've got.</p>
+        <div class="contact-cta-block">
+          <a href="mailto:{{EMAIL}}?subject=Shop%20inquiry" class="btn btn-primary btn-lg">Email About Gear or Parts</a>
+          <p class="contact-email-sub">{{EMAIL}}</p>
+        </div>
+        <div class="social-links">
+          <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>
+          <a href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener" class="social-link">◈ Instagram</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock · Rudi Makes</p>
+      <p class="footer-tagline">Amp repair, synth repair, and electronics service in Indianapolis.</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      const key = "theme";
+      function setTheme(mode) {
+        if (mode === "light") {
+          root.setAttribute("data-theme", "light");
+          if (btn) btn.textContent = "🌙 Dark";
+        } else {
+          root.removeAttribute("data-theme");
+          if (btn) btn.textContent = "☀️ Light";
+        }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem(key); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem(key, next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+  <script>
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-gallery-toggle]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-gallery-toggle");
+      const gallery = document.getElementById(id);
+      if (!gallery) return;
+      const open = gallery.classList.toggle("is-open");
+      btn.textContent = open ? "Hide photos" : "More photos";
+    });
+  </script>
+
+  <script>
+    (function () {
+      const search = document.getElementById("search");
+      const tagWrap = document.getElementById("tagFilters");
+      const stockOnly = document.getElementById("inStockOnly");
+      const noResults = document.getElementById("noResults");
+      const cards = Array.from(document.querySelectorAll(".shop-card"));
+      if (!search || !tagWrap || cards.length === 0) return;
+
+      const tagSet = new Set();
+      for (const c of cards) {
+        (c.dataset.collections || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
+      }
+      const tags = ["all", ...Array.from(tagSet).sort()];
+      let activeTag = "all";
+
+      function labelFor(slug) {
+        const card = cards.find(c => (c.dataset.collections || "").split(",").map(s => s.trim()).includes(slug));
+        return (card && card.dataset.collectionLabels)
+          ? (card.dataset.collectionLabels.split(",")[
+              (card.dataset.collections || "").split(",").map(s => s.trim()).indexOf(slug)
+            ] || slug).trim()
+          : slug;
+      }
+
+      function renderTags() {
+        tagWrap.innerHTML = "";
+        for (const t of tags) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
+          btn.textContent = t === "all" ? "All" : labelFor(t);
+          btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
+          tagWrap.appendChild(btn);
+        }
+      }
+
+      function apply() {
+        const q = (search.value || "").trim().toLowerCase();
+        let visible = 0;
+        for (const c of cards) {
+          const haystack = ((c.dataset.searchText || "") + " " + c.textContent).toLowerCase();
+          const textMatch = !q || haystack.includes(q);
+          const cardTags = (c.dataset.collections || "").split(",").map(t => t.trim()).filter(Boolean);
+          const tagMatch = activeTag === "all" ? true : cardTags.includes(activeTag);
+          const stockMatch = !(stockOnly && stockOnly.checked) || c.dataset.inStock === "1";
+          const show = textMatch && tagMatch && stockMatch;
+          c.style.display = show ? "" : "none";
+          if (show) visible++;
+        }
+        if (noResults) noResults.hidden = visible !== 0;
+      }
+
+      renderTags();
+      apply();
+      search.addEventListener("input", apply);
+      if (stockOnly) stockOnly.addEventListener("change", apply);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synth Parts | Rudi Makes Shop</title>
+  <meta name="description" content="Replacement chips, contacts, and hard-to-source components for vintage synths." />
+  <meta property="og:title" content="Synth Parts | Rudi Makes Shop" />
+  <meta property="og:description" content="Replacement chips, contacts, and hard-to-source components for vintage synths." />
+  <meta property="og:image" content="https://www.rudimakes.com/images/og.png" />
+  <meta property="og:url" content="https://www.rudimakes.com/shop/synth-parts.html" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://www.rudimakes.com/shop/synth-parts.html" />
+  <link rel="stylesheet" href="../style.css" />
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../shop.html" class="active">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../music.html">Music</a></li>
+        <li><a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container" style="padding-top:3rem;">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../shop.html">Shop</a>
+        <span>→</span>
+        Synth Parts
+      </div>
+
+      <div class="section-header" style="text-align:left; margin-bottom:1.5rem;">
+        <p class="section-label">Collection</p>
+        <h1 class="section-title">Synth Parts</h1>
+        <p class="section-note" style="margin-left:0;">Replacement chips, contacts, and hard-to-source components for vintage synths.</p>
+      </div>
+
+      <!-- Sibling collections -->
+      <div class="collection-nav">
+        <!-- COLLECTION_NAV_START -->
+        <a href="synths.html">Synths</a>
+        <a href="amps.html">Amps</a>
+        <a href="pedals.html">Pedals</a>
+        <a href="synth-parts.html" class="is-active">Synth Parts</a>
+        <a href="mod-kits.html">Mod Kits</a>
+<!-- COLLECTION_NAV_END -->
+      </div>
+
+      <div class="filter-bar">
+        <input id="search" class="search" type="search" placeholder="Search this collection - name, part number, or model it fits..." />
+        <label class="stock-toggle">
+          <input type="checkbox" id="inStockOnly"> In stock only
+        </label>
+      </div>
+
+      <div class="shop-grid">
+        <!-- SHOP_ITEMS_START -->
+        <p class="shop-empty">Nothing listed in this collection right now — check back, or email me and I'll tell you what I have on the shelf.</p>
+<!-- SHOP_ITEMS_END -->
+      </div>
+      <p id="noResults" class="shop-empty" hidden>Nothing matches that. <a href="mailto:info@rudimakes.com">Email me</a> - I have stock that isn't listed yet.</p>
+
+    </div>
+
+    <section class="contact">
+      <div class="container">
+        <p class="contact-lead">Don't see what you need? I have parts and gear that never make it onto the site.</p>
+        <div class="contact-cta-block">
+          <a href="mailto:info@rudimakes.com?subject=Synth Parts%20inquiry" class="btn btn-primary btn-lg">Email About Synth Parts</a>
+          <p class="contact-email-sub">info@rudimakes.com</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Rudi Willock · Rudi Makes</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+  <script>
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-gallery-toggle]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-gallery-toggle");
+      const gallery = document.getElementById(id);
+      if (!gallery) return;
+      const open = gallery.classList.toggle("is-open");
+      btn.textContent = open ? "Hide photos" : "More photos";
+    });
+  </script>
+  <script>
+    (function () {
+      const search = document.getElementById("search");
+      const stockOnly = document.getElementById("inStockOnly");
+      const noResults = document.getElementById("noResults");
+      const cards = Array.from(document.querySelectorAll(".shop-card"));
+      if (cards.length === 0) return;
+      function apply() {
+        const q = ((search && search.value) || "").trim().toLowerCase();
+        let visible = 0;
+        for (const c of cards) {
+          const haystack = ((c.dataset.searchText || "") + " " + c.textContent).toLowerCase();
+          const textMatch = !q || haystack.includes(q);
+          const stockMatch = !(stockOnly && stockOnly.checked) || c.dataset.inStock === "1";
+          const show = textMatch && stockMatch;
+          c.style.display = show ? "" : "none";
+          if (show) visible++;
+        }
+        if (noResults) noResults.hidden = visible !== 0;
+      }
+      apply();
+      if (search) search.addEventListener("input", apply);
+      if (stockOnly) stockOnly.addEventListener("change", apply);
+    })();
+  </script>
+
+</body>
+</html>

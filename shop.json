@@ -1,0 +1,82 @@
+{
+  "next_sku": 1002,
+  "collections": [
+    {
+      "slug": "synths",
+      "title": "Synths",
+      "blurb": "Vintage and modern synthesizers, serviced and tested on the bench before they go out.",
+      "cover_image": "",
+      "order": 1
+    },
+    {
+      "slug": "amps",
+      "title": "Amps",
+      "blurb": "Tube and solid-state amplifiers. Recapped, rebiased, and played hard before listing.",
+      "cover_image": "",
+      "order": 2
+    },
+    {
+      "slug": "pedals",
+      "title": "Pedals",
+      "blurb": "Effects pedals and outboard, checked over and repaired where needed.",
+      "cover_image": "",
+      "order": 3
+    },
+    {
+      "slug": "synth-parts",
+      "title": "Synth Parts",
+      "blurb": "Replacement chips, contacts, and hard-to-source components for vintage synths.",
+      "cover_image": "",
+      "order": 4
+    },
+    {
+      "slug": "mod-kits",
+      "title": "Mod Kits",
+      "blurb": "Kits I put together myself for repairs the rest of the internet says can't be done.",
+      "cover_image": "",
+      "order": 5
+    }
+  ],
+  "items": [
+    {
+      "sku": "RM-1001",
+      "slug": "rhodes-germanium-transistor-kit",
+      "title": "Rhodes Germanium Transistor Kit",
+      "subtitle": "Drop-in replacement pair for the Peterson Rhodes power amp",
+      "collections": ["mod-kits"],
+      "item_type": "kit",
+      "brand": "Fender Rhodes",
+      "mpn": "",
+      "fits_models": ["Rhodes Suitcase", "Peterson power amp"],
+      "year": "",
+      "condition": "New",
+      "price": 0.0,
+      "stock": 0,
+      "status": "draft",
+      "cover_image": "",
+      "images": [],
+      "description": "The germanium output transistors in the Peterson Rhodes power amp are usually written off as unobtainable. They aren't. I sourced a modern germanium device with similar specs that is overrated for this application, which means it works fine here and runs cooler than the original ever did.\nEach kit is a matched set, tested before it ships.",
+      "bullets": [
+        "Direct drop-in for the Peterson Rhodes power amp",
+        "Modern germanium device, overrated for the application",
+        "Tested as a matched set before shipping"
+      ],
+      "service_notes": "",
+      "includes": [
+        "Matched germanium transistor pair",
+        "Installation notes"
+      ],
+      "tags": ["rhodes", "germanium", "power amp", "kit"],
+      "shipping": {
+        "weight_lb": 0.5,
+        "box_in": "6 x 4 x 2",
+        "ups_zone8_quote": 0.0,
+        "ship_price": 0.0,
+        "local_pickup": true
+      },
+      "stripe_url": "",
+      "paypal_button_id": "",
+      "sold_date": null
+    }
+  ]
+}
