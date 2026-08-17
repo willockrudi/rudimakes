@@ -1637,3 +1637,48 @@ footer a:hover {
   .shop-buy-row .btn { width: 100%; text-align: center; }
   .shop-buy-row form { display: block; width: 100%; }
 }
+
+/* --- Click-to-copy email --- */
+.copy-email {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.btn.copy-email {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.copy-email.is-copied {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.email-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.copy-chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.copy-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.shop-email {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  user-select: all;
+  align-self: center;
+}

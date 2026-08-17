@@ -84,7 +84,7 @@
         <p class="shop-empty">Nothing listed in this collection right now — check back, or email me and I'll tell you what I have on the shelf.</p>
 <!-- SHOP_ITEMS_END -->
       </div>
-      <p id="noResults" class="shop-empty" hidden>Nothing matches that. <a href="mailto:info@rudimakes.com">Email me</a> - I have stock that isn't listed yet.</p>
+      <p id="noResults" class="shop-empty" hidden>Nothing matches that. <a href="../shop.html#contact">Email me</a> - I have stock that isn't listed yet.</p>
 
     </div>
 
@@ -92,8 +92,7 @@
       <div class="container">
         <p class="contact-lead">Don't see what you need? I have parts and gear that never make it onto the site.</p>
         <div class="contact-cta-block">
-          <a href="mailto:info@rudimakes.com?subject=Synth Parts%20inquiry" class="btn btn-primary btn-lg">Email About Synth Parts</a>
-          <p class="contact-email-sub">info@rudimakes.com</p>
+          <p class="contact-email-sub" style="font-size:1.2rem"><span class="email-inline"><a href="mailto:info@rudimakes.com">info@rudimakes.com</a><button type="button" class="copy-email copy-chip" data-email="info@rudimakes.com" title="Copy address">Copy</button></span></p>
         </div>
       </div>
     </section>
@@ -174,6 +173,55 @@
       apply();
       if (search) search.addEventListener("input", apply);
       if (stockOnly) stockOnly.addEventListener("change", apply);
+    })();
+  </script>
+
+<script>
+    (function () {
+      function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest(".copy-email");
+        if (!btn) return;
+        var addr = btn.getAttribute("data-email");
+        if (!addr) return;
+        var label = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? "Copied!" : "Press Ctrl+C";
+          if (!ok) {
+            var link = btn.parentNode.querySelector("a");
+            if (link && window.getSelection) {
+              var r = document.createRange();
+              r.selectNodeContents(link);
+              var sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(r);
+            }
+          }
+          btn.classList.toggle("is-copied", ok);
+          setTimeout(function () {
+            btn.textContent = label;
+            btn.classList.remove("is-copied");
+          }, 1600);
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(addr).then(function () { done(true); },
+                                                   function () { done(fallbackCopy(addr)); });
+        } else {
+          done(fallbackCopy(addr));
+        }
+      });
     })();
   </script>
 

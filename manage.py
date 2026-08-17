@@ -2627,6 +2627,7 @@ def replace_placeholders(content: str, site: dict) -> str:
         "{{LEGAL_NAME}}": html.escape(site.get("legal_name", "") or site.get("name", ""), quote=True),
         "{{STATEMENT_DESCRIPTOR}}": html.escape(site.get("statement_descriptor", ""), quote=True),
         "{{SITE_URL}}": SITE_URL,
+        "{{EMAIL_INLINE}}": email_inline_html(site),
     }
     for k, v in mapping.items():
         content = content.replace(k, v)
@@ -2930,6 +2931,30 @@ def _item_search_text(item: dict, cmap: dict) -> str:
     return " ".join(str(p) for p in parts if p)
 
 
+def email_button_html(site: dict, indent: str = "") -> str:
+    """Plain, selectable address on cards. No mailto: - that only does anything for
+    people with a desktop mail client - and no copy button, because a copy that
+    silently fails is worse than text the reader can just select."""
+    email = (site.get("email") or "").strip()
+    if not email:
+        return ""
+    e = html.escape(email, quote=True)
+    return f'{indent}<span class="shop-email">{e}</span>'
+
+
+def email_inline_html(site: dict, subject: str = "") -> str:
+    """Visible address for body copy: readable and selectable, with a copy button,
+    and still a mailto for anyone who does have a mail client."""
+    email = (site.get("email") or "").strip()
+    if not email:
+        return ""
+    e = html.escape(email, quote=True)
+    href = f"mailto:{e}?subject={quote(subject, safe='')}" if subject else f"mailto:{e}"
+    return (f'<span class="email-inline"><a href="{html.escape(href, quote=True)}">{e}</a>'
+            f'<button type="button" class="copy-email copy-chip" data-email="{e}" '
+            f'title="Copy address">Copy</button></span>')
+
+
 def shop_buy_row_html(item: dict, site: dict, indent: str = "          ") -> str:
     """Buy buttons. Only rendered when the item is actually purchasable."""
     parts = []
@@ -2959,11 +2984,9 @@ def shop_buy_row_html(item: dict, site: dict, indent: str = "          ") -> str
             msg = "Email for price and availability"
         parts.append(f'{indent}<span class="shop-unavailable">{html.escape(msg, quote=True)}</span>')
 
-    mail = _mailto(site, f"{title} ({item.get('sku', '')})".strip())
-    if mail:
-        parts.append(f'{indent}<a class="btn btn-outline btn-sm" href="{html.escape(mail, quote=True)}">Email</a>')
+    parts.append(email_button_html(site, indent=indent))
 
-    return "\n".join(parts)
+    return "\n".join(p for p in parts if p)
 
 
 def shop_card_html(item: dict, site: dict, cmap: dict, asset_prefix: str = "", item_href: str = "") -> str:

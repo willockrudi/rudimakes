@@ -96,7 +96,7 @@
           <!-- ITEM_BUY_START -->
           <div class="shop-buy-row">
           <a class="btn btn-primary btn-sm" href="https://buy.stripe.com/aFa5kDdFr5427Xbg84c7u00" target="_blank" rel="noopener">Buy — $1</a>
-          <a class="btn btn-outline btn-sm" href="mailto:info@rudimakes.com?subject=Test%20Product%20%28RM-1002%29">Email</a>
+          <span class="shop-email">info@rudimakes.com</span>
           </div>
 <!-- ITEM_BUY_END -->
 
@@ -139,7 +139,7 @@
           <p><a href="../shop.html#policy">Full shop policies →</a></p>
           <h3>Questions?</h3>
           <p>Email me before you buy - I'm happy to send more photos or talk through fitment.</p>
-          <p><a href="mailto:info@rudimakes.com?subject=Test%20Product%20%28RM-1002%29">info@rudimakes.com</a></p>
+          <p><span class="email-inline"><a href="mailto:info@rudimakes.com">info@rudimakes.com</a><button type="button" class="copy-email copy-chip" data-email="info@rudimakes.com" title="Copy address">Copy</button></span></p>
           <h3>Who You're Buying From</h3>
           <p>Rudi Makes is the trading name of Filament LLC. Your card statement will show
           <strong>FILAMENT AUDIO</strong>.</p>
@@ -202,6 +202,55 @@
         const current = hero.getAttribute("src");
         hero.setAttribute("src", thumb.getAttribute("src"));
         thumb.setAttribute("src", current);
+      });
+    })();
+  </script>
+
+<script>
+    (function () {
+      function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest(".copy-email");
+        if (!btn) return;
+        var addr = btn.getAttribute("data-email");
+        if (!addr) return;
+        var label = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? "Copied!" : "Press Ctrl+C";
+          if (!ok) {
+            var link = btn.parentNode.querySelector("a");
+            if (link && window.getSelection) {
+              var r = document.createRange();
+              r.selectNodeContents(link);
+              var sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(r);
+            }
+          }
+          btn.classList.toggle("is-copied", ok);
+          setTimeout(function () {
+            btn.textContent = label;
+            btn.classList.remove("is-copied");
+          }, 1600);
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(addr).then(function () { done(true); },
+                                                   function () { done(fallbackCopy(addr)); });
+        } else {
+          done(fallbackCopy(addr));
+        }
       });
     })();
   </script>

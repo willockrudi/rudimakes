@@ -101,7 +101,7 @@
           <!-- SHOP_ITEMS_START -->
           <!-- SHOP_ITEMS_END -->
         </div>
-        <p id="noResults" class="shop-empty" hidden>Nothing matches that. Try a broader search, or <a href="mailto:{{EMAIL}}">email me</a> - I have stock that isn't listed yet.</p>
+        <p id="noResults" class="shop-empty" hidden>Nothing matches that. Try a broader search, or <a href="#contact">email me</a> - I have stock that isn't listed yet.</p>
       </div>
     </section>
 
@@ -176,7 +176,7 @@
           </div>
           <div class="policy-item">
             <h3>Questions About Anything</h3>
-            <p>Email <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>. I'm also happy to quote pricing on parts that aren't listed, or track down something specific you're looking for.</p>
+            <p>Email {{EMAIL_INLINE}}. I'm also happy to quote pricing on parts that aren't listed, or track down something specific you're looking for.</p>
           </div>
         </div>
       </div>
@@ -191,8 +191,7 @@
         </div>
         <p class="contact-lead">I have parts and gear that never make it onto this page. If you need something for a repair - a chip, a keybed part, a whole instrument - email me and I'll tell you what I've got.</p>
         <div class="contact-cta-block">
-          <a href="mailto:{{EMAIL}}?subject=Shop%20inquiry" class="btn btn-primary btn-lg">Email About Gear or Parts</a>
-          <p class="contact-email-sub">{{EMAIL}}</p>
+          <p class="contact-email-sub" style="font-size:1.2rem">{{EMAIL_INLINE}}</p>
         </div>
         <div class="social-links">
           <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>
@@ -324,6 +323,55 @@
       apply();
       search.addEventListener("input", apply);
       if (stockOnly) stockOnly.addEventListener("change", apply);
+    })();
+  </script>
+
+<script>
+    (function () {
+      function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest(".copy-email");
+        if (!btn) return;
+        var addr = btn.getAttribute("data-email");
+        if (!addr) return;
+        var label = btn.textContent;
+        function done(ok) {
+          btn.textContent = ok ? "Copied!" : "Press Ctrl+C";
+          if (!ok) {
+            var link = btn.parentNode.querySelector("a");
+            if (link && window.getSelection) {
+              var r = document.createRange();
+              r.selectNodeContents(link);
+              var sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(r);
+            }
+          }
+          btn.classList.toggle("is-copied", ok);
+          setTimeout(function () {
+            btn.textContent = label;
+            btn.classList.remove("is-copied");
+          }, 1600);
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(addr).then(function () { done(true); },
+                                                   function () { done(fallbackCopy(addr)); });
+        } else {
+          done(fallbackCopy(addr));
+        }
+      });
     })();
   </script>
 
