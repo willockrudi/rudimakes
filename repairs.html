@@ -419,30 +419,30 @@
               <label for="ftype">Equipment Type *</label>
               <select id="ftype" name="entry.752791568" required style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
                 <option value="">Select type...</option>
-                <option>Tube Amplifier</option>
-                <option>Solid State Amplifier</option>
-                <option>Bass Amplifier</option>
-                <option>Electric Guitar</option>
-                <option>Bass Guitar</option>
-                <option>Synthesizer / Keyboard</option>
-                <option>Effects Pedal</option>
-                <option>Professional Audio Equipment</option>
-                <option>Other</option>
+                <option value="Tube Amplifier">Tube Amplifier</option>
+                <option value="Solid State Amplifier">Solid State Amplifier</option>
+                <option value="Other">Bass Amplifier</option>
+                <option value="Other">Electric Guitar</option>
+                <option value="Other">Bass Guitar</option>
+                <option value="Synthesizer/ Keyboard">Synthesizer / Keyboard</option>
+                <option value="Effects Pedal">Effects Pedal</option>
+                <option value="Professional Audio Equipment">Professional Audio Equipment</option>
+                <option value="Other">Other</option>
               </select>
             </div>
             <div class="form-group">
               <label for="fservice">Service Needed *</label>
               <select id="fservice" name="entry.248391648" required style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
                 <option value="">Select service...</option>
-                <option>Diagnose &amp; Repair</option>
-                <option>Retube &amp; Bias</option>
-                <option>Bias Only</option>
-                <option>Full Recap</option>
-                <option>Guitar Setup &amp; Intonation</option>
-                <option>Electronics Repair / Rewire</option>
-                <option>Speaker Replacement</option>
-                <option>Modification</option>
-                <option>Not Sure - Need Diagnosis</option>
+                <option value="Diagnose &amp; Repair">Diagnose &amp; Repair</option>
+                <option value="Retube &amp; Bias">Retube &amp; Bias</option>
+                <option value="Bias Only">Bias Only</option>
+                <option value="Full Recap">Full Recap</option>
+                <option value="Guitar Setup &amp; Intonation">Guitar Setup &amp; Intonation</option>
+                <option value="Electronics Repair / Rewire">Electronics Repair / Rewire</option>
+                <option value="Speaker Replacement">Speaker Replacement</option>
+                <option value="Modificatiron">Modification</option>
+                <option value="Not Sure - Need Diagnosis">Not Sure - Need Diagnosis</option>
               </select>
             </div>
           </div>
@@ -472,13 +472,13 @@
               <label for="fheard">How Did You Hear About Us?</label>
               <select id="fheard" name="entry.570308018" style="width:100%; padding:0.85rem 1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:var(--font-body); font-size:1rem; outline:none;">
                 <option value="">Select one (optional)...</option>
-                <option>Word of Mouth</option>
-                <option>Google Search</option>
-                <option>Instagram</option>
-                <option>Youtube</option>
-                <option>Jonas Productions</option>
-                <option>Returning Customer</option>
-                <option>Other</option>
+                <option value="Word of Mouth">Word of Mouth</option>
+                <option value="Google Search">Google Search</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Youtube">Youtube</option>
+                <option value="Other">Jonas Productions</option>
+                <option value="Returning Cusrtomer">Returning Customer</option>
+                <option value="Other">Other</option>
               </select>
             </div>
           </div>
@@ -516,10 +516,52 @@
             var btn = document.getElementById("intakeSubmitBtn");
             btn.disabled = true;
             btn.textContent = "Sending...";
+            // The Google Form only accepts its own exact option strings; anything
+            // else is rejected with a 400 that no-cors cannot see. Options whose
+            // label has no matching Google choice submit as "Other", so carry the
+            // real label through in the problem text instead of losing it.
+            var ALLOWED = {
+              "entry.1527558467": ["Phone Call", "Email"],
+              "entry.752791568": ["Tube Amplifier", "Solid State Amplifier", "Synthesizer/ Keyboard", "Effects Pedal", "Professional Audio Equipment", "Other"],
+              "entry.248391648": ["Diagnose & Repair", "Retube & Bias", "Bias Only", "Full Recap", "Guitar Setup & Intonation", "Electronics Repair / Rewire", "Speaker Replacement", "Modificatiron", "Not Sure - Need Diagnosis"],
+              "entry.685104609": ["Drop or Impact Damage", "Liquid Exposure", "Previous repair by another tech", "Modifications", "None of the above"],
+              "entry.1174777392": ["Yes - 48-hour turnaround", "No - Standard Turnaround"],
+              "entry.570308018": ["Word of Mouth", "Google Search", "Instagram", "Youtube", "Returning Cusrtomer", "Other"],
+              "entry.1640383654": ["I have read and agree to the terms above"]
+            };
+            function labelOf(id) {
+              var el = document.getElementById(id);
+              if (!el || el.selectedIndex < 0) return "";
+              return el.options[el.selectedIndex].text.trim();
+            }
+            var notes = [];
+            var typeLabel = labelOf("ftype");
+            if (document.getElementById("ftype").value === "Other" && typeLabel && typeLabel !== "Other") {
+              notes.push("Equipment type: " + typeLabel);
+            }
+            var heardLabel = labelOf("fheard");
+            if (document.getElementById("fheard").value === "Other" && heardLabel && heardLabel !== "Other") {
+              notes.push("Heard about us: " + heardLabel);
+            }
             var params = new URLSearchParams();
+            var invalid = [];
             new FormData(form).forEach(function (value, key) {
-              if (value !== "") params.append(key, value);
+              if (value === "") return;
+              if (ALLOWED[key] && ALLOWED[key].indexOf(value) === -1) invalid.push(key + "=" + value);
+              if (key === "entry.1740099007" && notes.length) {
+                value = notes.join("\n") + "\n\n" + value;
+              }
+              params.append(key, value);
             });
+            if (invalid.length) {
+              // Bail out loudly rather than showing a success message for a
+              // submission Google is going to throw away.
+              btn.disabled = false;
+              btn.textContent = "Submit Repair Inquiry";
+              document.getElementById("intakeError").style.display = "block";
+              document.getElementById("intakeError").scrollIntoView({ behavior: "smooth", block: "center" });
+              return;
+            }
             params.append("fvv", "1");
             params.append("pageHistory", "0");
             fetch(FORM_URL, {
