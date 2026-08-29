@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{REPAIR_TITLE}} | Filament Audio</title>
+  <meta name="description" content="{{REPAIR_META_DESCRIPTION}}" />
+  <meta property="og:title" content="{{REPAIR_TITLE}} | Filament Audio" />
+  <meta property="og:description" content="{{REPAIR_META_DESCRIPTION}}" />
+  <meta property="og:image" content="{{REPAIR_OG_IMAGE}}" />
+  <meta property="og:url" content="{{SITE_URL}}/repairs/{{REPAIR_SLUG}}.html" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="{{SITE_URL}}/repairs/{{REPAIR_SLUG}}.html" />
+  <link rel="stylesheet" href="../style.css" />
+  <script type="application/ld+json">
+  {{REPAIR_SCHEMA}}
+  </script>
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html" class="active">Repair Log</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../repairs.html">Repair Log</a>
+        <span>→</span>
+        {{REPAIR_TITLE}}
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        {{REPAIR_TITLE}}
+      </h1>
+
+      <p class="muted" style="margin-bottom:1rem;">{{REPAIR_META_LINE}}</p>
+
+      {{REPAIR_DEVICE_LINE}}
+
+      {{REPAIR_CARD_TAGS}}
+
+      {{REPAIR_HERO_IMAGE}}
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <!-- REPAIR_BODY_START -->
+        <!-- REPAIR_BODY_END -->
+      </div>
+    </div>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Same Problem?</p>
+          <h2 class="section-title">Get Your Gear Diagnosed</h2>
+          <p class="section-note">
+            Every repair on this site was diagnosed and documented on a real bench in Indianapolis.
+            If your gear is doing something similar, send it over and I'll find out why.
+          </p>
+        </div>
+        <div style="text-align:center;">
+          <a href="../repairs.html#intake" class="btn btn-primary btn-lg">Book a Repair</a>
+          <a href="../repairs.html" class="btn btn-outline" style="margin-left:0.5rem;">See More Repairs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

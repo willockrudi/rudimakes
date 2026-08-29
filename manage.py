@@ -30,6 +30,8 @@ PROJECTS_DIR = os.path.join(ROOT, "projects")
 # Troubleshooting page
 REPAIRS_INDEX_PATH = os.path.join(ROOT, "repairs.html")
 REPAIRS_TEMPLATE_PATH = os.path.join(ROOT, "repairs_template.html")
+REPAIR_TEMPLATE_PATH = os.path.join(ROOT, "repair_template.html")
+REPAIRS_DIR = os.path.join(ROOT, "repairs")
 
 # Shop
 SHOP_INDEX_PATH = os.path.join(ROOT, "shop.html")
@@ -64,6 +66,8 @@ TAGS_START = "<!-- TAGS_START -->"
 TAGS_END = "<!-- TAGS_END -->"
 PROJECT_STEPS_START = "<!-- PROJECT_STEPS_START -->"
 PROJECT_STEPS_END = "<!-- PROJECT_STEPS_END -->"
+REPAIR_BODY_START = "<!-- REPAIR_BODY_START -->"
+REPAIR_BODY_END = "<!-- REPAIR_BODY_END -->"
 COLLECTIONS_START = "<!-- COLLECTIONS_START -->"
 COLLECTIONS_END = "<!-- COLLECTIONS_END -->"
 COLLECTION_NAV_START = "<!-- COLLECTION_NAV_START -->"
@@ -2454,18 +2458,22 @@ def repair_card_html(r: dict) -> str:
             return ""
         return f"<p><strong>{label}:</strong> {value_html}</p>"
 
+    # Each repair also has its own page; the card links to it so the full
+    # write-up lives at one indexable URL instead of only on this index.
+    slug = html.escape(r.get("slug") or slugify(raw_title), quote=True)
+    heading = f'<h3><a href="repairs/{slug}.html">{title}</a></h3>'
+    read_more = f'<p><a href="repairs/{slug}.html">Read the full repair &rarr;</a></p>'
+
     return f"""
       <div class="project-card" data-tags="{data_tags}">
         {img_html}
         <div class="project-info">
-          <h3>{title}</h3>
+          {heading}
           {meta_html}
           {tags_html}
           {line("Device", device)}
           {line("Symptom", symptom)}
-          {line("Diagnosis", diagnosis)}
-          {line("Fix", fix)}
-          {f"<p>{notes}</p>" if notes else ""}
+          {read_more}
         </div>
       </div>
 """.rstrip() + "\n"
@@ -2714,6 +2722,154 @@ def rebuild_project_pages(projects):
             os.remove(os.path.join(PROJECTS_DIR, name))
 
 
+def ensure_repair_slugs(repairs: list[dict]) -> bool:
+    """Give every repair a stable, unique slug for its own detail page."""
+    changed = False
+    used = set()
+
+    for r in repairs:
+        base = slugify((r.get("slug") or r.get("title") or "repair").strip())
+        slug = base
+        i = 2
+        while slug in used:
+            slug = f"{base}-{i}"
+            i += 1
+
+        used.add(slug)
+
+        if r.get("slug") != slug:
+            r["slug"] = slug
+            changed = True
+
+    return changed
+
+
+def repair_detail_html(r: dict, site: dict, template: str) -> str:
+    raw_title = r.get("title", "Untitled Repair")
+    title = html.escape(raw_title, quote=True)
+    alt = html.escape(r.get("alt", raw_title), quote=True)
+    slug = r.get("slug") or slugify(raw_title)
+
+    date = html.escape((r.get("date") or "").strip(), quote=True)
+    status = html.escape((r.get("status") or "").strip(), quote=True)
+    device = html.escape((r.get("device") or "").strip(), quote=True)
+
+    meta_bits = [b for b in [date, status] if b]
+    meta_line = " • ".join(meta_bits)
+
+    device_line = f'<p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;"><strong>Device:</strong> {device}</p>' if device else ""
+
+    _, tags_html = _card_tags_block(r.get("tags") or [])
+    tags_html = tags_html.strip() if tags_html else ""
+
+    img = html.escape((r.get("image") or "").strip(), quote=True)
+    hero_img = f'<img class="project-detail-hero" src="../{img}" alt="{alt}">' if img else ""
+
+    # Body: the substance of the repair, one section per stage.
+    sections = [
+        ("Symptom", _lines_to_br(r.get("symptom", ""))),
+        ("Diagnosis", _lines_to_br(r.get("diagnosis", ""))),
+        ("Fix", _lines_to_br(r.get("fix", ""))),
+        ("What I Took Away", _lines_to_br(r.get("notes", ""))),
+    ]
+    body_parts = []
+    for heading, value in sections:
+        value = (value or "").strip()
+        if not value:
+            continue
+        body_parts.append(f"        <h2>{heading}</h2>\n        <p>{value}</p>")
+    body_html = "\n".join(body_parts)
+
+    # Meta description from the symptom, falling back to the diagnosis.
+    plain = re.sub(r"<[^>]+>", "", r.get("symptom") or r.get("diagnosis") or "").strip()
+    if device and plain:
+        plain = f"{device}: {plain}"
+    meta_desc = html.escape((plain[:157] + "...") if len(plain) > 160 else plain, quote=True)
+
+    og_image = f"{SITE_URL}/{img}" if img else f"{SITE_URL}/images/og-repairs.png"
+
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": raw_title,
+        "description": re.sub(r"<[^>]+>", "", plain)[:300],
+        "url": f"{SITE_URL}/repairs/{slug}.html",
+        "mainEntityOfPage": f"{SITE_URL}/repairs/{slug}.html",
+        "author": {"@type": "Person", "name": "Rudi Willock"},
+        "publisher": {
+            "@type": "Organization",
+            "name": "Filament Audio",
+            "legalName": site.get("legal_name", ""),
+        },
+        "about": device or raw_title,
+    }
+    if img:
+        schema["image"] = f"{SITE_URL}/{img}"
+    if r.get("date"):
+        schema["datePublished"] = r.get("date")
+
+    content = replace_placeholders(template, site)
+    mapping = {
+        "{{REPAIR_TITLE}}": title,
+        "{{REPAIR_META_LINE}}": meta_line,
+        "{{REPAIR_DEVICE_LINE}}": device_line,
+        "{{REPAIR_CARD_TAGS}}": tags_html,
+        "{{REPAIR_HERO_IMAGE}}": hero_img,
+        "{{REPAIR_META_DESCRIPTION}}": meta_desc,
+        "{{REPAIR_OG_IMAGE}}": og_image,
+        "{{REPAIR_SLUG}}": html.escape(slug, quote=True),
+        "{{REPAIR_SCHEMA}}": json.dumps(schema, indent=2, ensure_ascii=False),
+    }
+    for key, value in mapping.items():
+        content = content.replace(key, value)
+
+    if REPAIR_BODY_START not in content or REPAIR_BODY_END not in content:
+        raise ValueError(
+            "Markers not found in repair_template.html.\n"
+            "Add:\n"
+            "<!-- REPAIR_BODY_START -->\n"
+            "<!-- REPAIR_BODY_END -->"
+        )
+
+    s = content.index(REPAIR_BODY_START) + len(REPAIR_BODY_START)
+    e = content.index(REPAIR_BODY_END)
+    return content[:s] + "\n" + body_html + "\n        " + content[e:]
+
+
+def rebuild_repair_pages(repairs=None):
+    """One indexable page per repair, under repairs/."""
+    if repairs is None:
+        repairs = load_repairs()
+
+    if ensure_repair_slugs(repairs):
+        save_repairs(repairs)
+
+    if not os.path.isfile(REPAIR_TEMPLATE_PATH):
+        raise FileNotFoundError(
+            f"repair_template.html not found at {REPAIR_TEMPLATE_PATH}\n"
+            "Create it by creating repair_template.html"
+        )
+
+    with open(REPAIR_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    site = load_site()
+
+    os.makedirs(REPAIRS_DIR, exist_ok=True)
+    keep_files = set()
+
+    for r in repairs:
+        slug = r.get("slug") or slugify(r.get("title", "repair"))
+        out_name = f"{slug}.html"
+        keep_files.add(out_name)
+        with open(os.path.join(REPAIRS_DIR, out_name), "w", encoding="utf-8") as f:
+            f.write(repair_detail_html(r, site, template))
+
+    for name in os.listdir(REPAIRS_DIR):
+        if name.endswith(".html") and name not in keep_files:
+            os.remove(os.path.join(REPAIRS_DIR, name))
+
+
 def rebuild_repairs_page():
     if not os.path.isfile(REPAIRS_TEMPLATE_PATH):
         raise FileNotFoundError(
@@ -2752,6 +2908,8 @@ def rebuild_all(projects=None):
         projects = load_projects()
     rebuild_index_from_projects(projects)
     rebuild_project_pages(projects)
+    # Detail pages first: they assign the slugs the index cards link to.
+    rebuild_repair_pages()
     rebuild_repairs_page()
     rebuild_shop()
 

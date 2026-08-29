@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimoog Model D — Oscillator Tuning &amp; Calibration | Filament Audio</title>
+  <meta name="description" content="Moog Minimoog Model D Synthesizer: Oscillators drifting off pitch during play. Notes sliding flat shortly after power-on. Tuning unstable — chords sour, osci..." />
+  <meta property="og:title" content="Minimoog Model D — Oscillator Tuning &amp; Calibration | Filament Audio" />
+  <meta property="og:description" content="Moog Minimoog Model D Synthesizer: Oscillators drifting off pitch during play. Notes sliding flat shortly after power-on. Tuning unstable — chords sour, osci..." />
+  <meta property="og:image" content="https://rudimakes.com/images/repairs/moog-minimoog-model-d.jpg" />
+  <meta property="og:url" content="https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html" />
+  <link rel="stylesheet" href="../style.css" />
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Minimoog Model D — Oscillator Tuning & Calibration",
+  "description": "Moog Minimoog Model D Synthesizer: Oscillators drifting off pitch during play. Notes sliding flat shortly after power-on. Tuning unstable — chords sour, oscillators not tracking each other correctly across the keyboard range.",
+  "url": "https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html",
+  "mainEntityOfPage": "https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html",
+  "author": {
+    "@type": "Person",
+    "name": "Rudi Willock"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Filament Audio",
+    "legalName": "Filament LLC"
+  },
+  "about": "Moog Minimoog Model D Synthesizer",
+  "image": "https://rudimakes.com/images/repairs/moog-minimoog-model-d.jpg",
+  "datePublished": "2026-03-30"
+}
+  </script>
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html" class="active">Repair Log</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../repairs.html">Repair Log</a>
+        <span>→</span>
+        Minimoog Model D — Oscillator Tuning &amp; Calibration
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Minimoog Model D — Oscillator Tuning &amp; Calibration
+      </h1>
+
+      <p class="muted" style="margin-bottom:1rem;">2026-03-30 • Fixed</p>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;"><strong>Device:</strong> Moog Minimoog Model D Synthesizer</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">synth</span>
+            <span class="tag-chip">moog</span>
+            <span class="tag-chip">minimoog</span>
+            <span class="tag-chip">oscillator</span>
+            <span class="tag-chip">tuning</span>
+            <span class="tag-chip">calibration</span>
+            <span class="tag-chip">analog</span>
+          </div>
+
+      <img class="project-detail-hero" src="../images/repairs/moog-minimoog-model-d.jpg" alt="Minimoog Model D oscillator section with TUNE and trimpot access">
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <!-- REPAIR_BODY_START -->
+        <h2>Symptom</h2>
+        <p>Oscillators drifting off pitch during play. Notes sliding flat shortly after power-on. Tuning unstable — chords sour, oscillators not tracking each other correctly across the keyboard range.</p>
+        <h2>Diagnosis</h2>
+        <p>Classic cold-start drift. The Model D&#x27;s analog oscillator circuitry — transistors, resistors, capacitors, and especially the Moog Ladder Filter — all have temperature-dependent characteristics. When the unit is cold, these components operate slightly outside their nominal values and drift as temperature rises. The synth must reach stable thermal equilibrium before tuning can hold. In this case the unit had not been given adequate warmup time and was being tuned and played cold. Additionally, the oscillator trimpots (RANGE and SCALE for each oscillator) required iterative adjustment to bring all three oscillators into correct tracking across the keyboard.</p>
+        <h2>Fix</h2>
+        <p>Performed full warmup — 20 minutes powered on, no playing, no direct heat sources near the unit, room temperature confirmed within the 50–95°F operating spec.<br>Global Reset performed: held F0, G0, A0, B0 (four lowest white keys) during power-on to restore factory baseline.<br>Setup for tuning: TUNE knob centered, all three oscillators at 4&#x27; Sawtooth, OSC 1 volume on, all others off, Modulation Wheel down, Pitch Wheel centered, Glide and Decay off.<br>Engaged the built-in A-440 reference tone. Tuned OSC 1 RANGE trimpot against the highest A key until beating between oscillator and reference dissolved to a clean unison. Tuned OSC 1 SCALE trimpot against the lowest A key. Iterated between high and low A — RANGE and SCALE interact — until both ends of the keyboard tracked correctly.<br>Brought OSC 2 up in the mixer, tuned against OSC 1. Then OSC 3 against OSC 1. All three oscillators confirmed tracking to a single unified pitch across the full keyboard range. A-440 reference switched off. Synth left to play — stable.</p>
+        <h2>What I Took Away</h2>
+        <p>The warmup period is not optional on the Model D. Tuning a cold Model D is wasted time — the oscillators will drift the moment temperature changes. Always allow the full 20 minutes before beginning the trimpot procedure.<br>The RANGE and SCALE trimpots interact with each other — expect multiple passes between the high A and low A. This is normal and expected per the service procedure. The A-440 built-in reference is the most reliable calibration source for this procedure.<br>Only a qualified technician should adjust the internal trimpots. Do not place the unit near radiators, amplifiers, or direct sunlight during operation.</p>
+        <!-- REPAIR_BODY_END -->
+      </div>
+    </div>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Same Problem?</p>
+          <h2 class="section-title">Get Your Gear Diagnosed</h2>
+          <p class="section-note">
+            Every repair on this site was diagnosed and documented on a real bench in Indianapolis.
+            If your gear is doing something similar, send it over and I'll find out why.
+          </p>
+        </div>
+        <div style="text-align:center;">
+          <a href="../repairs.html#intake" class="btn btn-primary btn-lg">Book a Repair</a>
+          <a href="../repairs.html" class="btn btn-outline" style="margin-left:0.5rem;">See More Repairs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

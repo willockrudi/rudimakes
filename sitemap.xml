@@ -40,6 +40,7 @@
 
 
 
+
   <!-- SHOP_URLS_START -->
   <url>
     <loc>https://rudimakes.com/shop.html</loc>
@@ -77,4 +78,58 @@
     <changefreq>weekly</changefreq>
   </url>
   <!-- SHOP_URLS_END -->
+<url>
+    <loc>https://rudimakes.com/repairs/fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/hammond-b-3-recapping-the-ao-28-power-supply-120-hz-hum.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/ampeg-svt-classic-screen-resistor-failure-full-retube.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/avalon-u5-total-positive-rail-failure-transformer-winding-open.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/fender-twin-reverb-no-reverb-dead-recovery-tube.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/leslie-speaker-motor-service-dry-bearings-glazed-drive-wheel.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/rhodes-electric-piano-full-tuning-pickup-setup.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/korg-triton-factory-reset-sound-reload.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

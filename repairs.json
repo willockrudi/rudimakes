@@ -23,7 +23,8 @@
     "image": "",
     "alt": "Fender '65 Deluxe Reverb Reissue chassis on the bench showing the dog house filter caps and new recap components",
     "created": "2026-07-19T00:00:00",
-    "updated": "2026-07-19T00:00:00"
+    "updated": "2026-07-19T00:00:00",
+    "slug": "fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod"
   },
   {
     "title": "Hammond B-3 — Recapping the AO-28 Power Supply (120 Hz Hum)",
@@ -47,7 +48,8 @@
     "image": "",
     "alt": "Hammond AO-28 amplifier chassis showing the two filter can capacitors, 6X4 rectifier, and 12BH7 output tube",
     "created": "2026-06-27T00:00:00",
-    "updated": "2026-06-27T00:00:00"
+    "updated": "2026-06-27T00:00:00",
+    "slug": "hammond-b-3-recapping-the-ao-28-power-supply-120-hz-hum"
   },
   {
     "title": "Ampeg SVT Classic — Screen Resistor Failure & Full Retube",
@@ -71,7 +73,8 @@
     "image": "images/repairs/ampeg-svt-classic.jpg",
     "alt": "Ampeg SVT Classic main PCB showing screen resistor positions near output tube sockets",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "ampeg-svt-classic-screen-resistor-failure-full-retube"
   },
   {
     "title": "Avalon U5 — Total Positive Rail Failure (Transformer Winding Open)",
@@ -94,7 +97,8 @@
     "image": "images/repairs/avalon-u5.jpg",
     "alt": "Avalon U5 main PCB showing T5 toroidal transformer and filter capacitor bank",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "avalon-u5-total-positive-rail-failure-transformer-winding-open"
   },
   {
     "title": "Fender Twin Reverb — No Reverb (Dead Recovery Tube)",
@@ -117,7 +121,8 @@
     "image": "images/repairs/fender-twin-reverb.jpg",
     "alt": "Fender Twin Reverb reverb tank and tube complement",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "fender-twin-reverb-no-reverb-dead-recovery-tube"
   },
   {
     "title": "Leslie Speaker — Motor Service (Dry Bearings & Glazed Drive Wheel)",
@@ -139,7 +144,8 @@
     "image": "images/repairs/leslie.jpg",
     "alt": "Leslie speaker cabinet open showing rotor assembly and drive motor",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "leslie-speaker-motor-service-dry-bearings-glazed-drive-wheel"
   },
   {
     "title": "Minimoog Model D — Oscillator Tuning & Calibration",
@@ -162,7 +168,8 @@
     "image": "images/repairs/moog-minimoog-model-d.jpg",
     "alt": "Minimoog Model D oscillator section with TUNE and trimpot access",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "minimoog-model-d-oscillator-tuning-calibration"
   },
   {
     "title": "Rhodes Electric Piano — Full Tuning & Pickup Setup",
@@ -185,7 +192,8 @@
     "image": "images/repairs/rhodes-electric-piano.jpg",
     "alt": "Rhodes electric piano open lid showing tine and pickup array",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "rhodes-electric-piano-full-tuning-pickup-setup"
   },
   {
     "title": "Korg Triton — Factory Reset & Sound Reload",
@@ -208,6 +216,7 @@
     "image": "images/repairs/korg-triton.jpg",
     "alt": "Korg Triton front panel showing DISK mode and floppy drive",
     "created": "2026-03-30T00:00:00",
-    "updated": "2026-03-30T00:00:00"
+    "updated": "2026-03-30T00:00:00",
+    "slug": "korg-triton-factory-reset-sound-reload"
   }
 ]
