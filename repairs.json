@@ -68,7 +68,7 @@
       "6550",
       "high-voltage"
     ],
-    "image": "",
+    "image": "images/repairs/ampeg-svt-classic.jpg",
     "alt": "Ampeg SVT Classic main PCB showing screen resistor positions near output tube sockets",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -91,7 +91,7 @@
       "rails",
       "diagnostics"
     ],
-    "image": "",
+    "image": "images/repairs/avalon-u5.jpg",
     "alt": "Avalon U5 main PCB showing T5 toroidal transformer and filter capacitor bank",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -114,7 +114,7 @@
       "12ax7",
       "signal-path"
     ],
-    "image": "",
+    "image": "images/repairs/fender-twin-reverb.jpg",
     "alt": "Fender Twin Reverb reverb tank and tube complement",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -136,7 +136,7 @@
       "lubrication",
       "service"
     ],
-    "image": "",
+    "image": "images/repairs/leslie.jpg",
     "alt": "Leslie speaker cabinet open showing rotor assembly and drive motor",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -159,7 +159,7 @@
       "calibration",
       "analog"
     ],
-    "image": "",
+    "image": "images/repairs/moog-minimoog-model-d.jpg",
     "alt": "Minimoog Model D oscillator section with TUNE and trimpot access",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -182,7 +182,7 @@
       "electric-piano",
       "setup"
     ],
-    "image": "",
+    "image": "images/repairs/rhodes-electric-piano.jpg",
     "alt": "Rhodes electric piano open lid showing tine and pickup array",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"
@@ -205,7 +205,7 @@
       "firmware",
       "floppy"
     ],
-    "image": "",
+    "image": "images/repairs/korg-triton.jpg",
     "alt": "Korg Triton front panel showing DISK mode and floppy drive",
     "created": "2026-03-30T00:00:00",
     "updated": "2026-03-30T00:00:00"

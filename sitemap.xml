@@ -16,65 +16,9 @@
     <priority>0.9</priority>
   </url>
 
-  <url>
-    <loc>https://www.rudimakes.com/music.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
   <!-- Project detail pages -->
-  <url>
-    <loc>https://www.rudimakes.com/projects/555-polyphonic-synth.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/bench-os.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
+<url>
     <loc>https://www.rudimakes.com/projects/blu-language.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/basil-game.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/glorb-card-game.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/keystone-board-game.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/linux-wifi-driver-patch.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://www.rudimakes.com/projects/python-web-scraper.html</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -88,22 +32,17 @@
   </url>
 
   <url>
-    <loc>https://www.rudimakes.com/projects/usb-pd-charging-rack.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <loc>https://www.rudimakes.com/shopcat/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.rudimakes.com/shopcat/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <url>
-    <loc>https://www.rudimakes.com/shopcat/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.rudimakes.com/shopcat/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+
 
 
 
@@ -124,37 +63,37 @@
   <!-- SHOP_URLS_START -->
   <url>
     <loc>https://www.rudimakes.com/shop.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/synths.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/amps.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/pedals.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/synth-parts.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/mod-kits.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.rudimakes.com/shop/test-product.html</loc>
-    <lastmod>2026-08-17</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <!-- SHOP_URLS_END -->
