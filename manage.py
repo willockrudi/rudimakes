@@ -2798,7 +2798,7 @@ def repair_detail_html(r: dict, site: dict, template: str) -> str:
         "author": {"@type": "Person", "name": "Rudi Willock"},
         "publisher": {
             "@type": "Organization",
-            "name": "Filament Audio",
+            "name": "Filament",
             "legalName": site.get("legal_name", ""),
         },
         "about": device or raw_title,
