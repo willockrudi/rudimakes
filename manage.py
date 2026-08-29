@@ -53,7 +53,7 @@ BACKUPS_DIR = os.path.join(ROOT, ".backups")
 # derives its canonical/OG URLs from it via the {{SITE_URL}} placeholder.
 # Also update CNAME, robots.txt, and the older non-shop templates, which still
 # have the domain written into them directly.
-SITE_URL = "https://www.rudimakes.com"
+SITE_URL = "https://rudimakes.com"
 
 # Markers
 PROJECTS_START = "<!-- PROJECTS_START -->"

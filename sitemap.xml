@@ -3,14 +3,14 @@
 
   <!-- Main pages -->
   <url>
-    <loc>https://www.rudimakes.com/</loc>
+    <loc>https://rudimakes.com/</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://www.rudimakes.com/repairs.html</loc>
+    <loc>https://rudimakes.com/repairs.html</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -18,81 +18,60 @@
 
   <!-- Project detail pages -->
 <url>
-    <loc>https://www.rudimakes.com/projects/blu-language.html</loc>
+    <loc>https://rudimakes.com/projects/blu-language.html</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://www.rudimakes.com/projects/tbx-home-broadcast.html</loc>
+    <loc>https://rudimakes.com/projects/tbx-home-broadcast.html</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://www.rudimakes.com/shopcat/</loc>
+    <loc>https://rudimakes.com/shopcat/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  <url>
-    <loc>https://www.rudimakes.com/shopcat/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
   <!-- SHOP_URLS_START -->
   <url>
-    <loc>https://www.rudimakes.com/shop.html</loc>
+    <loc>https://rudimakes.com/shop.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/synths.html</loc>
+    <loc>https://rudimakes.com/shop/synths.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/amps.html</loc>
+    <loc>https://rudimakes.com/shop/amps.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/pedals.html</loc>
+    <loc>https://rudimakes.com/shop/pedals.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/synth-parts.html</loc>
+    <loc>https://rudimakes.com/shop/synth-parts.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/mod-kits.html</loc>
+    <loc>https://rudimakes.com/shop/mod-kits.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://www.rudimakes.com/shop/test-product.html</loc>
+    <loc>https://rudimakes.com/shop/test-product.html</loc>
     <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
   </url>
