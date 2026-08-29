@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roland Juno-106 — Dead Noise Source &amp; Noisy Chorus (R115 Drift, BBD Replacement) | Filament Audio</title>
+  <meta name="description" content="Roland Juno-106 Polyphonic Synthesizer: Two complaints. The DCO white noise source was effectively dead — barely audible regardless of where the noise slider..." />
+  <meta property="og:title" content="Roland Juno-106 — Dead Noise Source &amp; Noisy Chorus (R115 Drift, BBD Replacement) | Filament Audio" />
+  <meta property="og:description" content="Roland Juno-106 Polyphonic Synthesizer: Two complaints. The DCO white noise source was effectively dead — barely audible regardless of where the noise slider..." />
+  <meta property="og:image" content="https://rudimakes.com/images/og-repairs.png" />
+  <meta property="og:url" content="https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html" />
+  <link rel="stylesheet" href="../style.css" />
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Roland Juno-106 — Dead Noise Source & Noisy Chorus (R115 Drift, BBD Replacement)",
+  "description": "Roland Juno-106 Polyphonic Synthesizer: Two complaints. The DCO white noise source was effectively dead — barely audible regardless of where the noise slider sat. Separately, a persistent oceanic swishing sat in the background of the chorus even with no notes playing.",
+  "url": "https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html",
+  "mainEntityOfPage": "https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html",
+  "author": {
+    "@type": "Person",
+    "name": "Rudi Willock"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Filament Audio",
+    "legalName": "Filament LLC"
+  },
+  "about": "Roland Juno-106 Polyphonic Synthesizer",
+  "datePublished": "2026-08-29"
+}
+  </script>
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">Rudi<span>Makes</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../index.html#services">Services</a></li>
+        <li><a href="../repairs.html" class="active">Repair Log</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../repairs.html">Repair Log</a>
+        <span>→</span>
+        Roland Juno-106 — Dead Noise Source &amp; Noisy Chorus (R115 Drift, BBD Replacement)
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Roland Juno-106 — Dead Noise Source &amp; Noisy Chorus (R115 Drift, BBD Replacement)
+      </h1>
+
+      <p class="muted" style="margin-bottom:1rem;">2026-08-29 • Fixed</p>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;"><strong>Device:</strong> Roland Juno-106 Polyphonic Synthesizer</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">synth</span>
+            <span class="tag-chip">roland</span>
+            <span class="tag-chip">juno-106</span>
+            <span class="tag-chip">noise</span>
+            <span class="tag-chip">chorus</span>
+            <span class="tag-chip">bbd</span>
+            <span class="tag-chip">calibration</span>
+            <span class="tag-chip">diagnostics</span>
+          </div>
+
+      
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <!-- REPAIR_BODY_START -->
+        <h2>Symptom</h2>
+        <p>Two complaints. The DCO white noise source was effectively dead — barely audible regardless of where the noise slider sat. Separately, a persistent oceanic swishing sat in the background of the chorus even with no notes playing.</p>
+        <h2>Diagnosis</h2>
+        <p>Noise circuit first. A previous technician had already replaced the noise generator transistor (Tr21) on the module board — that was a misdiagnosis. The original selected 2SC945 tested correct, with proper avalanche bias at 9.24V and healthy noise output at the emitter, so it stayed in place.<br>I worked the circuit stage by stage against a known-good Juno-106 on the bench. All passives cleared: R104 (470K feed resistor) at 483K, in tolerance; C42 coupling capacitor at 1.23µF, good; Tr14 verified; no DC faults anywhere in the circuit.<br>The fault isolated at IC14, the BA662 OTA. Comparing output between the two machines under identical test conditions: 4.5–5.5V on the healthy unit against 150–250mV on this one, roughly 25× down. The cause was R115, a 10K resistor in the noise level control path, which had failed to 490K. That starved control current to the OTA and collapsed the gain of the noise output stage — which is why the noise level trimmer (VR32) was pinned at maximum with nowhere near enough output.<br>Chorus second. Persistent background swishing with no notes playing is the classic signature of degraded MN3009 bucket-brigade delay chips, which get noisier with age. Before replacing anything I verified the surrounding circuit so parts weren&#x27;t being swapped on a guess: power supply rails checked and set to spec, chorus bias verified, and LFO-rate movement confirmed normal on the scope against the reference machine, ruling out a modulation circuit fault. Measured noise floor at the chorus outputs came in at 670mV and 666mV against 225mV and 220mV on the healthy reference unit — roughly 3× the noise it should have had.</p>
+        <h2>Fix</h2>
+        <p>Replaced R115 and R114. Noise level at test point TP8 came up to 4–5Vp-p, on factory specification.<br>Chorus: new MN3009 bucket-brigade chips brought the measured noise floor to 60–90mV, and new MN3101 clock chips took it to 20–45mV. New op amps installed, chorus bias readjusted, final verification performed. The chorus noise floor ended up roughly 5–10× quieter than the healthy reference unit and about 20× quieter than where it started — only audible with the audio interface driven well past normal listening levels.<br>Full factory calibration completed per Roland service notes, all steps in sequence: power supply rails, DCO CV offset, VCA bias, per-channel VCA offset, VCF resonance, VCA gain, VCF frequency and width across all six voices, noise level, PWM, chorus bias, and load offset.</p>
+        <h2>What I Took Away</h2>
+        <p>A resistor drifting from 10K to 490K is not a failure mode that announces itself. Nothing looked burnt and nothing measured shorted — the part had simply gone high and starved the stage it fed. Comparing against a known-good unit on the same bench under identical test conditions is what made it findable; a reading of 150–250mV means nothing on its own until you know the machine should be putting out 4.5–5.5V at that point.<br>The previously replaced noise transistor is the other lesson. Tr21 is the obvious suspect when the noise is dead, but obvious is not the same as confirmed. The original part tested fine and the actual fault was downstream in the level control path.<br>The Juno-106 chorus is a 1984 bucket-brigade design with an inherent noise floor that cannot be eliminated entirely. This unit now performs better than a normally-functioning example.<br>On any Juno-106 with a serial number below 439000, the factory-recommended battery life modification applies and is worth doing at the same time as a battery replacement. Replacing the backup battery loses all 128 stored patches unless they are backed up first via the tape interface.</p>
+        <!-- REPAIR_BODY_END -->
+      </div>
+    </div>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Same Problem?</p>
+          <h2 class="section-title">Get Your Gear Diagnosed</h2>
+          <p class="section-note">
+            Every repair on this site was diagnosed and documented on a real bench in Indianapolis.
+            If your gear is doing something similar, send it over and I'll find out why.
+          </p>
+        </div>
+        <div style="text-align:center;">
+          <a href="../repairs.html#intake" class="btn btn-primary btn-lg">Book a Repair</a>
+          <a href="../repairs.html" class="btn btn-outline" style="margin-left:0.5rem;">See More Repairs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+</body>
+</html>

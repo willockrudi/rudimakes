@@ -1,5 +1,54 @@
 [
   {
+    "title": "Roland Juno-106 — Full Voice Chip Set & Factory Calibration (Plus Three Pedals)",
+    "date": "2026-08-29",
+    "status": "Fixed",
+    "device": "Roland Juno-106 Polyphonic Synthesizer; Keeley Loomer; Ross Chorus; Cooper FX Gen Loss",
+    "symptom": "A Juno-106 in for a complete voice chip replacement, plus three pedals on the same visit: a Keeley Loomer with a footswitch dented in and broken, a Ross Chorus that buzzed on external power, and a Cooper FX Gen Loss whose buttons kept sticking.",
+    "diagnosis": "Juno-106: all six original voice chips replaced as a complete set with Borish Electronics replacements rather than swapping individual voices. The surviving originals are the same age under the same stress and follow shortly behind the first failure.\nRoss Chorus: the buzz on external power was not the pedal. The 1/8\" dongle I first tried was wired backwards for this pedal, and that is what produced the buzz. Separately, the supply that came in with it is labeled 9V but measures 12V at the output — too high for this pedal, and worth knowing before it gets used on anything else.\nCooper FX Gen Loss: the PCB pushes into the enclosure and jams the buttons because there is no proper mount point on the board. It had been glued at the factory, and the glue had failed.\nKeeley Loomer: footswitch dented in and mechanically broken.",
+    "fix": "Juno-106: six Borish Electronics voice chips installed, followed by a full factory calibration per Roland service notes — power supply rails, DCO CV offset, VCA bias, per-channel VCA offset, VCF resonance, VCA gain, VCF frequency and width across all six voices, noise level, PWM, chorus bias, and load offset.\nRoss Chorus: made up a new 1/8\" dongle with the correct polarity, and sent the pedal home with a fresh battery and a regulated 9V supply so it runs on a normal pedalboard setup.\nCooper FX Gen Loss: re-glued the PCB and added a small foam spacer to keep it from pushing into the enclosure again.\nKeeley Loomer: footswitch replaced.",
+    "notes": "Replace Juno-106 voice chips as a full set. The original 80017A modules fail from the same cause at the same rate, so a unit that has lost one is not far from losing the rest — and the calibration has to be redone afterward either way.\nThe Ross Chorus is the useful one. A pedal that buzzes on external power but behaves on a battery is a supply problem, not a pedal problem. The two things to check before opening anything up are the polarity of the adapter and the actual voltage at its output. A supply labeled 9V that measures 12V will make a lot of pedals misbehave and can damage some of them.\nNo mount point on a PCB is a design problem, not a fault. Glue is the manufacturer's answer and glue fails; a foam spacer bearing against the enclosure holds better than more glue.",
+    "tags": [
+      "synth",
+      "roland",
+      "juno-106",
+      "voice-chips",
+      "calibration",
+      "pedals",
+      "power-supply"
+    ],
+    "image": "",
+    "alt": "Roland Juno-106 voice board with replacement voice chips installed",
+    "created": "2026-08-29T00:00:00",
+    "updated": "2026-08-29T00:00:00",
+    "slug": "roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals"
+  },
+  {
+    "title": "Roland Juno-106 — Dead Noise Source & Noisy Chorus (R115 Drift, BBD Replacement)",
+    "date": "2026-08-29",
+    "status": "Fixed",
+    "device": "Roland Juno-106 Polyphonic Synthesizer",
+    "symptom": "Two complaints. The DCO white noise source was effectively dead — barely audible regardless of where the noise slider sat. Separately, a persistent oceanic swishing sat in the background of the chorus even with no notes playing.",
+    "diagnosis": "Noise circuit first. A previous technician had already replaced the noise generator transistor (Tr21) on the module board — that was a misdiagnosis. The original selected 2SC945 tested correct, with proper avalanche bias at 9.24V and healthy noise output at the emitter, so it stayed in place.\nI worked the circuit stage by stage against a known-good Juno-106 on the bench. All passives cleared: R104 (470K feed resistor) at 483K, in tolerance; C42 coupling capacitor at 1.23µF, good; Tr14 verified; no DC faults anywhere in the circuit.\nThe fault isolated at IC14, the BA662 OTA. Comparing output between the two machines under identical test conditions: 4.5–5.5V on the healthy unit against 150–250mV on this one, roughly 25× down. The cause was R115, a 10K resistor in the noise level control path, which had failed to 490K. That starved control current to the OTA and collapsed the gain of the noise output stage — which is why the noise level trimmer (VR32) was pinned at maximum with nowhere near enough output.\nChorus second. Persistent background swishing with no notes playing is the classic signature of degraded MN3009 bucket-brigade delay chips, which get noisier with age. Before replacing anything I verified the surrounding circuit so parts weren't being swapped on a guess: power supply rails checked and set to spec, chorus bias verified, and LFO-rate movement confirmed normal on the scope against the reference machine, ruling out a modulation circuit fault. Measured noise floor at the chorus outputs came in at 670mV and 666mV against 225mV and 220mV on the healthy reference unit — roughly 3× the noise it should have had.",
+    "fix": "Replaced R115 and R114. Noise level at test point TP8 came up to 4–5Vp-p, on factory specification.\nChorus: new MN3009 bucket-brigade chips brought the measured noise floor to 60–90mV, and new MN3101 clock chips took it to 20–45mV. New op amps installed, chorus bias readjusted, final verification performed. The chorus noise floor ended up roughly 5–10× quieter than the healthy reference unit and about 20× quieter than where it started — only audible with the audio interface driven well past normal listening levels.\nFull factory calibration completed per Roland service notes, all steps in sequence: power supply rails, DCO CV offset, VCA bias, per-channel VCA offset, VCF resonance, VCA gain, VCF frequency and width across all six voices, noise level, PWM, chorus bias, and load offset.",
+    "notes": "A resistor drifting from 10K to 490K is not a failure mode that announces itself. Nothing looked burnt and nothing measured shorted — the part had simply gone high and starved the stage it fed. Comparing against a known-good unit on the same bench under identical test conditions is what made it findable; a reading of 150–250mV means nothing on its own until you know the machine should be putting out 4.5–5.5V at that point.\nThe previously replaced noise transistor is the other lesson. Tr21 is the obvious suspect when the noise is dead, but obvious is not the same as confirmed. The original part tested fine and the actual fault was downstream in the level control path.\nThe Juno-106 chorus is a 1984 bucket-brigade design with an inherent noise floor that cannot be eliminated entirely. This unit now performs better than a normally-functioning example.\nOn any Juno-106 with a serial number below 439000, the factory-recommended battery life modification applies and is worth doing at the same time as a battery replacement. Replacing the backup battery loses all 128 stored patches unless they are backed up first via the tape interface.",
+    "tags": [
+      "synth",
+      "roland",
+      "juno-106",
+      "noise",
+      "chorus",
+      "bbd",
+      "calibration",
+      "diagnostics"
+    ],
+    "image": "",
+    "alt": "Roland Juno-106 module board during noise circuit diagnosis",
+    "created": "2026-08-29T00:00:00",
+    "updated": "2026-08-29T00:00:00",
+    "slug": "roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement"
+  },
+  {
     "title": "Fender '65 Deluxe Reverb Reissue — Full Recap + Robinette Main Filter Mod",
     "date": "2026-07-19",
     "status": "Fixed",

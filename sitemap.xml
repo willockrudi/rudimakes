@@ -41,43 +41,6 @@
 
 
 
-  <!-- SHOP_URLS_START -->
-  <url>
-    <loc>https://rudimakes.com/shop.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/synths.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/amps.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/pedals.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/synth-parts.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/mod-kits.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://rudimakes.com/shop/test-product.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-  <!-- SHOP_URLS_END -->
 <url>
     <loc>https://rudimakes.com/repairs/fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod.html</loc>
     <lastmod>2026-03-31</lastmod>
@@ -128,6 +91,56 @@
   </url>
 <url>
     <loc>https://rudimakes.com/repairs/korg-triton-factory-reset-sound-reload.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- SHOP_URLS_START -->
+  <url>
+    <loc>https://rudimakes.com/shop.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/synths.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/amps.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/pedals.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/synth-parts.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/mod-kits.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/shop/test-product.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <!-- SHOP_URLS_END -->
+<url>
+    <loc>https://rudimakes.com/repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+<url>
+    <loc>https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
