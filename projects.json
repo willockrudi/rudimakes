@@ -7,16 +7,16 @@
     "image": "images/projects/tbx-home-broadcast.jpg",
     "images": [],
     "alt": "TBX - home broadcast station wordmark",
-    "description": "A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85. 360 files, 320 passing tests, 17 of 18 software phases closed.",
+    "description": "A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85.",
     "bullets": [
-      "Raspberry Pi 5, 16GB - boots straight to playback, no desktop or login",
+      "Raspberry Pi 5, 16GB - boots straight to playback; hold T for kiosk mode to manage media directly",
       "FastAPI backend driving an mpv playback engine over a Unix socket",
       "Seek resolves wall time against a channel schedule; no per-viewer playback state",
       "React web UI, operated entirely by handheld IR remote",
       "Front panel: TM1637 7-segment channel display, VS1838B IR receiver, status LEDs",
       "ATtiny85 power controller holding a P-channel MOSFET gate, 4-state machine in 8KB",
       "Heartbeat GPIO line lets the ATtiny cut power only after an orderly halt",
-      "Channel 99: six original games sharing one setting and continuity",
+      "Channel 99: two original games in progress, sharing one setting and continuity",
       "Cloud tier with Stripe, OTA updates, 48 setup wizards, 30 CLI commands",
       "360 files, 320 passing tests, 17 of 18 software phases closed"
     ],
@@ -33,7 +33,7 @@
     "steps": [
       {
         "title": "What It Is",
-        "text": "A broadcast station, not a media server. The distinction is the schedule. A media server hands you a library and waits for you to pick something; TBX decides what is on and you tune to it.\nIt runs on a Raspberry Pi 5 with 16GB of RAM and boots straight to playback - no desktop, no login, no terminal. A FastAPI backend drives an mpv playback engine over a Unix socket. The web UI is React, and the whole thing is operated with a handheld IR remote.\nBuilt solo over about two years.",
+        "text": "A broadcast station, not a media server. The distinction is the schedule. A media server hands you a library and waits for you to pick something; TBX decides what is on and you tune to it.\nIt came out of collecting media as a hobby. Past a certain size a collection stops being something you browse - there is too much of it to pick from, and scrolling a grid of everything you own is a worse experience than having something already playing. TBX is what to do with a collection once it has got to that point.\nIt runs on a Raspberry Pi 5 with 16GB of RAM and boots straight to playback. A FastAPI backend drives an mpv playback engine over a Unix socket. The web UI is React, and the whole thing is operated with a handheld IR remote. Holding T drops out of playback into a kiosk mode for managing the media directly, so adding and organizing the collection does not mean going to a terminal.\nBuilt solo over about two years.",
         "image": "",
         "alt": "TBX web UI showing the channel grid and now-playing display"
       },
@@ -45,13 +45,13 @@
       },
       {
         "title": "Front Panel and Remote",
-        "text": "The front panel is a TM1637 4-digit 7-segment display showing the channel number, a power LED that breathes slowly while the station is idle, and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that you never see Linux. Colour palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
+        "text": "The front panel is a TM1637 4-digit 7-segment display showing the channel number, a power LED that breathes slowly while the station is idle, and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection. Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
         "image": "",
         "alt": "TBX front panel with 7-segment channel display"
       },
       {
         "title": "Channel 99",
-        "text": "Channel 99 is a hidden game console rather than a channel. Six original games: a roguelike mining game, a 3D space explorer, a walking simulator, a competitive Tetris clone, a rail shooter, and a procedural driving game. They share one setting and one continuity.",
+        "text": "Channel 99 is a hidden game console rather than a channel. Two original games are in progress for it, sharing one setting and one continuity rather than being unrelated one-offs.\nThis is the part of the project furthest from finished, and it is deliberately last - the station has to work as a station before the easter egg matters.",
         "image": "",
         "alt": ""
       },
