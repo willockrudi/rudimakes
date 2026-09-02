@@ -2989,6 +2989,18 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
         "areaServed": {"@type": "City", "name": "Indianapolis"},
     }
 
+    breadcrumb = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL + "/"},
+            {"@type": "ListItem", "position": 2, "name": "Repair Log",
+             "item": SITE_URL + "/repairs.html"},
+            {"@type": "ListItem", "position": 3, "name": raw_title,
+             "item": SITE_URL + "/repairs/" + slug + ".html"},
+        ],
+    }
+
     related_html = _related_repairs_html(r, all_repairs)
 
     content = replace_placeholders(template, site)
@@ -3003,6 +3015,7 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
         "{{REPAIR_SLUG}}": html.escape(slug, quote=True),
         "{{REPAIR_SCHEMA}}": json.dumps(schema, indent=2, ensure_ascii=False),
         "{{REPAIR_RELATED}}": related_html,
+        "{{REPAIR_BREADCRUMB}}": json.dumps(breadcrumb, indent=2, ensure_ascii=False),
     }
     for key, value in mapping.items():
         content = content.replace(key, value)

@@ -13,3 +13,7 @@ business/
 
 # Local data snapshots
 .backups/
+
+# Image editor sources - keep locally, don't publish
+*.xcf
+*.psd
