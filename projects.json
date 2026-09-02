@@ -6,19 +6,19 @@
     "cover_image": "images/projects/tbx-home-broadcast.jpg",
     "image": "images/projects/tbx-home-broadcast.jpg",
     "images": [],
-    "alt": "TBX - a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console",
-    "description": "A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.",
+    "alt": "TBX - home broadcast station wordmark",
+    "description": "A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85. 360 files, 320 passing tests, 17 of 18 software phases closed.",
     "bullets": [
-      "Raspberry Pi 5 with 16GB RAM - boots straight to playback",
-      "FastAPI backend + mpv playback engine via Unix socket",
-      "Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network",
-      "React web UI - dark, amber, gunmetal - surfed with a handheld IR remote",
-      "7-segment front panel display, breathing power LED, amber activity LED during imports",
-      "Channel 99: hidden game console with 6 original games sharing a universe and lore",
-      "Cloud tier, Stripe integration, OTA update system, 48 setup wizards",
-      "30 CLI commands, SD card image build pipeline, Kickstarter and manufacturing plan",
-      "ATtiny85 power controller: OFF / STARTING / RUNNING / SHUTTING DOWN state machine in 8KB flash",
-      "360 files, 320 passing tests, 17 software phases complete"
+      "Raspberry Pi 5, 16GB - boots straight to playback, no desktop or login",
+      "FastAPI backend driving an mpv playback engine over a Unix socket",
+      "Seek resolves wall time against a channel schedule; no per-viewer playback state",
+      "React web UI, operated entirely by handheld IR remote",
+      "Front panel: TM1637 7-segment channel display, VS1838B IR receiver, status LEDs",
+      "ATtiny85 power controller holding a P-channel MOSFET gate, 4-state machine in 8KB",
+      "Heartbeat GPIO line lets the ATtiny cut power only after an orderly halt",
+      "Channel 99: six original games sharing one setting and continuity",
+      "Cloud tier with Stripe, OTA updates, 48 setup wizards, 30 CLI commands",
+      "360 files, 320 passing tests, 17 of 18 software phases closed"
     ],
     "tags": [
       "raspberry-pi",
@@ -32,40 +32,46 @@
     "created": "2026-03-30T00:00:00",
     "steps": [
       {
-        "title": "What TBX Is",
-        "text": "A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.\n\nTBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time - every time someone tunes to a channel - exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.\n\nBuilt alone, in a studio apartment, over the better part of two years.",
+        "title": "What It Is",
+        "text": "A broadcast station, not a media server. The distinction is the schedule. A media server hands you a library and waits for you to pick something; TBX decides what is on and you tune to it.\nIt runs on a Raspberry Pi 5 with 16GB of RAM and boots straight to playback - no desktop, no login, no terminal. A FastAPI backend drives an mpv playback engine over a Unix socket. The web UI is React, and the whole thing is operated with a handheld IR remote.\nBuilt solo over about two years.",
         "image": "",
-        "alt": "TBX web UI showing channel grid and now-playing display"
+        "alt": "TBX web UI showing the channel grid and now-playing display"
       },
       {
-        "title": "The UI and the Remote",
-        "text": "The web UI is React. Dark, amber, gunmetal - the color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.\n\nThe 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.",
+        "title": "The Seek Problem",
+        "text": "The hard part of making something behave like a broadcast network is that there is no play button. If you tune to Channel 4 at 8:00 on a Tuesday, the right thing to do is join whatever is airing, partway through, exactly where it would be.\nSo a channel is not a playlist with a cursor. It is a schedule plus a clock. On every tune the backend resolves the current wall time against the channel's schedule, works out which item is airing and how far into it the moment falls, and seeks mpv to that offset. Nothing is stored about where a viewer left off, because a real channel does not care - it runs whether anyone is watching or not.\nTwo viewers tuning to the same channel see the same frame.",
         "image": "",
-        "alt": "TBX front panel with 7-segment display and LEDs"
+        "alt": ""
+      },
+      {
+        "title": "Front Panel and Remote",
+        "text": "The front panel is a TM1637 4-digit 7-segment display showing the channel number, a power LED that breathes slowly while the station is idle, and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that you never see Linux. Colour palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
+        "image": "",
+        "alt": "TBX front panel with 7-segment channel display"
       },
       {
         "title": "Channel 99",
-        "text": "Channel 99 is a hidden game console. Six original games: a roguelike mining game, a 3D space explorer, a fever-dream walking simulator, a competitive Tetris clone, a rail shooter, a procedural driving game. All six share a universe, a mythology, and a lore document longer than most fantasy appendices.",
+        "text": "Channel 99 is a hidden game console rather than a channel. Six original games: a roguelike mining game, a 3D space explorer, a walking simulator, a competitive Tetris clone, a rail shooter, and a procedural driving game. They share one setting and one continuity.",
         "image": "",
-        "alt": "Channel 99 game selection screen"
+        "alt": ""
       },
       {
-        "title": "The Software",
-        "text": "360 files. 320 passing tests. 17 phases complete.\n\nCloud tier, Stripe integration, OTA updates, 48 setup wizards, 30 CLI commands, SD card image build pipeline. A Kickstarter plan, manufacturing plan, QC checklist, legal pack, and a launch-day playbook.\n\nThe code is done. The image builds. The tests pass.",
+        "title": "Where the Software Stands",
+        "text": "360 files and 320 passing tests across 17 closed phases.\nShipped alongside the playback system: a cloud tier with Stripe integration, an OTA update mechanism, 48 setup wizards, 30 CLI commands, and an SD card image build pipeline. Non-code deliverables done to the same phase discipline - a Kickstarter plan, a manufacturing plan, a QC checklist, a legal pack, and a launch-day playbook.\nThe image builds and the tests pass. What is not finished is the hardware.",
         "image": "",
-        "alt": "TBX test suite output - 320 passing"
+        "alt": ""
       },
       {
-        "title": "Phase 18 - Building the Hardware",
-        "text": "On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.\n\nThe ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.\n\nThis circuit doesn't exist yet. Building it now.",
+        "title": "Phase 18 - The Power Controller",
+        "text": "A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. Phase 18 is the circuit that fixes that.\nAn ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.\nSupporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode. Currently on the breadboard.",
         "image": "",
-        "alt": "ATtiny85 breadboard circuit for TBX power controller"
+        "alt": "ATtiny85 power controller circuit on a breadboard"
       },
       {
-        "title": "What Comes After",
-        "text": "When Phase 18 is done - when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command - Phase 19 begins.\n\nPhase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.\n\nYour station. Your signal. Your broadcast.",
+        "title": "What Is Left",
+        "text": "Phase 18 closes when the measured rails match the schematic, the panel behaves under all four states, and the Pi boots, halts, and boots again on command without touching the plug.\nPhase 19 is the first full assembly: the TBX image on an SD card in a real Pi in an enclosure, running as one product rather than as parts on a desk.",
         "image": "",
-        "alt": "TBX completed enclosure"
+        "alt": ""
       }
     ],
     "updated": "2026-03-30T00:00:00"
@@ -78,17 +84,17 @@
     "image": "images/projects/blu-language.jpg",
     "images": [],
     "alt": "Blu - a compiled programming language written from scratch, targeting x86-64 Linux",
-    "description": "A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn't exist yet.",
+    "description": "A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests gating every phase. Five of eighteen phases closed.",
     "bullets": [
-      "Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen",
-      "Compiles to native x86-64 assembly, runs on Linux",
-      "Forms - record-like structures with named fields and type inference from usage",
-      "Closures with proper environment capture across stack frames",
-      "File I/O, JSON, CSV, process spawning, environment variables in stdlib",
-      "400+ regression tests - all required green before any phase closes",
-      "18-phase development plan - 5 phases complete",
-      "Keywords: give (return), show (print), when (if) - the language has its own voice",
-      "Style guide, development guide, phase tracker, and audit log"
+      "Full pipeline: lexer, parser, semantic analyzer, IR, x86-64 codegen",
+      "Emits native x86-64 assembly; runs on Linux",
+      "Compiler written in C++",
+      "Forms: record types with field types inferred from usage across the call graph",
+      "Closures with environment capture across stack frames",
+      "Stdlib: JSON, CSV, binary encoding, key-value stores, process spawning, file I/O",
+      "Keywords give, show, and when in place of return, print, and if",
+      "400+ regression tests; no phase closes until all are green",
+      "18-phase plan, 5 closed, phase 6 underway"
     ],
     "tags": [
       "compiler",
@@ -102,34 +108,46 @@
     "created": "2026-03-30T00:00:00",
     "steps": [
       {
-        "title": "Why Build a Language",
-        "text": "There is a particular kind of madness that visits certain programmers. It arrives late at night as a simple question: what if I just built my own language?\n\nI had a problem the available tools weren't solving cleanly. The right language for the job didn't exist. So I started writing Blu.",
+        "title": "Why",
+        "text": "No practical reason. I wanted to find out whether I could build a real one - not a toy interpreter, but something with a full pipeline that emits native code and can be held to the same standards as a tool you would actually use.\nBlu compiles to native x86-64 assembly and runs on Linux. The compiler is written in C++.",
         "image": "",
-        "alt": "Early Blu source code on screen"
+        "alt": ""
       },
       {
-        "title": "Phases 1–3 - The Foundation",
-        "text": "The early work was clean and methodical. Lexer first - make it deterministic. Parser next - make it reliable. Then semantic analysis: catch undefined variables, wrong argument counts, duplicate declarations. The kind of work nobody sees but everybody feels when it's missing.\n\nThen freeze the semantics. Decide what the language actually is. Forms instead of structs. give instead of return. show instead of print. when instead of if. Small choices, but they add up to a voice. Blu began to sound like itself.\n\nThen the standard library: JSON, CSV, databases as key-value arrays, binary encoding. The things you need the moment you try to do anything real.",
+        "title": "The Pipeline",
+        "text": "Five stages: lexer, parser, semantic analyzer, IR, x86-64 codegen.\nThe order they were built in matters. Lexer first, made deterministic before anything depended on it. Parser next. Then semantic analysis - undefined variables, wrong argument counts, duplicate declarations - which is the layer nobody notices until it is missing and errors start surfacing as bad codegen instead of as compile errors.",
         "image": "",
-        "alt": "Blu compiler pipeline diagram"
+        "alt": ""
       },
       {
-        "title": "Phase 4 - Regression Infrastructure",
-        "text": "By phase 4 Blu had opinions. It had a style guide. It had regression tests - hundreds of them, organized by category, run by shell scripts that report pass rates. No phase closes until every test is green. This discipline is what keeps the language from quietly breaking while new features go in.",
+        "title": "Language Design",
+        "text": "Semantics were frozen early, before the standard library went in, so the language could not drift while it was being built on.\nRecords are called forms, and their field types are inferred from usage across the call graph rather than declared. The keywords are give for return, show for print, and when for if.\nThe standard library covers JSON, CSV, binary encoding, key-value arrays used as databases, process spawning, and environment variables.",
         "image": "",
-        "alt": "Blu regression test output showing green suite"
+        "alt": ""
       },
       {
-        "title": "Phase 5 - Closures, Forms, and a Namespace War",
-        "text": "Phase 5 is where the ambition showed its teeth. Closures - nested functions that capture variables from their enclosing scope - required environment objects, closure allocation, and a whole new family of IR instructions. Forms required type inference from usage patterns across the entire call graph.\n\nThen the build broke. A cascade of errors. The cause: #include directives had been placed after the namespace blu { opening brace. The namespace had swallowed the standard library.\n\nThe fix was to delete ir_builder.cpp and rewrite it from scratch - pulling out layers of accumulated corruption, duplicate function bodies, orphaned copy-paste blocks. Each fix revealed the next problem. Each problem was small. Together they were a wall.\n\nForms edge cases: 113/113. Closure regression: 10/10. Phase 5 closed.",
+        "title": "Regression Infrastructure",
+        "text": "By phase 4 the test suite was the thing keeping the project honest. Several hundred regression tests organised by category, run by shell scripts that report pass rates, now past 400.\nThe rule is that no phase closes until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.",
         "image": "",
-        "alt": "Terminal output showing all regression tests green after Phase 5"
+        "alt": ""
       },
       {
-        "title": "Phase 6 - File I/O and What Comes Next",
-        "text": "Phase 6 started with the obvious gap: Blu couldn't touch the filesystem. file.read, file.write, file.append, file.exists. Four C symbols, four arity checks, four codegen entries. The test program wrote a file, read it back, and confirmed it existed. Small thing. Not a small thing.\n\nWhat comes next: a map type, a garbage collector, better error messages with line numbers, a formatter, a REPL, a module system, a C FFI bridge, and eventually a platform layer. Eighteen phases in the plan. Five complete.\n\nThe tests are green. The compiler compiles. The binary runs.",
+        "title": "Phase 5 - Closures, and a Build That Would Not Link",
+        "text": "Phase 5 added closures and forms. Closures meant environment objects, closure allocation, and a new family of IR instructions to capture variables across stack frames. Forms meant inferring field types from how they were used across the whole call graph.\nPartway in, the build collapsed into a cascade of errors that pointed everywhere and nowhere. The cause was not in the new code: #include directives had been placed after the opening brace of namespace blu, so the entire standard library had been pulled inside the namespace. Every symbol resolved to the wrong place.\nBy the time it was found, ir_builder.cpp had accumulated duplicate function bodies and orphaned copy-paste blocks from working around symptoms of it. Rewriting the file from scratch was faster than untangling it. Each fix exposed the next one; individually all of them were small.\nClosed with forms edge cases at 113/113 and closure regression at 10/10.",
         "image": "",
-        "alt": "Blu example program output in terminal"
+        "alt": ""
+      },
+      {
+        "title": "Phase 6 - File I/O",
+        "text": "Blu could not touch the filesystem, which put a ceiling on what could be written in it. file.read, file.write, file.append, and file.exists: four C symbols, four arity checks, four codegen entries.\nThe verification program wrote a file, read it back, and confirmed it existed - which is the first point at which a Blu program could do something that outlived its own process.",
+        "image": "",
+        "alt": ""
+      },
+      {
+        "title": "What Is Left",
+        "text": "Eighteen phases planned, five closed, phase six underway.\nStill ahead: a map type, a garbage collector, line numbers in error messages, a formatter, a REPL, a module system, a C FFI bridge, and a platform layer.",
+        "image": "",
+        "alt": ""
       }
     ],
     "updated": "2026-03-30T00:00:00"

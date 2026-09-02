@@ -5,9 +5,9 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TBX Home Broadcast Station | Rudi Makes</title>
-  <meta name="description" content="A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physi..." />
+  <meta name="description" content="A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing rig..." />
   <meta property="og:title" content="TBX Home Broadcast Station | Rudi Makes" />
-  <meta property="og:description" content="A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physi..." />
+  <meta property="og:description" content="A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing rig..." />
   <meta property="og:image" content="https://rudimakes.com/images/projects/tbx-home-broadcast.jpg" />
   <meta property="og:url" content="https://rudimakes.com/projects/tbx-home-broadcast.html" />
   <meta property="og:type" content="article" />
@@ -64,7 +64,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85. 360 files, 320 passing tests, 17 of 18 software phases closed.</p>
 
       <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
@@ -75,61 +75,67 @@
             <span class="tag-chip">from-scratch</span>
           </div>
       <ul class="bullets project-bullets">
-          <li>Raspberry Pi 5 with 16GB RAM - boots straight to playback</li>
-          <li>FastAPI backend + mpv playback engine via Unix socket</li>
-          <li>Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network</li>
-          <li>React web UI - dark, amber, gunmetal - surfed with a handheld IR remote</li>
-          <li>7-segment front panel display, breathing power LED, amber activity LED during imports</li>
-          <li>Channel 99: hidden game console with 6 original games sharing a universe and lore</li>
-          <li>Cloud tier, Stripe integration, OTA update system, 48 setup wizards</li>
-          <li>30 CLI commands, SD card image build pipeline, Kickstarter and manufacturing plan</li>
-          <li>ATtiny85 power controller: OFF / STARTING / RUNNING / SHUTTING DOWN state machine in 8KB flash</li>
-          <li>360 files, 320 passing tests, 17 software phases complete</li>
+          <li>Raspberry Pi 5, 16GB - boots straight to playback, no desktop or login</li>
+          <li>FastAPI backend driving an mpv playback engine over a Unix socket</li>
+          <li>Seek resolves wall time against a channel schedule; no per-viewer playback state</li>
+          <li>React web UI, operated entirely by handheld IR remote</li>
+          <li>Front panel: TM1637 7-segment channel display, VS1838B IR receiver, status LEDs</li>
+          <li>ATtiny85 power controller holding a P-channel MOSFET gate, 4-state machine in 8KB</li>
+          <li>Heartbeat GPIO line lets the ATtiny cut power only after an orderly halt</li>
+          <li>Channel 99: six original games sharing one setting and continuity</li>
+          <li>Cloud tier with Stripe, OTA updates, 48 setup wizards, 30 CLI commands</li>
+          <li>360 files, 320 passing tests, 17 of 18 software phases closed</li>
         </ul>
       
 
-      <img class="project-detail-hero" src="../images/projects/tbx-home-broadcast.jpg" alt="TBX - a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
+      <img class="project-detail-hero" src="../images/projects/tbx-home-broadcast.jpg" alt="TBX - home broadcast station wordmark">
 
     </div>
 
     <div class="container">
       <div class="project-steps">
-        <h2>Build Story</h2>
+        <h2>Technical Notes</h2>
         <!-- PROJECT_STEPS_START -->
 
     <article class="project-step">
-      <h3>1. What TBX Is</h3>
-      <p>A television station. Not a media server. Not a Plex clone. A broadcast station with numbered channels, a schedule, a signal, and the feeling of something that exists in the physical world.<br>TBX Home Broadcast runs on a Raspberry Pi 5. It boots straight to playback. A FastAPI backend talks to an mpv playback engine through a Unix socket. A broadcast seek algorithm calculates in real time - every time someone tunes to a channel - exactly where in the schedule the current moment falls. Tune to Channel 4 at 8pm on a Tuesday and you join mid-episode, like a real network.<br>Built alone, in a studio apartment, over the better part of two years.</p>
+      <h3>What It Is</h3>
+      <p>A broadcast station, not a media server. The distinction is the schedule. A media server hands you a library and waits for you to pick something; TBX decides what is on and you tune to it.<br>It runs on a Raspberry Pi 5 with 16GB of RAM and boots straight to playback - no desktop, no login, no terminal. A FastAPI backend drives an mpv playback engine over a Unix socket. The web UI is React, and the whole thing is operated with a handheld IR remote.<br>Built solo over about two years.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>2. The UI and the Remote</h3>
-      <p>The web UI is React. Dark, amber, gunmetal - the color palette of analog broadcast equipment. You surf channels with a handheld IR remote. You never touch a terminal. You never see Linux.<br>The 7-segment display on the front panel shows the channel number. The power LED breathes slowly when the station is idle. The activity LED flashes amber during imports.</p>
+      <h3>The Seek Problem</h3>
+      <p>The hard part of making something behave like a broadcast network is that there is no play button. If you tune to Channel 4 at 8:00 on a Tuesday, the right thing to do is join whatever is airing, partway through, exactly where it would be.<br>So a channel is not a playlist with a cursor. It is a schedule plus a clock. On every tune the backend resolves the current wall time against the channel&#x27;s schedule, works out which item is airing and how far into it the moment falls, and seeks mpv to that offset. Nothing is stored about where a viewer left off, because a real channel does not care - it runs whether anyone is watching or not.<br>Two viewers tuning to the same channel see the same frame.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>3. Channel 99</h3>
-      <p>Channel 99 is a hidden game console. Six original games: a roguelike mining game, a 3D space explorer, a fever-dream walking simulator, a competitive Tetris clone, a rail shooter, a procedural driving game. All six share a universe, a mythology, and a lore document longer than most fantasy appendices.</p>
+      <h3>Front Panel and Remote</h3>
+      <p>The front panel is a TM1637 4-digit 7-segment display showing the channel number, a power LED that breathes slowly while the station is idle, and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.<br>The interface target was that you never see Linux. Colour palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>4. The Software</h3>
-      <p>360 files. 320 passing tests. 17 phases complete.<br>Cloud tier, Stripe integration, OTA updates, 48 setup wizards, 30 CLI commands, SD card image build pipeline. A Kickstarter plan, manufacturing plan, QC checklist, legal pack, and a launch-day playbook.<br>The code is done. The image builds. The tests pass.</p>
+      <h3>Channel 99</h3>
+      <p>Channel 99 is a hidden game console rather than a channel. Six original games: a roguelike mining game, a 3D space explorer, a walking simulator, a competitive Tetris clone, a rail shooter, and a procedural driving game. They share one setting and one continuity.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>5. Phase 18 - Building the Hardware</h3>
-      <p>On the desk: an ATtiny85 in an 8-pin DIP package. A P-channel MOSFET the size of a grain of rice. An LP2950 LDO, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 transistor, a 1N4007 flyback diode, resistors, capacitors. A breadboard. A soldering iron. A multimeter.<br>The ATtiny85 is the power controller. It sits between the wall and the Pi. It watches for a button press, holds the MOSFET gate, reads a heartbeat GPIO line, and manages a state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. It can be woken by IR remote. When the Pi is ready to die, the ATtiny waits, then cuts the power cleanly.<br>This circuit doesn&#x27;t exist yet. Building it now.</p>
+      <h3>Where the Software Stands</h3>
+      <p>360 files and 320 passing tests across 17 closed phases.<br>Shipped alongside the playback system: a cloud tier with Stripe integration, an OTA update mechanism, 48 setup wizards, 30 CLI commands, and an SD card image build pipeline. Non-code deliverables done to the same phase discipline - a Kickstarter plan, a manufacturing plan, a QC checklist, a legal pack, and a launch-day playbook.<br>The image builds and the tests pass. What is not finished is the hardware.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>6. What Comes After</h3>
-      <p>When Phase 18 is done - when the multimeter readings match the schematic, when the LEDs do what they should, when the Pi boots and halts and boots again on command - Phase 19 begins.<br>Phase 19: TBX image on a real SD card in a real Pi in a real enclosure. The whole system running for the first time as a complete product. Then the hero video. Then the launch.<br>Your station. Your signal. Your broadcast.</p>
+      <h3>Phase 18 - The Power Controller</h3>
+      <p>A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. Phase 18 is the circuit that fixes that.<br>An ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.<br>Supporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode. Currently on the breadboard.</p>
+    </article>
+
+
+    <article class="project-step">
+      <h3>What Is Left</h3>
+      <p>Phase 18 closes when the measured rails match the schematic, the panel behaves under all four states, and the Pi boots, halts, and boots again on command without touching the plug.<br>Phase 19 is the first full assembly: the TBX image on an SD card in a real Pi in an enclosure, running as one product rather than as parts on a desk.</p>
     </article>
 <!-- PROJECT_STEPS_END -->
       </div>

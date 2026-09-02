@@ -393,10 +393,10 @@
         <!-- PROJECTS_START -->
 
       <div class="project-card" data-tags="raspberry-pi,software,hardware,broadcast,atmel,from-scratch">
-        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX - a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console" loading="lazy" decoding="async">
+        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX - home broadcast station wordmark" loading="lazy" decoding="async">
         <div class="project-info">
           <h3>TBX Home Broadcast Station <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
+          <p>A home television broadcast station on a Raspberry Pi 5. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85. 360 files, 320 passing tests, 17 of 18 software phases closed.</p>
           <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
             <span class="tag-chip">software</span>
@@ -407,16 +407,16 @@
           </div>
           <a class="project-open" href="projects/tbx-home-broadcast.html">Open project</a>
           <ul class="bullets">
-            <li>Raspberry Pi 5 with 16GB RAM - boots straight to playback</li>
-            <li>FastAPI backend + mpv playback engine via Unix socket</li>
-            <li>Broadcast seek algorithm: tune to a channel and join mid-schedule like a real network</li>
-            <li>React web UI - dark, amber, gunmetal - surfed with a handheld IR remote</li>
-            <li>7-segment front panel display, breathing power LED, amber activity LED during imports</li>
-            <li>Channel 99: hidden game console with 6 original games sharing a universe and lore</li>
-            <li>Cloud tier, Stripe integration, OTA update system, 48 setup wizards</li>
-            <li>30 CLI commands, SD card image build pipeline, Kickstarter and manufacturing plan</li>
-            <li>ATtiny85 power controller: OFF / STARTING / RUNNING / SHUTTING DOWN state machine in 8KB flash</li>
-            <li>360 files, 320 passing tests, 17 software phases complete</li>
+            <li>Raspberry Pi 5, 16GB - boots straight to playback, no desktop or login</li>
+            <li>FastAPI backend driving an mpv playback engine over a Unix socket</li>
+            <li>Seek resolves wall time against a channel schedule; no per-viewer playback state</li>
+            <li>React web UI, operated entirely by handheld IR remote</li>
+            <li>Front panel: TM1637 7-segment channel display, VS1838B IR receiver, status LEDs</li>
+            <li>ATtiny85 power controller holding a P-channel MOSFET gate, 4-state machine in 8KB</li>
+            <li>Heartbeat GPIO line lets the ATtiny cut power only after an orderly halt</li>
+            <li>Channel 99: six original games sharing one setting and continuity</li>
+            <li>Cloud tier with Stripe, OTA updates, 48 setup wizards, 30 CLI commands</li>
+            <li>360 files, 320 passing tests, 17 of 18 software phases closed</li>
           </ul>
         </div>
       </div>
@@ -425,7 +425,7 @@
         <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu - a compiled programming language written from scratch, targeting x86-64 Linux" loading="lazy" decoding="async">
         <div class="project-info">
           <h3>Blu - A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
-          <p>A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn&#x27;t exist yet.</p>
+          <p>A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests gating every phase. Five of eighteen phases closed.</p>
           <div class="card-tags">
             <span class="tag-chip">compiler</span>
             <span class="tag-chip">language</span>
@@ -436,15 +436,15 @@
           </div>
           <a class="project-open" href="projects/blu-language.html">Open project</a>
           <ul class="bullets">
-            <li>Full compiler pipeline: lexer → parser → semantic analyzer → IR → x86-64 codegen</li>
-            <li>Compiles to native x86-64 assembly, runs on Linux</li>
-            <li>Forms - record-like structures with named fields and type inference from usage</li>
-            <li>Closures with proper environment capture across stack frames</li>
-            <li>File I/O, JSON, CSV, process spawning, environment variables in stdlib</li>
-            <li>400+ regression tests - all required green before any phase closes</li>
-            <li>18-phase development plan - 5 phases complete</li>
-            <li>Keywords: give (return), show (print), when (if) - the language has its own voice</li>
-            <li>Style guide, development guide, phase tracker, and audit log</li>
+            <li>Full pipeline: lexer, parser, semantic analyzer, IR, x86-64 codegen</li>
+            <li>Emits native x86-64 assembly; runs on Linux</li>
+            <li>Compiler written in C++</li>
+            <li>Forms: record types with field types inferred from usage across the call graph</li>
+            <li>Closures with environment capture across stack frames</li>
+            <li>Stdlib: JSON, CSV, binary encoding, key-value stores, process spawning, file I/O</li>
+            <li>Keywords give, show, and when in place of return, print, and if</li>
+            <li>400+ regression tests; no phase closes until all are green</li>
+            <li>18-phase plan, 5 closed, phase 6 underway</li>
           </ul>
         </div>
       </div>

@@ -2432,7 +2432,7 @@ def _project_steps_html(steps: list[dict]) -> str:
 
         blocks.append(f"""
     <article class="project-step">
-      <h3>{i}. {title}</h3>{text_html}{image_html}
+      <h3>{title}</h3>{text_html}{image_html}
     </article>
 """.rstrip())
 
