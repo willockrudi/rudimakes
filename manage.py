@@ -45,6 +45,13 @@ DATA_PATH = os.path.join(ROOT, "projects.json")
 REPAIRS_PATH = os.path.join(ROOT, "repairs.json")
 SITE_PATH = os.path.join(ROOT, "site.json")
 SHOP_PATH = os.path.join(ROOT, "shop.json")
+SERVICES_PATH = os.path.join(ROOT, "services.json")
+SERVICES_INDEX_PATH = os.path.join(ROOT, "services.html")
+SERVICES_TEMPLATE_PATH = os.path.join(ROOT, "services_template.html")
+SERVICE_TEMPLATE_PATH = os.path.join(ROOT, "service_template.html")
+SERVICES_DIR = os.path.join(ROOT, "services")
+SERVICES_START = "<!-- SERVICES_START -->"
+SERVICES_END = "<!-- SERVICES_END -->"
 
 # Assets
 IMAGES_DIR = os.path.join(ROOT, "images")
@@ -3100,6 +3107,229 @@ def rebuild_repairs_page():
         f.write(new_content)
 
 
+# ---------- Services ----------
+def load_services() -> list:
+    if not os.path.isfile(SERVICES_PATH):
+        return []
+    with open(SERVICES_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _service_repairs(svc: dict, repairs: list, limit: int = 4) -> list:
+    """Repairs whose tags overlap this service, most relevant first.
+
+    This is what makes the service pages worth having: each one is backed by
+    write-ups of the actual work rather than being a page of claims.
+    """
+    want = {t.lower() for t in (svc.get("match_tags") or [])}
+    scored = []
+    for r in repairs:
+        if not (r.get("slug") or "").strip():
+            continue
+        tags = {t.lower() for t in (r.get("tags") or [])}
+        overlap = len(want & tags)
+        if overlap:
+            scored.append((overlap, r.get("date") or "", r))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [row[2] for row in scored[:limit]]
+
+
+def _service_related_html(svc: dict, repairs: list) -> str:
+    picks = _service_repairs(svc, repairs)
+    if not picks:
+        return ""
+    rows = []
+    for r in picks:
+        slug = html.escape(r.get("slug"), quote=True)
+        title = html.escape(r.get("title", "Repair"), quote=True)
+        device = html.escape((r.get("device") or "").strip(), quote=True)
+        rows.append(
+            '          <li><a href="../repairs/' + slug + '.html">' + title + "</a>"
+            + ('<span class="muted"> &mdash; ' + device + "</span>" if device else "")
+            + "</li>"
+        )
+    return (
+        '    <section class="section" style="border-top: 1px solid var(--border);">' + chr(10)
+        + '      <div class="container">' + chr(10)
+        + '        <div class="section-header">' + chr(10)
+        + '          <p class="section-label">Proof</p>' + chr(10)
+        + '          <h2 class="section-title">This Work, Documented</h2>' + chr(10)
+        + '          <p class="section-note">Real jobs of this kind, written up from intake to completion.</p>' + chr(10)
+        + "        </div>" + chr(10)
+        + '        <ul class="related-repairs">' + chr(10)
+        + chr(10).join(rows) + chr(10)
+        + "        </ul>" + chr(10)
+        + '        <div style="text-align: center; margin-top: 2.5rem;">' + chr(10)
+        + '          <a href="../repairs.html" class="btn btn-outline">Read the Full Repair Log</a>' + chr(10)
+        + "        </div>" + chr(10)
+        + "      </div>" + chr(10)
+        + "    </section>"
+    )
+
+
+def _service_faults_html(svc: dict) -> str:
+    out = []
+    for i, f in enumerate(svc.get("faults") or [], start=1):
+        out.append(
+            '          <div class="trust-item">' + chr(10)
+            + '            <span class="trust-marker">' + ("%02d" % i) + "</span>" + chr(10)
+            + "            <h3>" + html.escape(f.get("name", ""), quote=True) + "</h3>" + chr(10)
+            + "            <p>" + html.escape(f.get("detail", ""), quote=True) + "</p>" + chr(10)
+            + "          </div>"
+        )
+    return chr(10).join(out)
+
+
+def _service_faq_html(svc: dict) -> str:
+    out = []
+    for f in svc.get("faq") or []:
+        out.append(
+            '          <details class="faq-item">' + chr(10)
+            + "            <summary>" + html.escape(f.get("q", ""), quote=True) + "</summary>" + chr(10)
+            + "            <p>" + html.escape(f.get("a", ""), quote=True) + "</p>" + chr(10)
+            + "          </details>"
+        )
+    return chr(10).join(out)
+
+
+def service_detail_html(svc: dict, site: dict, template: str, repairs: list) -> str:
+    slug = svc.get("slug")
+    url = SITE_URL + "/services/" + slug + ".html"
+
+    intro = chr(10).join(
+        '        <p class="hero-bio">' + html.escape(p, quote=True) + "</p>"
+        for p in (svc.get("intro") or [])
+    )
+
+    note = (svc.get("safety_note") or "").strip()
+    note_html = (
+        '        <p class="section-note" style="margin-top:2rem;"><strong>Note:</strong> '
+        + html.escape(note, quote=True) + "</p>"
+    ) if note else ""
+
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": svc.get("h1"),
+        "serviceType": svc.get("nav_title"),
+        "description": svc.get("meta_description"),
+        "url": url,
+        "provider": {"@id": SITE_URL + "/#business"},
+        "areaServed": [
+            {"@type": "City", "name": "Indianapolis"},
+            {"@type": "Country", "name": "United States"},
+        ],
+        "availableChannel": {
+            "@type": "ServiceChannel",
+            "serviceUrl": SITE_URL + "/repairs.html#intake",
+            "servicePhone": "+1-317-833-6133",
+        },
+    }
+
+    breadcrumb = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL + "/"},
+            {"@type": "ListItem", "position": 2, "name": "Services",
+             "item": SITE_URL + "/services.html"},
+            {"@type": "ListItem", "position": 3, "name": svc.get("nav_title"), "item": url},
+        ],
+    }
+
+    faq_items = svc.get("faq") or []
+    faq_schema = ""
+    if faq_items:
+        payload = {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {"@type": "Question", "name": f.get("q"),
+                 "acceptedAnswer": {"@type": "Answer", "text": f.get("a")}}
+                for f in faq_items
+            ],
+        }
+        faq_schema = ('<script type="application/ld+json">' + chr(10)
+                      + json.dumps(payload, indent=2, ensure_ascii=False) + chr(10)
+                      + "</script>")
+
+    content = replace_placeholders(template, site)
+    mapping = {
+        "{{SERVICE_SLUG}}": html.escape(slug, quote=True),
+        "{{SERVICE_H1}}": html.escape(svc.get("h1", ""), quote=True),
+        "{{SERVICE_NAV_TITLE}}": html.escape(svc.get("nav_title", ""), quote=True),
+        "{{SERVICE_META_TITLE}}": html.escape(svc.get("meta_title", ""), quote=True),
+        "{{SERVICE_META_DESCRIPTION}}": html.escape(svc.get("meta_description", ""), quote=True),
+        "{{SERVICE_INTRO}}": intro,
+        "{{SERVICE_FAULTS_HEADING}}": html.escape(svc.get("faults_heading", "Common Faults"), quote=True),
+        "{{SERVICE_FAULTS}}": _service_faults_html(svc),
+        "{{SERVICE_SAFETY_NOTE}}": note_html,
+        "{{SERVICE_RELATED_REPAIRS}}": _service_related_html(svc, repairs),
+        "{{SERVICE_FAQ}}": _service_faq_html(svc),
+        "{{SERVICE_SCHEMA}}": json.dumps(schema, indent=2, ensure_ascii=False),
+        "{{SERVICE_BREADCRUMB}}": json.dumps(breadcrumb, indent=2, ensure_ascii=False),
+        "{{SERVICE_FAQ_SCHEMA}}": faq_schema,
+    }
+    for k, v in mapping.items():
+        content = content.replace(k, v)
+    return content
+
+
+def rebuild_service_pages():
+    """One page per service, plus the services index."""
+    services = load_services()
+    if not services:
+        return
+    if not os.path.isfile(SERVICE_TEMPLATE_PATH):
+        raise FileNotFoundError("service_template.html not found at " + SERVICE_TEMPLATE_PATH)
+
+    with open(SERVICE_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    site = load_site()
+    repairs = load_repairs()
+
+    os.makedirs(SERVICES_DIR, exist_ok=True)
+    keep = set()
+    for svc in services:
+        name = svc.get("slug") + ".html"
+        keep.add(name)
+        with open(os.path.join(SERVICES_DIR, name), "w", encoding="utf-8") as f:
+            f.write(service_detail_html(svc, site, template, repairs))
+
+    for name in os.listdir(SERVICES_DIR):
+        if name.endswith(".html") and name not in keep:
+            os.remove(os.path.join(SERVICES_DIR, name))
+
+    # ---- index
+    if not os.path.isfile(SERVICES_TEMPLATE_PATH):
+        return
+    with open(SERVICES_TEMPLATE_PATH, "r", encoding="utf-8") as f:
+        idx = f.read()
+
+    cards = []
+    for svc in services:
+        n = len(_service_repairs(svc, repairs))
+        proof = ("<p class=\"muted\">" + str(n) + " documented repair"
+                 + ("s" if n != 1 else "") + "</p>") if n else ""
+        cards.append(
+            '          <div class="feature-card">' + chr(10)
+            + "            <h3>" + html.escape(svc.get("nav_title", ""), quote=True) + "</h3>" + chr(10)
+            + "            <p>" + html.escape((svc.get("intro") or [""])[0], quote=True) + "</p>" + chr(10)
+            + "            " + proof + chr(10)
+            + '            <a class="project-open" href="services/' + html.escape(svc.get("slug"), quote=True)
+            + '.html">' + html.escape(svc.get("nav_title", ""), quote=True) + " &rarr;</a>" + chr(10)
+            + "          </div>"
+        )
+
+    s = idx.index(SERVICES_START) + len(SERVICES_START)
+    e = idx.index(SERVICES_END)
+    idx = idx[:s] + chr(10) + chr(10).join(cards) + chr(10) + "        " + idx[e:]
+    idx = replace_placeholders(idx, site)
+    with open(SERVICES_INDEX_PATH, "w", encoding="utf-8") as f:
+        f.write(idx)
+
+
 def rebuild_all(projects=None):
     if projects is None:
         projects = load_projects()
@@ -3108,6 +3338,7 @@ def rebuild_all(projects=None):
     # Detail pages first: they assign the slugs the index cards link to.
     rebuild_repair_pages()
     rebuild_repairs_page()
+    rebuild_service_pages()
     rebuild_shop()
 
 
@@ -3775,6 +4006,15 @@ def update_sitemap(shop: dict | None = None):
                 SITE_URL + "/projects/" + slug + ".html",
                 clean_date(p.get("date")), "monthly", "0.5",
             ))
+
+    for svc in load_services():
+        slug = (svc.get("slug") or "").strip()
+        if slug:
+            entries.append(
+                (SITE_URL + "/services/" + slug + ".html", today, "monthly", "0.9")
+            )
+    if load_services():
+        entries.insert(2, (SITE_URL + "/services.html", today, "monthly", "0.9"))
 
     shop_urls = [SITE_URL + "/shop.html"]
     shop_urls += [

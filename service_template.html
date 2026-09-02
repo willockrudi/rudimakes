@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  {{SITE_VERIFICATION}}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{SERVICE_META_TITLE}}</title>
+  <meta name="description" content="{{SERVICE_META_DESCRIPTION}}" />
+  <meta property="og:title" content="{{SERVICE_META_TITLE}}" />
+  <meta property="og:description" content="{{SERVICE_META_DESCRIPTION}}" />
+  <meta property="og:image" content="{{SITE_URL}}/images/og.png" />
+  <meta property="og:url" content="{{SITE_URL}}/services/{{SERVICE_SLUG}}.html" />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="{{SITE_URL}}/services/{{SERVICE_SLUG}}.html" />
+  <link rel="icon" type="image/png" href="../images/favicon.png" />
+  <link rel="apple-touch-icon" href="../images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="../style.css" />
+  <script type="application/ld+json">
+  {{SERVICE_SCHEMA}}
+  </script>
+  <script type="application/ld+json">
+  {{SERVICE_BREADCRUMB}}
+  </script>
+  {{SERVICE_FAQ_SCHEMA}}
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html"><img class="nav-mark" src="../images/filament-mark.png" alt="" width="20" height="40" decoding="async"><span>Filament</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../services.html" class="active">Services</a></li>
+        <li><a href="../repairs.html">Repair Log</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>&rarr;</span>
+        <a href="../services.html">Services</a>
+        <span>&rarr;</span>
+        {{SERVICE_NAV_TITLE}}
+      </div>
+    </div>
+
+    <section class="hero" style="padding-top:1rem;">
+      <div class="container">
+        <p class="hero-eyebrow">Indianapolis, Indiana</p>
+        <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem);">{{SERVICE_H1}}</h1>
+        {{SERVICE_INTRO}}
+        <div class="hero-cta">
+          <a href="../repairs.html#intake" class="btn btn-primary">Book a Repair</a>
+          <a href="../repairs.html#pricing" class="btn btn-outline">See Rates</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Common Faults</p>
+          <h2 class="section-title">{{SERVICE_FAULTS_HEADING}}</h2>
+        </div>
+        <div class="trust-grid">
+{{SERVICE_FAULTS}}
+        </div>
+        {{SERVICE_SAFETY_NOTE}}
+      </div>
+    </section>
+
+{{SERVICE_RELATED_REPAIRS}}
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">How It Works</p>
+          <h2 class="section-title">What To Expect</h2>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Get In Touch</h3>
+              <p>Tell me the make, model, and what it is doing. Local drop-off is by appointment in Indianapolis; if you are not local, ship it in - <a href="../repairs.html#mail-in">here is how that works</a>.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Diagnosis</h3>
+              <p>A $45 bench fee starts the job and is applied to your total if you approve the work. I trace the actual fault before touching anything, then send you findings and a written estimate.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Repair and Test</h3>
+              <p>Nothing proceeds without your approval. Labor runs $55-65/hr depending on the work, plus parts at cost + 25%. Standard turnaround is 3-7 business days; rush service is $35.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Back To You</h3>
+              <p>You get a written summary of what was found and what was done, and a 30-day labor warranty. If something I fixed comes back, I make it right.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">FAQ</p>
+          <h2 class="section-title">Common Questions</h2>
+        </div>
+        <div class="faq-list">
+{{SERVICE_FAQ}}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Ready?</p>
+          <h2 class="section-title">Get It On The Bench</h2>
+          <p class="section-note">Indianapolis drop-off by appointment, or ship it in from anywhere.</p>
+        </div>
+        <div style="text-align:center;">
+          <a href="../repairs.html#intake" class="btn btn-primary btn-lg">Book a Repair</a>
+          <a href="../services.html" class="btn btn-outline" style="margin-left:0.5rem;">All Services</a>
+        </div>
+        <p class="contact-also" style="text-align:center; margin-top:1.5rem;"><a href="tel:+13178336133">(317) 833-6133</a> &nbsp;&middot;&nbsp; {{EMAIL_INLINE}}</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> {{NAME}} &middot; {{LEGAL_NAME}}</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+  {{ANALYTICS}}
+</body>
+</html>
