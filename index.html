@@ -53,8 +53,20 @@
       { "@type": "City", "name": "Muncie" },
       { "@type": "City", "name": "Kokomo" },
       { "@type": "City", "name": "Lafayette" },
-      { "@type": "City", "name": "Bloomington" }
+      { "@type": "City", "name": "Bloomington" },
+      { "@type": "Country", "name": "United States" }
     ],
+    "makesOffer": {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Mail-in amplifier and synthesizer repair",
+        "serviceType": "Mail-in music electronics repair",
+        "provider": { "@id": "https://rudimakes.com/#business" },
+        "areaServed": { "@type": "Country", "name": "United States" },
+        "description": "Ship your amp, synth, or pedal in from anywhere. Diagnosis, written estimate before any work, and a 30-day labor warranty - the same process as a local drop-off."
+      }
+    },
     "availableChannel": {
       "@type": "ServiceChannel",
       "serviceUrl": "https://rudimakes.com/repairs.html#intake",
@@ -81,6 +93,78 @@
       } catch (e) {}
     })();
   </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does a repair cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All repairs start with a $45 bench/diagnostic fee, which gets applied to your total if you proceed. Labor is billed at published hourly rates (typically $55–65/hr depending on the work), plus parts at cost + 25%. I always confirm the estimate before starting. See full pricing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does a repair take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most repairs are completed in 3–7 business days. Complex jobs or parts-dependent repairs may take longer - I'll give you a timeline estimate at diagnosis. Rush service (48-hour turnaround) is available for an additional $35."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What brands do you work on?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All of them. Fender, Marshall, Vox, Mesa/Boogie, Orange, Peavey, Ampeg - and boutique or vintage amps of any make. For synths: Moog, Roland, Korg, Sequential, Yamaha, Oberheim, and more. If it has circuits, bring it in."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you work on solid-state amps?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. While tube amps are my specialty, I troubleshoot and repair solid-state amplifiers too. Same diagnostic approach, same documentation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I ship my gear to you?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes - I take mail-in work from anywhere. Plenty of the gear on my bench arrives in a box. You pay shipping both ways; everything else works exactly like a local job: I diagnose it, send you findings and a written estimate, and nothing gets repaired until you approve it. Email me before you ship so I know it is coming and can tell you how to pack it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How should I pack an amp for shipping?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pull the tubes and the reverb tank and pack them separately - they are what break in transit. Double-box if you can, with at least two inches of padding on every side, and insure it for what it is actually worth. Email me first and I will tell you what to watch for on your specific amp. If it is a heavy head or a combo, freight is often cheaper than parcel, and I can point you at the options."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you take international work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I will look at anything. Be aware that customs, insurance, and return freight on a heavy amp often cost more than the repair does, so for large pieces it is usually not worth it from overseas. Smaller things - pedals, modules, voice boards, synth chip sets - ship affordably and I take those from anywhere. Email me and I will give you a straight answer on whether it makes sense before you spend anything."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if my gear isn't worth repairing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I'll tell you. If the cost of repair exceeds the value of the gear, I'll let you know upfront so you can make an informed decision. You only pay the bench fee for the diagnosis."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -385,7 +469,15 @@
           </details>
           <details class="faq-item">
             <summary>Can I ship my gear to you?</summary>
-            <p>I primarily do local drop-off in Indianapolis. For special cases (rare gear, out-of-state clients), reach out by email and we can discuss shipping arrangements.</p>
+            <p>Yes - I take mail-in work from anywhere. Plenty of the gear on my bench arrives in a box. You pay shipping both ways; everything else works exactly like a local job: I diagnose it, send you findings and a written estimate, and nothing gets repaired until you approve it. Email me before you ship so I know it is coming and can tell you how to pack it.</p>
+          </details>
+          <details class="faq-item">
+            <summary>How should I pack an amp for shipping?</summary>
+            <p>Pull the tubes and the reverb tank and pack them separately - they are what break in transit. Double-box if you can, with at least two inches of padding on every side, and insure it for what it is actually worth. Email me first and I will tell you what to watch for on your specific amp. If it is a heavy head or a combo, freight is often cheaper than parcel, and I can point you at the options.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Do you take international work?</summary>
+            <p>I will look at anything. Be aware that customs, insurance, and return freight on a heavy amp often cost more than the repair does, so for large pieces it is usually not worth it from overseas. Smaller things - pedals, modules, voice boards, synth chip sets - ship affordably and I take those from anywhere. Email me and I will give you a straight answer on whether it makes sense before you spend anything.</p>
           </details>
           <details class="faq-item">
             <summary>What if my gear isn't worth repairing?</summary>
@@ -423,7 +515,7 @@
           <a href="repairs.html#intake" class="btn btn-primary btn-lg">Submit a Repair Inquiry</a>
           <p class="contact-email-sub"><a href="tel:+13178336133">(317) 833-6133</a> &nbsp;&middot;&nbsp; info@rudimakes.com</p>
         </div>
-        <p class="contact-also">Drop-off and pickup by appointment. Indianapolis and the surrounding area &mdash; most clients are within about an hour's drive.</p>
+        <p class="contact-also">Local drop-off and pickup by appointment in Indianapolis. Not local? Ship it &mdash; I take mail-in repairs from anywhere, and the process is the same either way.</p>
         <p class="contact-also">Also open to consulting, custom builds, and conversations about music technology.</p>
         <div class="social-links">
           <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>

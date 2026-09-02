@@ -2705,6 +2705,47 @@ def _recent_repairs_html(limit: int = 4) -> str:
     return chr(10).join(rows)
 
 
+def faq_schema_html(content: str) -> str:
+    """Build FAQPage JSON-LD by reading the FAQ block already in the page.
+
+    Generated from the markup rather than kept as a second copy, so the two
+    cannot drift apart. Note that Google restricted FAQ rich results to health
+    and government sites in 2023; this is here for machine readability and the
+    AI answer surfaces, not for a guaranteed snippet.
+    """
+    items = re.findall(
+        r'<details class="faq-item">\s*<summary>(.*?)</summary>\s*<p>(.*?)</p>',
+        content,
+        re.DOTALL,
+    )
+    if not items:
+        return ""
+
+    def plain(s):
+        s = re.sub(r"<[^>]+>", "", s)
+        return html.unescape(s).strip()
+
+    payload = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": plain(q),
+                "acceptedAnswer": {"@type": "Answer", "text": plain(a)},
+            }
+            for q, a in items
+        ],
+    }
+    return (
+        '<script type="application/ld+json">'
+        + chr(10)
+        + json.dumps(payload, indent=2, ensure_ascii=False)
+        + chr(10)
+        + "</script>"
+    )
+
+
 def rebuild_index_from_projects(projects):
     if ensure_project_slugs(projects):
         save_projects(projects)
@@ -2743,6 +2784,8 @@ def rebuild_index_from_projects(projects):
         site = load_site()
         new_content = replace_placeholders(new_content, site)
         new_content = inject_tags(new_content, site.get("tags", []))
+
+    new_content = new_content.replace("{{FAQ_SCHEMA}}", faq_schema_html(new_content))
 
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
         f.write(new_content)
