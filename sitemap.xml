@@ -1,150 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Main pages -->
   <url>
     <loc>https://rudimakes.com/</loc>
-    <lastmod>2026-03-31</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
     <loc>https://rudimakes.com/repairs.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- Project detail pages -->
-<url>
-    <loc>https://rudimakes.com/projects/blu-language.html</loc>
-    <lastmod>2026-03-31</lastmod>
+  <url>
+    <loc>https://rudimakes.com/repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
-
+  <url>
+    <loc>https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod.html</loc>
+    <lastmod>2026-07-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/hammond-b-3-recapping-the-ao-28-power-supply-120-hz-hum.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/ampeg-svt-classic-screen-resistor-failure-full-retube.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/avalon-u5-total-positive-rail-failure-transformer-winding-open.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/fender-twin-reverb-no-reverb-dead-recovery-tube.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/leslie-speaker-motor-service-dry-bearings-glazed-drive-wheel.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/rhodes-electric-piano-full-tuning-pickup-setup.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rudimakes.com/repairs/korg-triton-factory-reset-sound-reload.html</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://rudimakes.com/projects/tbx-home-broadcast.html</loc>
-    <lastmod>2026-03-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.5</priority>
   </url>
-
   <url>
-    <loc>https://rudimakes.com/shopcat/</loc>
+    <loc>https://rudimakes.com/projects/blu-language.html</loc>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.5</priority>
   </url>
-
-
-
-
-
-<url>
-    <loc>https://rudimakes.com/repairs/fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/hammond-b-3-recapping-the-ao-28-power-supply-120-hz-hum.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/ampeg-svt-classic-screen-resistor-failure-full-retube.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/avalon-u5-total-positive-rail-failure-transformer-winding-open.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/fender-twin-reverb-no-reverb-dead-recovery-tube.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/leslie-speaker-motor-service-dry-bearings-glazed-drive-wheel.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/minimoog-model-d-oscillator-tuning-calibration.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/rhodes-electric-piano-full-tuning-pickup-setup.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/korg-triton-factory-reset-sound-reload.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-<url>
-    <loc>https://rudimakes.com/repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-<url>
-    <loc>https://rudimakes.com/repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html</loc>
-    <lastmod>2026-03-31</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-
-  <!-- SHOP_URLS_START -->
   <url>
     <loc>https://rudimakes.com/shop.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://rudimakes.com/shop/synths.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://rudimakes.com/shop/amps.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://rudimakes.com/shop/pedals.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://rudimakes.com/shop/synth-parts.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://rudimakes.com/shop/mod-kits.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://rudimakes.com/shop/test-product.html</loc>
-    <lastmod>2026-08-29</lastmod>
+    <loc>https://rudimakes.com/shop/roland-jupiter-8.html</loc>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
-  <!-- SHOP_URLS_END -->
+  <url>
+    <loc>https://rudimakes.com/shopcat/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>

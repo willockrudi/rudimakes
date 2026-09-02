@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Filament | Amp &amp; Synth Repair - Indianapolis</title>
-  <meta name="description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics - diagnosed and fixed on a real bench by a working tech." />
-  <meta property="og:title" content="Filament | Amp &amp; Synth Repair - Indianapolis" />
-  <meta property="og:description" content="Amplifier and synthesizer repair in Indianapolis. Tube amps, synths, pedals, and music electronics - diagnosed and fixed on a real bench by a working tech." />
+  <title>Amp &amp; Synth Repair in Indianapolis | Filament</title>
+  <meta name="description" content="Tube amp, synthesizer, and pedal repair in Indianapolis. Real diagnostics on a real bench, a written record of the work, and a 30-day labor warranty." />
+  <meta property="og:title" content="Amp &amp; Synth Repair in Indianapolis | Filament" />
+  <meta property="og:description" content="Tube amp, synthesizer, and pedal repair in Indianapolis. Real diagnostics on a real bench, a written record of the work, and a 30-day labor warranty." />
   <meta property="og:image" content="https://rudimakes.com/images/og.png" />
   <meta property="og:url" content="https://rudimakes.com/" />
   <link rel="canonical" href="https://rudimakes.com/" />
@@ -16,6 +17,7 @@
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": "https://rudimakes.com/#business",
     "name": "Filament",
     "legalName": "Filament LLC",
     "alternateName": "Rudi Makes",
@@ -58,7 +60,15 @@
     },
     "serviceType": ["Amplifier Repair", "Synthesizer Repair", "Tube Amp Repair", "Guitar Electronics Repair", "Pedal Repair", "Music Electronics Repair"],
     "priceRange": "$45–$150+",
-    "knowsAbout": ["Tube amplifiers", "Synthesizers", "Guitar electronics", "Effects pedals", "Backline equipment", "Music technology"]
+    "knowsAbout": ["Tube amplifiers", "Synthesizers", "Guitar electronics", "Effects pedals", "Backline equipment", "Music technology"],
+    "image": "https://rudimakes.com/images/og.png",
+    "logo": "https://rudimakes.com/images/og.png",
+    "sameAs": [
+      "https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg",
+      "https://instagram.com/rudimakes",
+      "https://github.com/willockrudi",
+      "https://linkedin.com/in/rudiwillock"
+    ]
   }
   </script>
   <script>
@@ -84,7 +94,6 @@
         <li><a href="repairs.html">Repair Log</a></li>
         <li><a href="shop.html">Shop</a></li>
         <li><a href="#builds">Builds</a></li>
-        <li><a href="shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
@@ -155,6 +164,28 @@
         </div>
         <div style="text-align: center; margin-top: 2.5rem;">
           <a href="repairs.html#pricing" class="btn btn-outline">See Full Pricing</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENT REPAIRS -->
+    <section id="recent-repairs" class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Repair Log</p>
+          <h2 class="section-title">Recent From the Bench</h2>
+          <p class="section-note">Every repair gets written up: what came in, what it actually turned out to be, and what fixed it.</p>
+        </div>
+        <ul class="related-repairs">
+        <!-- RECENT_REPAIRS_START -->
+          <li><a href="repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html">Roland Juno-106 — Full Voice Chip Set &amp; Factory Calibration (Plus Three Pedals)</a><span class="muted"> &mdash; Roland Juno-106 Polyphonic Synthesizer; Keeley Loomer; Ross Chorus; Cooper FX Gen Loss</span></li>
+          <li><a href="repairs/roland-juno-106-dead-noise-source-noisy-chorus-r115-drift-bbd-replacement.html">Roland Juno-106 — Dead Noise Source &amp; Noisy Chorus (R115 Drift, BBD Replacement)</a><span class="muted"> &mdash; Roland Juno-106 Polyphonic Synthesizer</span></li>
+          <li><a href="repairs/fender-65-deluxe-reverb-reissue-full-recap-robinette-main-filter-mod.html">Fender &#x27;65 Deluxe Reverb Reissue — Full Recap + Robinette Main Filter Mod</a><span class="muted"> &mdash; Fender &#x27;65 Deluxe Reverb Reissue (combo, rental fleet unit)</span></li>
+          <li><a href="repairs/hammond-b-3-recapping-the-ao-28-power-supply-120-hz-hum.html">Hammond B-3 — Recapping the AO-28 Power Supply (120 Hz Hum)</a><span class="muted"> &mdash; Hammond B-3 Organ — AO-28 Preamp/Output Amplifier</span></li>
+        <!-- RECENT_REPAIRS_END -->
+        </ul>
+        <div style="text-align: center; margin-top: 2.5rem;">
+          <a href="repairs.html" class="btn btn-outline">Read the Full Repair Log</a>
         </div>
       </div>
     </section>
@@ -267,7 +298,7 @@
         <!-- PROJECTS_START -->
 
       <div class="project-card" data-tags="raspberry-pi,software,hardware,broadcast,atmel,from-scratch">
-        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX - a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console">
+        <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX - a home television broadcast station built on Raspberry Pi 5 with real channels, a live schedule, and a hidden game console" loading="lazy" decoding="async">
         <div class="project-info">
           <h3>TBX Home Broadcast Station <span class="status-badge status-progress">🛠 In Progress</span></h3>
           <p>A television station. Not a media server - a broadcast station with numbered channels, a live schedule, and the feeling of something that exists in the physical world. Built on a Raspberry Pi 5. 360 files, 320 passing tests, 17 software phases complete. Now building the hardware.</p>
@@ -296,7 +327,7 @@
       </div>
 
       <div class="project-card" data-tags="compiler,language,c,x86,linux,from-scratch">
-        <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu - a compiled programming language written from scratch, targeting x86-64 Linux">
+        <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu - a compiled programming language written from scratch, targeting x86-64 Linux" loading="lazy" decoding="async">
         <div class="project-info">
           <h3>Blu - A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
           <p>A compiled programming language built from scratch. Blu has a full compiler pipeline, runs on Linux, produces native x86-64 assembly, and has forms, closures, file I/O, and 400 regression tests. Written because the right tool for the job didn&#x27;t exist yet.</p>
@@ -413,6 +444,7 @@
         <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
         <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="shopcat/" target="_blank" rel="noopener">Shop Cat</a>
       </div>
     </div>
   </footer>
@@ -505,5 +537,6 @@
     })();
   </script>
 
+  
 </body>
 </html>

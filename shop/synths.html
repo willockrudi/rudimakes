@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Synths | Rudi Makes Shop</title>
   <meta name="description" content="Vintage and modern synthesizers, serviced and tested on the bench before they go out." />
@@ -34,7 +35,6 @@
         <li><a href="../repairs.html">Repair Log</a></li>
         <li><a href="../shop.html" class="active">Shop</a></li>
         <li><a href="../index.html#builds">Builds</a></li>
-        <li><a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a></li>
         <li><a href="../index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
@@ -80,7 +80,28 @@
 
       <div class="shop-grid">
         <!-- SHOP_ITEMS_START -->
-        <p class="shop-empty">Nothing listed in this collection right now — check back, or email me and I'll tell you what I have on the shelf.</p>
+
+        <div class="shop-card"
+             data-collections="synths"
+             data-collection-labels="Synths"
+             data-in-stock="1"
+             data-search-text="RM-1003 JP-8 Roland Good gear synth roland jupiter-8 analog polysynth vintage Synths">
+          <a class="shop-card-media" href="roland-jupiter-8.html">
+          <div class="shop-thumb-empty">◎</div>
+          </a>
+          <div class="shop-card-body">
+            <p class="shop-sku">RM-1003</p>
+            <h3><a href="roland-jupiter-8.html">Roland Jupiter-8</a> <span class="status-badge status-instock">In stock</span></h3>
+            <p class="shop-subtitle">14-bit revision, serviced and calibrated on the bench</p>
+            <div class="shop-meta"><span><strong>Roland</strong></span> <span>Good</span> <span>PN JP-8</span></div>
+            <p class="shop-price">$12,500</p>
+            <p class="shop-ship-note">Shipping quoted at checkout · free local pickup</p>
+            <div class="shop-buy-row">
+          <span class="shop-unavailable">Email for price and availability</span>
+          <span class="shop-email">info@rudimakes.com</span>
+            </div>
+          </div>
+        </div>
 <!-- SHOP_ITEMS_END -->
       </div>
       <p id="noResults" class="shop-empty" hidden>Nothing matches that. <a href="../shop.html#contact">Email me</a> - I have stock that isn't listed yet.</p>
@@ -105,6 +126,7 @@
         <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
         <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a>
       </div>
     </div>
   </footer>
@@ -224,5 +246,6 @@
     })();
   </script>
 
+  
 </body>
 </html>

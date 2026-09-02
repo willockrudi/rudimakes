@@ -61,6 +61,8 @@ SITE_URL = "https://rudimakes.com"
 PROJECTS_START = "<!-- PROJECTS_START -->"
 PROJECTS_END = "<!-- PROJECTS_END -->"
 REPAIRS_START = "<!-- REPAIRS_START -->"
+RECENT_REPAIRS_START = "<!-- RECENT_REPAIRS_START -->"
+RECENT_REPAIRS_END = "<!-- RECENT_REPAIRS_END -->"
 REPAIRS_END = "<!-- REPAIRS_END -->"
 TAGS_START = "<!-- TAGS_START -->"
 TAGS_END = "<!-- TAGS_END -->"
@@ -2445,7 +2447,12 @@ def repair_card_html(r: dict) -> str:
     notes = _lines_to_br(r.get("notes", ""))
 
     img = html.escape((r.get("image") or "").strip(), quote=True)
-    img_html = f'<img src="{img}" alt="{alt}">' if img else ""
+    # Same thumb class the project cards use; without it the image renders at
+    # natural size and blows out the card.
+    img_html = (
+        f'<img class="project-thumb" src="{img}" alt="{alt}" loading="lazy" decoding="async">'
+        if img else ""
+    )
 
     meta_bits = [b for b in [date, status] if b]
     meta_html = f'<p class="muted">{" • ".join(meta_bits)}</p>' if meta_bits else ""
@@ -2534,7 +2541,7 @@ def project_card_html(p: dict) -> str:
 
     return f"""
       <div class="project-card" data-tags="{data_tags}">
-        <img class="project-thumb" src="{cover}" alt="{alt}">
+        <img class="project-thumb" src="{cover}" alt="{alt}" loading="lazy" decoding="async">
         <div class="project-info">
           <h3>{title} <span class="status-badge {badge_class}">{badge_text}</span></h3>
           <p>{desc_html}</p>{tags_html}
@@ -2623,6 +2630,25 @@ def project_detail_html(p: dict, site: dict, template: str) -> str:
     return content
 
 
+def analytics_html(site: dict) -> str:
+    """Cloudflare Web Analytics tag. Renders nothing until a token is set."""
+    token = (site.get("cloudflare_analytics_token") or "").strip()
+    if not token:
+        return ""
+    return (
+        '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+        + "data-cf-beacon='" + json.dumps({"token": token}) + "'></script>"
+    )
+
+
+def site_verification_html(site: dict) -> str:
+    """Google Search Console verification tag. Empty until a code is set."""
+    code = (site.get("google_site_verification") or "").strip()
+    if not code:
+        return ""
+    return '<meta name="google-site-verification" content="' + html.escape(code, quote=True) + '" />'
+
+
 def replace_placeholders(content: str, site: dict) -> str:
     mapping = {
         "{{NAME}}": html.escape(site.get("name", ""), quote=True),
@@ -2636,6 +2662,8 @@ def replace_placeholders(content: str, site: dict) -> str:
         "{{STATEMENT_DESCRIPTOR}}": html.escape(site.get("statement_descriptor", ""), quote=True),
         "{{SITE_URL}}": SITE_URL,
         "{{EMAIL_INLINE}}": email_inline_html(site),
+        "{{ANALYTICS}}": analytics_html(site),
+        "{{SITE_VERIFICATION}}": site_verification_html(site),
     }
     for k, v in mapping.items():
         content = content.replace(k, v)
@@ -2652,6 +2680,29 @@ def inject_tags(content: str, tags: list[str]) -> str:
     s = content.index(TAGS_START) + len(TAGS_START)
     e = content.index(TAGS_END)
     return content[:s] + "\n" + tag_html + "\n      " + content[e:]
+
+
+def _recent_repairs_html(limit: int = 4) -> str:
+    """Newest repairs, linked from the homepage.
+
+    The homepage previously linked to none of them, so the strongest page on
+    the site passed no internal link equity to the write-ups that are supposed
+    to bring people in.
+    """
+    repairs = [r for r in load_repairs() if (r.get("slug") or "").strip()]
+    repairs.sort(key=lambda r: (r.get("date") or ""), reverse=True)
+
+    rows = []
+    for r in repairs[:limit]:
+        slug = html.escape(r.get("slug"), quote=True)
+        title = html.escape(r.get("title", "Repair"), quote=True)
+        device = html.escape((r.get("device") or "").strip(), quote=True)
+        rows.append(
+            '          <li><a href="repairs/' + slug + '.html">' + title + "</a>"
+            + ('<span class="muted"> &mdash; ' + device + "</span>" if device else "")
+            + "</li>"
+        )
+    return chr(10).join(rows)
 
 
 def rebuild_index_from_projects(projects):
@@ -2679,6 +2730,14 @@ def rebuild_index_from_projects(projects):
     end_i = template.index(PROJECTS_END)
     cards = "".join(project_card_html(p) for p in projects)
     new_content = template[:start_i] + "\n" + cards + template[end_i:]
+
+    if RECENT_REPAIRS_START in new_content and RECENT_REPAIRS_END in new_content:
+        rs = new_content.index(RECENT_REPAIRS_START) + len(RECENT_REPAIRS_START)
+        re_ = new_content.index(RECENT_REPAIRS_END)
+        new_content = (
+            new_content[:rs] + chr(10) + _recent_repairs_html() + chr(10) + "        "
+            + new_content[re_:]
+        )
 
     if os.path.exists(SITE_PATH):
         site = load_site()
@@ -2744,7 +2803,63 @@ def ensure_repair_slugs(repairs: list[dict]) -> bool:
     return changed
 
 
-def repair_detail_html(r: dict, site: dict, template: str) -> str:
+def _related_repairs_html(current: dict, all_repairs=None) -> str:
+    """Cross-links to the most similar repairs, ranked by shared tags.
+
+    Someone landing here from a search for one fault should be able to see the
+    other work rather than having the CTA as their only way out of the page.
+    """
+    if not all_repairs:
+        return ""
+
+    cur_slug = current.get("slug")
+    cur_tags = {t.lower() for t in (current.get("tags") or []) if t}
+
+    scored = []
+    for other in all_repairs:
+        slug = (other.get("slug") or "").strip()
+        if not slug or slug == cur_slug:
+            continue
+        tags = {t.lower() for t in (other.get("tags") or []) if t}
+        overlap = len(cur_tags & tags)
+        # Date descending is the tie-breaker, so with no shared tags at all we
+        # still surface the newest work rather than nothing.
+        scored.append((overlap, other.get("date") or "", other))
+
+    if not scored:
+        return ""
+
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    picks = [row[2] for row in scored[:3]]
+
+    NL = chr(10)
+    cards = []
+    for p in picks:
+        slug = html.escape(p.get("slug"), quote=True)
+        title = html.escape(p.get("title", "Repair"), quote=True)
+        device = html.escape((p.get("device") or "").strip(), quote=True)
+        cards.append(
+            '          <li><a href="' + slug + '.html">' + title + "</a>"
+            + ('<span class="muted"> &mdash; ' + device + "</span>" if device else "")
+            + "</li>"
+        )
+
+    return (
+        '    <section class="section" style="border-top: 1px solid var(--border);">' + NL
+        + '      <div class="container">' + NL
+        + '        <div class="section-header">' + NL
+        + '          <p class="section-label">More From the Bench</p>' + NL
+        + '          <h2 class="section-title">Related Repairs</h2>' + NL
+        + "        </div>" + NL
+        + '        <ul class="related-repairs">' + NL
+        + NL.join(cards) + NL
+        + "        </ul>" + NL
+        + "      </div>" + NL
+        + "    </section>"
+    )
+
+
+def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> str:
     raw_title = r.get("title", "Untitled Repair")
     title = html.escape(raw_title, quote=True)
     alt = html.escape(r.get("alt", raw_title), quote=True)
@@ -2807,6 +2922,31 @@ def repair_detail_html(r: dict, site: dict, template: str) -> str:
         schema["image"] = f"{SITE_URL}/{img}"
     if r.get("date"):
         schema["datePublished"] = r.get("date")
+        # No separate edit timestamp is tracked, so the repair date is the most
+        # honest dateModified we can give.
+        schema["dateModified"] = r.get("date")
+
+    tags = [t for t in (r.get("tags") or []) if t]
+    if tags:
+        schema["keywords"] = ", ".join(tags)
+
+    schema["inLanguage"] = "en-US"
+    schema["isPartOf"] = {
+        "@type": "Blog",
+        "name": "Filament Repair Log",
+        "url": f"{SITE_URL}/repairs.html",
+    }
+    # Tie the write-up back to the business so these pages feed the local
+    # entity instead of floating free as unattached articles.
+    schema["publisher"]["@id"] = f"{SITE_URL}/#business"
+    schema["mentions"] = {
+        "@type": "Service",
+        "serviceType": "Musical instrument and amplifier repair",
+        "provider": {"@id": f"{SITE_URL}/#business"},
+        "areaServed": {"@type": "City", "name": "Indianapolis"},
+    }
+
+    related_html = _related_repairs_html(r, all_repairs)
 
     content = replace_placeholders(template, site)
     mapping = {
@@ -2819,6 +2959,7 @@ def repair_detail_html(r: dict, site: dict, template: str) -> str:
         "{{REPAIR_OG_IMAGE}}": og_image,
         "{{REPAIR_SLUG}}": html.escape(slug, quote=True),
         "{{REPAIR_SCHEMA}}": json.dumps(schema, indent=2, ensure_ascii=False),
+        "{{REPAIR_RELATED}}": related_html,
     }
     for key, value in mapping.items():
         content = content.replace(key, value)
@@ -2863,7 +3004,7 @@ def rebuild_repair_pages(repairs=None):
         out_name = f"{slug}.html"
         keep_files.add(out_name)
         with open(os.path.join(REPAIRS_DIR, out_name), "w", encoding="utf-8") as f:
-            f.write(repair_detail_html(r, site, template))
+            f.write(repair_detail_html(r, site, template, all_repairs=repairs))
 
     for name in os.listdir(REPAIRS_DIR):
         if name.endswith(".html") and name not in keep_files:
@@ -3533,33 +3674,84 @@ def rebuild_shop():
 
 
 def update_sitemap(shop: dict | None = None):
-    """Keep sitemap.xml in step with the generated shop pages."""
+    """Regenerate sitemap.xml in full from the JSON data.
+
+    This used to keep only the shop block in step while the repair and project
+    URLs were maintained by hand, which left every lastmod frozen on the day
+    someone last edited the file. Generating the whole thing means a page's
+    lastmod is the date on the content itself.
+    """
     sitemap_path = os.path.join(ROOT, "sitemap.xml")
-    if not os.path.isfile(sitemap_path):
-        return
     if shop is None:
         shop = load_shop()
 
-    with open(sitemap_path, "r", encoding="utf-8") as f:
-        xml = f.read()
-
-    # Strip any previously generated shop block, then re-add it.
-    xml = re.sub(r"\n?  <!-- SHOP_URLS_START -->.*?<!-- SHOP_URLS_END -->", "", xml, flags=re.DOTALL)
-
     today = datetime.now().strftime("%Y-%m-%d")
-    urls = [f"{SITE_URL}/shop.html"]
-    urls += [f"{SITE_URL}/shop/{c.get('slug')}.html" for c in sorted_collections(shop) if c.get("slug")]
-    urls += [f"{SITE_URL}/shop/{i.get('slug')}.html" for i in visible_items(shop) if i.get("slug")]
 
-    entries = "\n".join(
-        f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n  </url>"
-        for u in urls
+    def clean_date(value) -> str:
+        value = (value or "").strip()
+        return value if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) else today
+
+    repairs = load_repairs()
+    projects = load_projects()
+
+    # The newest repair date doubles as the freshness signal for the pages
+    # that list them.
+    repair_dates = [clean_date(r.get("date")) for r in repairs]
+    newest_repair = max(repair_dates) if repair_dates else today
+
+    entries = [
+        (SITE_URL + "/", newest_repair, "weekly", "1.0"),
+        (SITE_URL + "/repairs.html", newest_repair, "weekly", "0.9"),
+    ]
+
+    for r in repairs:
+        slug = (r.get("slug") or "").strip()
+        if slug:
+            entries.append((
+                SITE_URL + "/repairs/" + slug + ".html",
+                clean_date(r.get("date")), "monthly", "0.8",
+            ))
+
+    for p in projects:
+        slug = (p.get("slug") or "").strip()
+        if slug:
+            entries.append((
+                SITE_URL + "/projects/" + slug + ".html",
+                clean_date(p.get("date")), "monthly", "0.5",
+            ))
+
+    shop_urls = [SITE_URL + "/shop.html"]
+    shop_urls += [
+        SITE_URL + "/shop/" + c.get("slug") + ".html"
+        for c in sorted_collections(shop) if c.get("slug")
+    ]
+    shop_urls += [
+        SITE_URL + "/shop/" + i.get("slug") + ".html"
+        for i in visible_items(shop) if i.get("slug")
+    ]
+    for u in shop_urls:
+        entries.append((u, today, "weekly", "0.6"))
+
+    entries.append((SITE_URL + "/shopcat/", today, "monthly", "0.3"))
+
+    NL = chr(10)
+    blocks = []
+    for loc, lastmod, freq, prio in entries:
+        blocks.append(
+            "  <url>" + NL
+            + "    <loc>" + loc + "</loc>" + NL
+            + "    <lastmod>" + lastmod + "</lastmod>" + NL
+            + "    <changefreq>" + freq + "</changefreq>" + NL
+            + "    <priority>" + prio + "</priority>" + NL
+            + "  </url>"
+        )
+
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>' + NL
+        + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
+        + NL.join(blocks) + NL
+        + "</urlset>" + NL
     )
-    block = f"\n  <!-- SHOP_URLS_START -->\n{entries}\n  <!-- SHOP_URLS_END -->"
-
-    if "</urlset>" not in xml:
-        return
-    xml = xml.replace("</urlset>", f"{block}\n</urlset>")
     with open(sitemap_path, "w", encoding="utf-8") as f:
         f.write(xml)
 
