@@ -8,18 +8,7 @@
     "images": [],
     "alt": "TBX - home broadcast station wordmark",
     "description": "A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85.",
-    "bullets": [
-      "Raspberry Pi 5, 16GB - boots straight to playback; hold T for kiosk mode to manage media directly",
-      "FastAPI backend driving an mpv playback engine over a Unix socket",
-      "Seek resolves wall time against a channel schedule; no per-viewer playback state",
-      "React web UI, operated entirely by handheld IR remote",
-      "Front panel: TM1637 7-segment channel display, VS1838B IR receiver, status LEDs",
-      "ATtiny85 power controller holding a P-channel MOSFET gate, 4-state machine in 8KB",
-      "Heartbeat GPIO line lets the ATtiny cut power only after an orderly halt",
-      "Channel 99: two original games in progress, sharing one setting and continuity",
-      "Cloud tier with Stripe, OTA updates, 48 setup wizards, 30 CLI commands",
-      "360 files, 320 passing tests, 17 of 18 software phases closed"
-    ],
+    "bullets": [],
     "tags": [
       "raspberry-pi",
       "software",
@@ -85,17 +74,7 @@
     "images": [],
     "alt": "Blu - a compiled programming language written from scratch, targeting x86-64 Linux",
     "description": "A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests gating every phase. Five of eighteen phases closed.",
-    "bullets": [
-      "Full pipeline: lexer, parser, semantic analyzer, IR, x86-64 codegen",
-      "Emits native x86-64 assembly; runs on Linux",
-      "Compiler written in C++",
-      "Forms: record types with field types inferred from usage across the call graph",
-      "Closures with environment capture across stack frames",
-      "Stdlib: JSON, CSV, binary encoding, key-value stores, process spawning, file I/O",
-      "Keywords give, show, and when in place of return, print, and if",
-      "400+ regression tests; no phase closes until all are green",
-      "18-phase plan, 5 closed, phase 6 underway"
-    ],
+    "bullets": [],
     "tags": [
       "compiler",
       "language",
