@@ -1741,3 +1741,32 @@ footer a:hover {
 .tag-filter-more:hover {
   opacity: 1;
 }
+
+/* Portrait in the About section. The image is a plain square;
+   the circle and ring are CSS so they stay crisp at any size. */
+.about-inner {
+  display: flex;
+  gap: 2.25rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.about-portrait {
+  width: 220px;
+  height: 220px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 5px solid var(--text);
+  object-fit: cover;
+  display: block;
+}
+
+.about-body {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+@media (max-width: 620px) {
+  .about-inner { gap: 1.5rem; justify-content: center; }
+  .about-portrait { width: 160px; height: 160px; }
+}
