@@ -7,14 +7,13 @@
     "image": "images/projects/tbx-home-broadcast.jpg",
     "images": [],
     "alt": "TBX - home broadcast station wordmark",
-    "description": "A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85.",
+    "description": "A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, and a React UI driven by an IR remote.",
     "bullets": [],
     "tags": [
       "raspberry-pi",
       "software",
       "hardware",
       "broadcast",
-      "atmel",
       "from-scratch"
     ],
     "links": [],
@@ -33,22 +32,16 @@
         "alt": ""
       },
       {
-        "title": "Front Panel and Remote",
-        "text": "The front panel carries a power LED that breathes slowly while the station is idle and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection. Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
+        "title": "The Interface",
+        "text": "The target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection.\nColor palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
         "image": "",
-        "alt": "TBX front panel with status LEDs and IR receiver"
+        "alt": ""
       },
       {
         "title": "Channel 99",
         "text": "Channel 99 is a hidden game console rather than a channel. Two original games are in progress for it, sharing one setting and one continuity rather than being unrelated one-offs.\nThis is the part of the project furthest from finished, and it is deliberately last - the station has to work as a station before the easter egg matters.",
         "image": "",
         "alt": ""
-      },
-      {
-        "title": "The Power Controller",
-        "text": "A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. The controller is the circuit that fixes that.\nAn ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.\nSupporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode.",
-        "image": "",
-        "alt": "ATtiny85 power controller circuit on a breadboard"
       },
       {
         "title": "Where It Is Now",

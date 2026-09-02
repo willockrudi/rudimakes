@@ -64,14 +64,13 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, a React UI driven by an IR remote, and a front panel run by an ATtiny85.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, and a React UI driven by an IR remote.</p>
 
       <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
             <span class="tag-chip">software</span>
             <span class="tag-chip">hardware</span>
             <span class="tag-chip">broadcast</span>
-            <span class="tag-chip">atmel</span>
             <span class="tag-chip">from-scratch</span>
           </div>
       
@@ -99,20 +98,14 @@
 
 
     <article class="project-step">
-      <h3>Front Panel and Remote</h3>
-      <p>The front panel carries a power LED that breathes slowly while the station is idle and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.<br>The interface target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection. Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.</p>
+      <h3>The Interface</h3>
+      <p>The target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection.<br>Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.</p>
     </article>
 
 
     <article class="project-step">
       <h3>Channel 99</h3>
       <p>Channel 99 is a hidden game console rather than a channel. Two original games are in progress for it, sharing one setting and one continuity rather than being unrelated one-offs.<br>This is the part of the project furthest from finished, and it is deliberately last - the station has to work as a station before the easter egg matters.</p>
-    </article>
-
-
-    <article class="project-step">
-      <h3>The Power Controller</h3>
-      <p>A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. The controller is the circuit that fixes that.<br>An ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.<br>Supporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode.</p>
     </article>
 
 
