@@ -64,7 +64,7 @@
         <span class="status-badge status-progress">🛠 In Progress</span>
       </h1>
 
-      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests gating every phase. Five of eighteen phases closed.</p>
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests that have to stay green.</p>
 
       <div class="card-tags">
             <span class="tag-chip">compiler</span>
@@ -106,25 +106,25 @@
 
     <article class="project-step">
       <h3>Regression Infrastructure</h3>
-      <p>By phase 4 the test suite was the thing keeping the project honest. Several hundred regression tests organized by category, run by shell scripts that report pass rates, now past 400.<br>The rule is that no phase closes until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.</p>
+      <p>The test suite is the thing keeping the project honest. Several hundred regression tests organized by category, run by shell scripts that report pass rates, now past 400.<br>The rule is that nothing lands until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>Phase 5 - Closures, and a Build That Would Not Link</h3>
-      <p>Phase 5 added closures and forms. Closures meant environment objects, closure allocation, and a new family of IR instructions to capture variables across stack frames. Forms meant inferring field types from how they were used across the whole call graph.<br>Partway in, the build collapsed into a cascade of errors that pointed everywhere and nowhere. The cause was not in the new code: #include directives had been placed after the opening brace of namespace blu, so the entire standard library had been pulled inside the namespace. Every symbol resolved to the wrong place.<br>By the time it was found, ir_builder.cpp had accumulated duplicate function bodies and orphaned copy-paste blocks from working around symptoms of it. Rewriting the file from scratch was faster than untangling it. Each fix exposed the next one; individually all of them were small.<br>Closed with forms edge cases at 113/113 and closure regression at 10/10.</p>
+      <h3>Closures, and a Build That Would Not Link</h3>
+      <p>Closures and forms went in together. Closures meant environment objects, closure allocation, and a new family of IR instructions to capture variables across stack frames. Forms meant inferring field types from how they were used across the whole call graph.<br>Partway in, the build collapsed into a cascade of errors that pointed everywhere and nowhere. The cause was not in the new code: #include directives had been placed after the opening brace of namespace blu, so the entire standard library had been pulled inside the namespace. Every symbol resolved to the wrong place.<br>By the time it was found, ir_builder.cpp had accumulated duplicate function bodies and orphaned copy-paste blocks from working around symptoms of it. Rewriting the file from scratch was faster than untangling it. Each fix exposed the next one; individually all of them were small.<br>Forms edge cases finished at 113/113, closure regression at 10/10.</p>
     </article>
 
 
     <article class="project-step">
-      <h3>Phase 6 - File I/O</h3>
+      <h3>File I/O</h3>
       <p>Blu could not touch the filesystem, which put a ceiling on what could be written in it. file.read, file.write, file.append, and file.exists: four C symbols, four arity checks, four codegen entries.<br>The verification program wrote a file, read it back, and confirmed it existed - which is the first point at which a Blu program could do something that outlived its own process.</p>
     </article>
 
 
     <article class="project-step">
       <h3>What Is Left</h3>
-      <p>Eighteen phases planned, five closed, phase six underway.<br>Still ahead: a map type, a garbage collector, line numbers in error messages, a formatter, a REPL, a module system, a C FFI bridge, and a platform layer.</p>
+      <p>Plenty. A map type, a garbage collector, line numbers in error messages, a formatter, a REPL, a module system, a C FFI bridge, and a platform layer.<br>It compiles and the tests pass, which is a long way from done.</p>
     </article>
 <!-- PROJECT_STEPS_END -->
       </div>

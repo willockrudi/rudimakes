@@ -34,9 +34,9 @@
       },
       {
         "title": "Front Panel and Remote",
-        "text": "The front panel is a TM1637 4-digit 7-segment display showing the channel number, a power LED that breathes slowly while the station is idle, and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection. Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
+        "text": "The front panel carries a power LED that breathes slowly while the station is idle and an amber activity LED that flashes during imports. IR comes in through a VS1838B receiver.\nThe interface target was that normal use never involves a keyboard - you tune, you watch, and the kiosk mode is there when you actually want to manage the collection. Color palette is dark, amber, and gunmetal, which is what the analog broadcast gear it is imitating actually looked like.",
         "image": "",
-        "alt": "TBX front panel with 7-segment channel display"
+        "alt": "TBX front panel with status LEDs and IR receiver"
       },
       {
         "title": "Channel 99",
@@ -45,20 +45,14 @@
         "alt": ""
       },
       {
-        "title": "Where the Software Stands",
-        "text": "360 files and 320 passing tests across 17 closed phases.\nShipped alongside the playback system: a cloud tier with Stripe integration, an OTA update mechanism, 48 setup wizards, 30 CLI commands, and an SD card image build pipeline. Non-code deliverables done to the same phase discipline - a Kickstarter plan, a manufacturing plan, a QC checklist, a legal pack, and a launch-day playbook.\nThe image builds and the tests pass. What is not finished is the hardware.",
-        "image": "",
-        "alt": ""
-      },
-      {
-        "title": "Phase 18 - The Power Controller",
-        "text": "A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. Phase 18 is the circuit that fixes that.\nAn ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.\nSupporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, a TM1637 display, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode. Currently on the breadboard.",
+        "title": "The Power Controller",
+        "text": "A Pi does not have a power button, and pulling the plug on a running filesystem eventually costs you the SD card. The controller is the circuit that fixes that.\nAn ATtiny85 in an 8-pin DIP sits between the wall supply and the Pi and holds the gate of a P-channel MOSFET, so the microcontroller physically controls whether the Pi has power at all. It runs a four-state machine - OFF, STARTING, RUNNING, SHUTTING DOWN - in 8KB of flash. A button press or an IR command wakes it. Once running, it watches a heartbeat GPIO line from the Pi; when the Pi begins an orderly shutdown the heartbeat stops, the ATtiny waits out the halt, and only then opens the MOSFET.\nSupporting parts: an LP2950 LDO for the always-on rail, a VS1838B IR receiver, two 3mm LEDs, a 2N2222 driving the panel, and a 1N4007 flyback diode.",
         "image": "",
         "alt": "ATtiny85 power controller circuit on a breadboard"
       },
       {
-        "title": "What Is Left",
-        "text": "Phase 18 closes when the measured rails match the schematic, the panel behaves under all four states, and the Pi boots, halts, and boots again on command without touching the plug.\nPhase 19 is the first full assembly: the TBX image on an SD card in a real Pi in an enclosure, running as one product rather than as parts on a desk.",
+        "title": "Where It Is Now",
+        "text": "v1 is built and living in an enclosure. It runs, it holds a schedule, and you operate it with the remote like any other box under a television.\nIt is a v1, so it is not finished - but it is past the stage of being parts on a desk, and it earns its shelf.",
         "image": "",
         "alt": ""
       }
@@ -73,7 +67,7 @@
     "image": "images/projects/blu-language.jpg",
     "images": [],
     "alt": "Blu - a compiled programming language written from scratch, targeting x86-64 Linux",
-    "description": "A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests gating every phase. Five of eighteen phases closed.",
+    "description": "A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests that have to stay green.",
     "bullets": [],
     "tags": [
       "compiler",
@@ -106,25 +100,25 @@
       },
       {
         "title": "Regression Infrastructure",
-        "text": "By phase 4 the test suite was the thing keeping the project honest. Several hundred regression tests organized by category, run by shell scripts that report pass rates, now past 400.\nThe rule is that no phase closes until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.",
+        "text": "The test suite is the thing keeping the project honest. Several hundred regression tests organized by category, run by shell scripts that report pass rates, now past 400.\nThe rule is that nothing lands until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.",
         "image": "",
         "alt": ""
       },
       {
-        "title": "Phase 5 - Closures, and a Build That Would Not Link",
-        "text": "Phase 5 added closures and forms. Closures meant environment objects, closure allocation, and a new family of IR instructions to capture variables across stack frames. Forms meant inferring field types from how they were used across the whole call graph.\nPartway in, the build collapsed into a cascade of errors that pointed everywhere and nowhere. The cause was not in the new code: #include directives had been placed after the opening brace of namespace blu, so the entire standard library had been pulled inside the namespace. Every symbol resolved to the wrong place.\nBy the time it was found, ir_builder.cpp had accumulated duplicate function bodies and orphaned copy-paste blocks from working around symptoms of it. Rewriting the file from scratch was faster than untangling it. Each fix exposed the next one; individually all of them were small.\nClosed with forms edge cases at 113/113 and closure regression at 10/10.",
+        "title": "Closures, and a Build That Would Not Link",
+        "text": "Closures and forms went in together. Closures meant environment objects, closure allocation, and a new family of IR instructions to capture variables across stack frames. Forms meant inferring field types from how they were used across the whole call graph.\nPartway in, the build collapsed into a cascade of errors that pointed everywhere and nowhere. The cause was not in the new code: #include directives had been placed after the opening brace of namespace blu, so the entire standard library had been pulled inside the namespace. Every symbol resolved to the wrong place.\nBy the time it was found, ir_builder.cpp had accumulated duplicate function bodies and orphaned copy-paste blocks from working around symptoms of it. Rewriting the file from scratch was faster than untangling it. Each fix exposed the next one; individually all of them were small.\nForms edge cases finished at 113/113, closure regression at 10/10.",
         "image": "",
         "alt": ""
       },
       {
-        "title": "Phase 6 - File I/O",
+        "title": "File I/O",
         "text": "Blu could not touch the filesystem, which put a ceiling on what could be written in it. file.read, file.write, file.append, and file.exists: four C symbols, four arity checks, four codegen entries.\nThe verification program wrote a file, read it back, and confirmed it existed - which is the first point at which a Blu program could do something that outlived its own process.",
         "image": "",
         "alt": ""
       },
       {
         "title": "What Is Left",
-        "text": "Eighteen phases planned, five closed, phase six underway.\nStill ahead: a map type, a garbage collector, line numbers in error messages, a formatter, a REPL, a module system, a C FFI bridge, and a platform layer.",
+        "text": "Plenty. A map type, a garbage collector, line numbers in error messages, a formatter, a REPL, a module system, a C FFI bridge, and a platform layer.\nIt compiles and the tests pass, which is a long way from done.",
         "image": "",
         "alt": ""
       }
