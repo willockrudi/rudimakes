@@ -479,17 +479,44 @@
       for (const c of cards) {
         (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
       }
-      const tags = ["all", ...Array.from(tagSet).sort()];
+      // Rank tags by how many cards carry them. Alphabetical order put "120hz"
+      // and "6550" first, which tells a visitor nothing.
+      const counts = new Map();
+      for (const c of cards) {
+        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean)
+          .forEach(t => counts.set(t, (counts.get(t) || 0) + 1));
+      }
+      const ranked = Array.from(tagSet).sort((a, b) => {
+        const d = (counts.get(b) || 0) - (counts.get(a) || 0);
+        return d !== 0 ? d : a.localeCompare(b);
+      });
+      const PRIMARY = 12;
+      const hasOverflow = ranked.length > PRIMARY;
+      let showAll = false;
       let activeTag = "all";
+
       function renderTags() {
         tagWrap.innerHTML = "";
-        for (const t of tags) {
+        const shown = showAll ? ranked : ranked.slice(0, PRIMARY);
+        // Keep the active tag reachable even when the tail is collapsed.
+        if (activeTag !== "all" && !shown.includes(activeTag)) shown.push(activeTag);
+        for (const t of ["all", ...shown]) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
           btn.textContent = t === "all" ? "All" : t;
           btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
           tagWrap.appendChild(btn);
+        }
+        if (hasOverflow) {
+          const more = document.createElement("button");
+          more.type = "button";
+          more.className = "tag-filter tag-filter-more";
+          more.textContent = showAll
+            ? "\u2212 Fewer tags"
+            : "+ " + (ranked.length - PRIMARY) + " more";
+          more.addEventListener("click", () => { showAll = !showAll; renderTags(); });
+          tagWrap.appendChild(more);
         }
       }
       function apply() {

@@ -1731,3 +1731,13 @@ footer a:hover {
   width: auto;
   display: block;
 }
+
+/* Overflow toggle on the tag filter bar */
+.tag-filter-more {
+  font-style: italic;
+  opacity: 0.75;
+}
+
+.tag-filter-more:hover {
+  opacity: 1;
+}

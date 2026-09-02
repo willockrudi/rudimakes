@@ -3495,7 +3495,10 @@ def item_ship_note(item: dict) -> str:
     pickup = " · free local pickup" if ship.get("local_pickup", True) else ""
     if price:
         return f"+ {price} shipping{pickup}"
-    return f"Shipping quoted at checkout{pickup}"
+    # Only promise a checkout when there is one to quote at.
+    if item_has_payment_link(item):
+        return f"Shipping quoted at checkout{pickup}"
+    return f"Shipping quoted on request{pickup}"
 
 
 def _mailto(site: dict, subject: str) -> str:
@@ -3569,6 +3572,10 @@ def shop_buy_row_html(item: dict, site: dict, indent: str = "          ") -> str
         if state == "sold_out":
             msg = "Sold — email me if you want one like it" if item.get("item_type") == "gear" \
                 else "Out of stock — email me to be notified"
+        elif fmt_price(item.get("price")):
+            # Price is published; it just is not a click-to-buy item. Saying
+            # "email for price" directly under the price reads as a mistake.
+            msg = "Email or call to arrange — no checkout on this one"
         else:
             msg = "Email for price and availability"
         parts.append(f'{indent}<span class="shop-unavailable">{html.escape(msg, quote=True)}</span>')
