@@ -43,7 +43,7 @@
         <li><a href="../index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button">Light</button>
       </div>
     </div>
   </nav>
@@ -61,7 +61,7 @@
 
       <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
         Blu - A Compiled Programming Language
-        <span class="status-badge status-progress">🛠 In Progress</span>
+        <span class="status-badge status-progress">In Progress</span>
       </h1>
 
       <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests that have to stay green.</p>
@@ -150,8 +150,8 @@
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
       function setTheme(mode) {
-        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
-        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "Light"; }
       }
       let saved = null;
       try { saved = localStorage.getItem("theme"); } catch (e) {}

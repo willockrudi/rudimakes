@@ -934,11 +934,6 @@ nav ul li a.active {
   transform: translateY(-3px);
 }
 
-.feature-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
 .feature-card h3 {
   font-size: 1.15rem;
   font-weight: 700;

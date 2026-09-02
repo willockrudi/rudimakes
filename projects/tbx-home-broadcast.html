@@ -43,7 +43,7 @@
         <li><a href="../index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button">Light</button>
       </div>
     </div>
   </nav>
@@ -61,7 +61,7 @@
 
       <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
         TBX Home Broadcast Station
-        <span class="status-badge status-progress">🛠 In Progress</span>
+        <span class="status-badge status-progress">In Progress</span>
       </h1>
 
       <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;">A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, and a React UI driven by an IR remote.</p>
@@ -137,8 +137,8 @@
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
       function setTheme(mode) {
-        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
-        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "Light"; }
       }
       let saved = null;
       try { saved = localStorage.getItem("theme"); } catch (e) {}

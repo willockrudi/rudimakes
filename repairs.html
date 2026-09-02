@@ -43,7 +43,7 @@
         <li><a href="index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button">Light</button>
       </div>
     </div>
   </nav>
@@ -76,32 +76,26 @@
         </div>
         <div class="grid-3">
           <div class="feature-card">
-            <div class="feature-icon">🔥</div>
             <h3>Tube Amplifiers</h3>
             <p>Retube, bias, recap, hum diagnosis, tone issues, and full troubleshooting. Fender, Marshall, Vox, Mesa, and all major brands.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎸</div>
             <h3>Guitar & Bass Electronics</h3>
             <p>Pickups, rewires, jack replacement, pot cleaning, full setups, intonation. If it has strings and electronics I can fix it.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎛️</div>
             <h3>Synthesizers & Keyboards</h3>
             <p>Vintage and modern synthesizer repair, key contact cleaning, component replacement, and general troubleshooting.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎚️</div>
             <h3>Pedals & Effects</h3>
             <p>Troubleshooting, jack and switch replacement, component repair, and modifications. All brands and formats.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔊</div>
             <h3>Professional Audio</h3>
             <p>As a working backline technician at Jonas Productions I service professional audio equipment across all major brands.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">📋</div>
             <h3>Documented Repairs</h3>
             <p>Every repair is logged with diagnosis, fix, and parts used. You get a clear picture of what was done and why.</p>
           </div>
@@ -118,7 +112,7 @@
         </div>
         <div class="grid-2">
           <div class="feature-card">
-            <h3 style="margin-bottom:1.25rem;">🔥 Tube Amplifiers</h3>
+            <h3 style="margin-bottom:1.25rem;">Tube Amplifiers</h3>
             <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Retube + bias - combo</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$65 + parts</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Retube + bias - head</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$85 + parts</td></tr>
@@ -129,7 +123,7 @@
             </table>
           </div>
           <div class="feature-card">
-            <h3 style="margin-bottom:1.25rem;">🎸 Guitar & Bass</h3>
+            <h3 style="margin-bottom:1.25rem;">Guitar & Bass</h3>
             <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Full setup + intonation</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$55</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Pickup replacement</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$45 + parts</td></tr>
@@ -140,7 +134,7 @@
             </table>
           </div>
           <div class="feature-card">
-            <h3 style="margin-bottom:1.25rem;">🎛️ Synths & Pedals</h3>
+            <h3 style="margin-bottom:1.25rem;">Synths & Pedals</h3>
             <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Synth troubleshooting</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$65/hr + parts</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Key contact cleaning</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$45</td></tr>
@@ -150,7 +144,7 @@
             </table>
           </div>
           <div class="feature-card">
-            <h3 style="margin-bottom:1.25rem;">📋 Policies</h3>
+            <h3 style="margin-bottom:1.25rem;">Policies</h3>
             <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Bench / diagnostic fee</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$45</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.5rem 0; color:var(--text);">Minimum charge</td><td style="padding:0.5rem 0; text-align:right; color:var(--accent); font-weight:600;">$45</td></tr>
@@ -728,8 +722,8 @@
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
       function setTheme(mode) {
-        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
-        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "Light"; }
       }
       let saved = null;
       try { saved = localStorage.getItem("theme"); } catch (e) {}

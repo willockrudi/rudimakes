@@ -111,7 +111,7 @@
         <li><a href="../index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button">Light</button>
       </div>
     </div>
   </nav>
@@ -214,8 +214,8 @@
       const root = document.documentElement;
       const btn = document.getElementById("themeToggle");
       function setTheme(mode) {
-        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
-        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "Light"; }
       }
       let saved = null;
       try { saved = localStorage.getItem("theme"); } catch (e) {}

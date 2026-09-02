@@ -2333,10 +2333,10 @@ def normalize_status(value: str) -> str:
 def status_badge(status: str) -> tuple[str, str]:
     s = (status or "Complete").strip().lower()
     if s.startswith("in"):
-        return ("status-progress", "🛠 In Progress")
+        return ("status-progress", "In Progress")
     if s.startswith("arch"):
-        return ("status-archived", "🗃 Archived")
-    return ("status-complete", "✅ Complete")
+        return ("status-archived", "Archived")
+    return ("status-complete", "Complete")
 
 
 def ensure_project_slugs(projects: list[dict]) -> bool:

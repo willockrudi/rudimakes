@@ -186,7 +186,7 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">☀️ Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">Light</button>
       </div>
     </div>
   </nav>
@@ -221,37 +221,30 @@
         </div>
         <div class="grid-3">
           <div class="feature-card">
-            <div class="feature-icon">🔥</div>
             <h3><a href="services/tube-amp-repair.html">Tube Amplifiers</a></h3>
             <p>Retube, bias, recap, hum diagnosis, intermittent faults, and full restoration. Fender, Marshall, Vox, Mesa, boutique - all makes and eras.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎛️</div>
             <h3><a href="services/synthesizer-repair.html">Synthesizers</a></h3>
             <p>Vintage and modern synth repair. Key contacts, voice cards, power supplies, calibration, and component-level troubleshooting.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎸</div>
             <h3>Guitar & Bass Electronics</h3>
             <p>Pickup swaps, rewires, jack replacement, shielding, pot cleaning, and full setups with intonation.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎚️</div>
             <h3>Pedals & Effects</h3>
             <p>Troubleshooting, switch and jack repair, component replacement, and modifications. All brands and formats.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🎹</div>
             <h3><a href="services/keyboard-organ-service.html">Hammond, Leslie &amp; Rhodes</a></h3>
             <p>Electromechanical keyboards - AO-28 recapping and hum, Leslie motor service, Rhodes tuning, voicing, and pickup setup.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔊</div>
             <h3><a href="services/pro-audio-repair.html">Pro Audio & Backline</a></h3>
             <p>As a working backline tech, I service professional audio gear across all major brands and touring systems.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🔧</div>
             <h3>Custom & Unusual Jobs</h3>
             <p>Circuit design, one-off builds, vintage restoration, and weird projects that other shops won't touch. If it's interesting, I'm in.</p>
           </div>
@@ -395,7 +388,7 @@
       <div class="project-card" data-tags="raspberry-pi,software,hardware,broadcast,from-scratch">
         <img class="project-thumb" src="images/projects/tbx-home-broadcast.jpg" alt="TBX - home broadcast station wordmark" loading="lazy" decoding="async">
         <div class="project-info">
-          <h3>TBX Home Broadcast Station <span class="status-badge status-progress">🛠 In Progress</span></h3>
+          <h3>TBX Home Broadcast Station <span class="status-badge status-progress">In Progress</span></h3>
           <p>A home television broadcast station on a Raspberry Pi 5, built out of a media collecting habit. Numbered channels, a real schedule, and a seek algorithm that drops you into whatever is playing right now rather than starting a file from the beginning. FastAPI and mpv over a Unix socket, and a React UI driven by an IR remote.</p>
           <div class="card-tags">
             <span class="tag-chip">raspberry-pi</span>
@@ -411,7 +404,7 @@
       <div class="project-card" data-tags="compiler,language,c,x86,linux,from-scratch">
         <img class="project-thumb" src="images/projects/blu-language.jpg" alt="Blu - a compiled programming language written from scratch, targeting x86-64 Linux" loading="lazy" decoding="async">
         <div class="project-info">
-          <h3>Blu - A Compiled Programming Language <span class="status-badge status-progress">🛠 In Progress</span></h3>
+          <h3>Blu - A Compiled Programming Language <span class="status-badge status-progress">In Progress</span></h3>
           <p>A compiled programming language built from scratch, for no reason other than finding out whether I could. Full pipeline from lexer to native x86-64 codegen, running on Linux, with closures, record types inferred from usage, a standard library, and 400+ regression tests that have to stay green.</p>
           <div class="card-tags">
             <span class="tag-chip">compiler</span>
@@ -545,10 +538,10 @@
       function setTheme(mode) {
         if (mode === "light") {
           root.setAttribute("data-theme", "light");
-          if (btn) btn.textContent = "🌙 Dark";
+          if (btn) btn.textContent = "Dark";
         } else {
           root.removeAttribute("data-theme");
-          if (btn) btn.textContent = "☀️ Light";
+          if (btn) btn.textContent = "Light";
         }
       }
       let saved = null;
