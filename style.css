@@ -1719,3 +1719,16 @@ footer a:hover {
   color: var(--text-muted);
   margin-top: 0.15rem;
 }
+
+/* Filament mark in the nav lockup */
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-mark {
+  height: 1.6rem;
+  width: auto;
+  display: block;
+}
