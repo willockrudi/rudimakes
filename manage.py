@@ -2936,6 +2936,9 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
         ("Diagnosis", _lines_to_br(r.get("diagnosis", ""))),
         ("Fix", _lines_to_br(r.get("fix", ""))),
         ("What I Took Away", _lines_to_br(r.get("notes", ""))),
+        # Optional. Skipped entirely when absent, which is every older repair.
+        ("Outstanding", _lines_to_br(r.get("outstanding", ""))),
+        ("Reference", _lines_to_br(r.get("reference", ""))),
     ]
     body_parts = []
     for heading, value in sections:

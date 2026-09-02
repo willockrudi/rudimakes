@@ -127,7 +127,7 @@
       },
       {
         "title": "Regression Infrastructure",
-        "text": "By phase 4 the test suite was the thing keeping the project honest. Several hundred regression tests organised by category, run by shell scripts that report pass rates, now past 400.\nThe rule is that no phase closes until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.",
+        "text": "By phase 4 the test suite was the thing keeping the project honest. Several hundred regression tests organized by category, run by shell scripts that report pass rates, now past 400.\nThe rule is that no phase closes until every test is green. On a compiler this is not optional - a change to codegen can silently break a language feature three layers away, and without the suite you find out weeks later in a program that used to work.",
         "image": "",
         "alt": ""
       },

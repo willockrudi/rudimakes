@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts | Filament</title>
+  <meta name="description" content="Marshall JCM2000 DSL100 (Superlead Standard): In as &quot;buzzy.&quot; High-frequency oscillation, visible on the scope when the amp was driven hard and absent at low ..." />
+  <meta property="og:title" content="Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts | Filament" />
+  <meta property="og:description" content="Marshall JCM2000 DSL100 (Superlead Standard): In as &quot;buzzy.&quot; High-frequency oscillation, visible on the scope when the amp was driven hard and absent at low ..." />
+  <meta property="og:image" content="https://rudimakes.com/images/og-repairs.png" />
+  <meta property="og:url" content="https://rudimakes.com/repairs/marshall-jcm2000-dsl100-hf-oscillation-fx-loop-jack-contacts.html" />
+  <meta property="og:type" content="article" />
+  <link rel="canonical" href="https://rudimakes.com/repairs/marshall-jcm2000-dsl100-hf-oscillation-fx-loop-jack-contacts.html" />
+  <link rel="icon" type="image/png" href="../images/favicon.png" />
+  <link rel="apple-touch-icon" href="../images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="../style.css" />
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts",
+  "description": "Marshall JCM2000 DSL100 (Superlead Standard): In as \"buzzy.\" High-frequency oscillation, visible on the scope when the amp was driven hard and absent at low volume. The original complaint - not something introduced on the bench, and unrelated to the thermal bias drift this same amp also had.",
+  "url": "https://rudimakes.com/repairs/marshall-jcm2000-dsl100-hf-oscillation-fx-loop-jack-contacts.html",
+  "mainEntityOfPage": "https://rudimakes.com/repairs/marshall-jcm2000-dsl100-hf-oscillation-fx-loop-jack-contacts.html",
+  "author": {
+    "@type": "Person",
+    "name": "Rudi Willock"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Filament",
+    "legalName": "Filament LLC",
+    "@id": "https://rudimakes.com/#business"
+  },
+  "about": "Marshall JCM2000 DSL100 (Superlead Standard)",
+  "datePublished": "2026-09-02",
+  "dateModified": "2026-09-02",
+  "keywords": "amp, marshall, jcm2000, dsl100, tube, el34, oscillation, fx-loop, jacks, intermittent, diagnostics",
+  "inLanguage": "en-US",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Filament Repair Log",
+    "url": "https://rudimakes.com/repairs.html"
+  },
+  "mentions": {
+    "@type": "Service",
+    "serviceType": "Musical instrument and amplifier repair",
+    "provider": {
+      "@id": "https://rudimakes.com/#business"
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Indianapolis"
+    }
+  }
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://rudimakes.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Repair Log",
+      "item": "https://rudimakes.com/repairs.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts",
+      "item": "https://rudimakes.com/repairs/marshall-jcm2000-dsl100-hf-oscillation-fx-loop-jack-contacts.html"
+    }
+  ]
+}
+  </script>
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html"><img class="nav-mark" src="../images/filament-mark.png" alt="" width="20" height="40" decoding="async"><span>Filament</span></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="navMenu">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../repairs.html" class="active">Repair Log</a></li>
+        <li><a href="../shop.html">Shop</a></li>
+        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container project-detail">
+
+      <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span>→</span>
+        <a href="../repairs.html">Repair Log</a>
+        <span>→</span>
+        Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts
+      </div>
+
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.5rem); margin-bottom:1rem;">
+        Marshall JCM2000 DSL100 — HF Oscillation Traced to the FX Loop Jack Contacts
+      </h1>
+
+      <p class="muted" style="margin-bottom:1rem;">2026-09-02 • Fixed - pending soak test</p>
+
+      <p style="color:var(--text-muted); font-size:1.05rem; max-width:680px; margin-bottom:1.5rem;"><strong>Device:</strong> Marshall JCM2000 DSL100 (Superlead Standard)</p>
+
+      <div class="card-tags">
+            <span class="tag-chip">amp</span>
+            <span class="tag-chip">marshall</span>
+            <span class="tag-chip">jcm2000</span>
+            <span class="tag-chip">dsl100</span>
+            <span class="tag-chip">tube</span>
+            <span class="tag-chip">el34</span>
+            <span class="tag-chip">oscillation</span>
+            <span class="tag-chip">fx-loop</span>
+            <span class="tag-chip">jacks</span>
+            <span class="tag-chip">intermittent</span>
+            <span class="tag-chip">diagnostics</span>
+          </div>
+
+      
+
+    </div>
+
+    <div class="container">
+      <div class="project-steps">
+        <!-- REPAIR_BODY_START -->
+        <h2>Symptom</h2>
+        <p>In as &quot;buzzy.&quot; High-frequency oscillation, visible on the scope when the amp was driven hard and absent at low volume. The original complaint - not something introduced on the bench, and unrelated to the thermal bias drift this same amp also had.</p>
+        <h2>Diagnosis</h2>
+        <p>The fault was in the FX loop send and return jack switching contacts, which had gone intermittent.<br>Those jacks are normalled: with nothing plugged in, the switch leaves bridge send to return internally so the signal passes through the loop. With the contacts intermittent, that internal path was breaking or partially opening under drive, and the amp oscillated at high frequency.<br>What made it hard to find is that both halves of the amp tested clean in isolation while the whole amp oscillated. Every isolation test bypassed the faulty contacts. Driving the FX return lifts the switch leaves out of circuit, so the power amp tested clean. Scoping the send does not exercise the contacts under load, so the preamp tested clean. The fault lived in the gap between the two test points.<br>Recognizing that the two clean results bracketed a region nothing had actually tested is what led to the answer.<br>Three things narrowed it before that. The oscillation needed signal to start - nothing at full volume into a dead input - so it was a drive-dependent fault, not a free-running oscillator. Opening CON10, which lifts global negative feedback and presence at the R41/R42 junction, changed nothing, ruling out the feedback loop and output transformer primary polarity. And with both halves individually clean, the fault had to sit between them.<br>Schematic used: JCM2000 Superlead Standard, JCM2-60-00.DGM, Iss 1. A TSL100 print (TL10-60-02) was consulted early and its designators do not match the DSL - worth knowing before it costs you an afternoon. The rear/jack PCB sheet TL10-62-02 is common to the range and does apply.</p>
+        <h2>Fix</h2>
+        <p>Contacts cleaned by repeated plug insertion and removal, then DeoxIT. The oscillation could not be reproduced afterward at any setting.<br>The isolation sequence, in order:<br>1. Known-good output tubes fitted. No change.<br>2. Fresh preamp tubes. No change.<br>3. Filter capacitors replaced, original holes and original grounds. No change.<br>4. C46 replaced, 22pF 500V to 1kV. No change, but worth keeping - 500V is under-rated on that node.<br>5. Suspect resistors ohmed out, all in spec. Expected, since the fault class was dynamic rather than resistive.<br>6. CON10 unplugged, opening global NFB and presence at the R41/R42 junction. No change, ruling out the feedback loop and OT primary polarity.<br>7. Signal into the FX return, driven hard. Clean and loud - power amp ruled out.<br>8. Scope on the FX send with signal at the input. Clean - preamp ruled out.<br>9. Send patched to return with a short cable. No oscillation at full volume, which isolated the fault to the internal switching.<br>10. Patch cable removed. Still clean - the contacts had been wiped by the plug insertions.<br>11. Jack contacts cleaned properly. Fault not reproducible.<br>The bias supply rework listed separately was carried out on this amp before the above and had no effect on the oscillation, which is what established the two as unrelated faults.</p>
+        <h2>What I Took Away</h2>
+        <p>Two clean results are not the same as a clean amp. Every isolation test I ran was valid on its own terms and every one of them routed around the actual fault. The preamp test did not load the contacts; the power amp test lifted them out of circuit entirely. When both halves of something test good and the whole does not, the answer is in whatever the tests have in common - here, that they both skipped the switching.<br>The other lesson is about order. Steps 1 through 5 were all reasonable and none of them touched the fault, because they were treating a dynamic switching problem as a component problem. The signal-path bracketing in steps 6 through 9 took a fraction of the time and found it. Worth reaching for isolation tests earlier when a fault only appears under drive.</p>
+        <h2>Outstanding</h2>
+        <p>This one is not signed off yet. Before it leaves:<br>Soak test on the load box - hot, driven, an hour or more. Tap and wiggle both jacks and flex the rear board while it runs. Intermittents that disappear when disturbed have a habit of coming back.<br>Reflow the jack solder pads. Panel-mounted jacks on a PCB crack their joints from mechanical stress, and a hairline crack mimics a dirty contact exactly. This is where the fault will return if it returns.<br>Check the switch leaf tension. If a fat plug has splayed the leaves they will not close reliably no matter how clean they are. Reform or replace.<br>One thing still unexplained: opening CON10 produced no change in output level. Lifting global negative feedback should give a noticeable gain rise. If it genuinely did not, the loop may already be open - a separate fault that would leave the amp buzzy on its own. To check: ohm the speaker jack tip to the R41/R42 junction, cold. It should read a resistor, not open.</p>
+        <h2>Reference</h2>
+        <p>Phase inverter and feedback designators from JCM2-60-00, noted here because the TSL prints do not match.<br>Phase inverter is V4, ECC83, long-tailed pair. Plate loads R45 100K and R46 82K. C19 47p 500V across the plates for HF stability. Cathode R35 470R, tail R41 10K plus R42 4K7 to ground. Grid returns R39 and R40, 1M. The NFB and presence injection node is the R41/R42 junction, which also carries R49 1M to ground and C21 4u7 in parallel with link W1. The loop exits on CON10 to CON12 on the front panel board JCM2-61-00 - there is no NFB resistor on the main board, the series resistor and presence pot are off-sheet.<br>Rear/jack PCB TL10-62-02, common to the JCM2000 range. Op-amp FX loop on an MC4558 or LM348 with switched jacks JS4 to JS7. Also carries the emulated DI output and XLR. Secondary taps arrive on links W5 16 ohm, W1 8 ohm, W3 4 ohm; SW1a selects 8 or 4 for JS1 and JS2, and JS3 is 16 ohm only.</p>
+        <!-- REPAIR_BODY_END -->
+      </div>
+    </div>
+
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">More From the Bench</p>
+          <h2 class="section-title">Related Repairs</h2>
+        </div>
+        <ul class="related-repairs">
+          <li><a href="marshall-jcm2000-dsl100-thermal-bias-drift-conductive-trace.html">Marshall JCM2000 DSL100 — Thermal Bias Drift (Conductive Trace, Bias Supply Hand-Wired)</a><span class="muted"> &mdash; Marshall JCM2000 DSL100 (Superlead Standard)</span></li>
+          <li><a href="ampeg-svt-classic-screen-resistor-failure-full-retube.html">Ampeg SVT Classic — Screen Resistor Failure &amp; Full Retube</a><span class="muted"> &mdash; Ampeg SVT Classic Bass Head</span></li>
+          <li><a href="fender-twin-reverb-no-reverb-dead-recovery-tube.html">Fender Twin Reverb — No Reverb (Dead Recovery Tube)</a><span class="muted"> &mdash; Fender Twin Reverb Guitar Amplifier</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="section" style="border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Same Problem?</p>
+          <h2 class="section-title">Get Your Gear Diagnosed</h2>
+          <p class="section-note">
+            Every repair on this site was diagnosed and documented on a real bench in Indianapolis.
+            If your gear is doing something similar, send it over and I'll find out why.
+          </p>
+        </div>
+        <div style="text-align:center;">
+          <a href="../repairs.html#intake" class="btn btn-primary btn-lg">Book a Repair</a>
+          <a href="../repairs.html" class="btn btn-outline" style="margin-left:0.5rem;">See More Repairs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
+      <div class="footer-links">
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById("themeToggle");
+      function setTheme(mode) {
+        if (mode === "light") { root.setAttribute("data-theme", "light"); if (btn) btn.textContent = "🌙 Dark"; }
+        else { root.removeAttribute("data-theme"); if (btn) btn.textContent = "☀️ Light"; }
+      }
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      setTheme(saved === "light" ? "light" : "dark");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isLight = root.getAttribute("data-theme") === "light";
+        const next = isLight ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        setTheme(next);
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const toggle = document.getElementById("navToggle");
+      const menu = document.getElementById("navMenu");
+      if (!toggle || !menu) return;
+      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+    })();
+  </script>
+
+  
+</body>
+</html>
