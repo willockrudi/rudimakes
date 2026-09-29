@@ -70,6 +70,8 @@ PROJECTS_END = "<!-- PROJECTS_END -->"
 REPAIRS_START = "<!-- REPAIRS_START -->"
 RECENT_REPAIRS_START = "<!-- RECENT_REPAIRS_START -->"
 RECENT_REPAIRS_END = "<!-- RECENT_REPAIRS_END -->"
+BENCH_PHOTOS_START = "<!-- BENCH_PHOTOS_START -->"
+BENCH_PHOTOS_END = "<!-- BENCH_PHOTOS_END -->"
 REPAIRS_END = "<!-- REPAIRS_END -->"
 TAGS_START = "<!-- TAGS_START -->"
 TAGS_END = "<!-- TAGS_END -->"
@@ -657,9 +659,6 @@ def _web_layout(title: str, body: str, message: str = "", active_tab: str = "das
 
     tabs = [
         ("dashboard", "/", "Dashboard"),
-        ("shop", "/?tab=shop", "Shop"),
-        ("add-item", "/?tab=add-item", "Add Item"),
-        ("add-build", "/?tab=add-build", "Add Build"),
         ("add-repair", "/?tab=add-repair", "Add Repair"),
         ("site", "/?tab=site", "Site Settings"),
     ]
@@ -2712,6 +2711,25 @@ def _recent_repairs_html(limit: int = 4) -> str:
     return chr(10).join(rows)
 
 
+def _bench_photos_html(limit: int = 8) -> str:
+    """Repairs that have a photo, newest first, as the homepage photo strip."""
+    repairs = [r for r in load_repairs()
+               if (r.get("slug") or "").strip() and (r.get("image") or "").strip()]
+    repairs.sort(key=lambda r: (r.get("date") or ""), reverse=True)
+    tiles = []
+    for r in repairs[:limit]:
+        slug = html.escape(r.get("slug"), quote=True)
+        img = html.escape(r.get("image"), quote=True)
+        alt = html.escape(r.get("alt") or r.get("device") or r.get("title", ""), quote=True)
+        device = html.escape((r.get("device") or r.get("title") or "").strip(), quote=True)
+        tiles.append(
+            '        <a class="bench-tile" href="repairs/' + slug + '.html">'
+            + '<img src="' + img + '" alt="' + alt + '" loading="lazy" decoding="async">'
+            + "<span>" + device + "</span></a>"
+        )
+    return chr(10).join(tiles)
+
+
 def faq_schema_html(content: str) -> str:
     """Build FAQPage JSON-LD by reading the FAQ block already in the page.
 
@@ -2753,39 +2771,29 @@ def faq_schema_html(content: str) -> str:
     )
 
 
-def rebuild_index_from_projects(projects):
-    if ensure_project_slugs(projects):
-        save_projects(projects)
+def _splice_between(content: str, start: str, end: str, inner: str) -> str:
+    if start not in content or end not in content:
+        return content
+    a = content.index(start) + len(start)
+    b = content.index(end)
+    return content[:a] + chr(10) + inner + chr(10) + "        " + content[b:]
 
+
+def rebuild_index_from_projects(projects=None):
+    """Regenerate index.html (the homepage) from template.html.
+
+    The build log was taken off the site in the 2026-09 revamp (TBX has its
+    own page at /tbx/), so `projects` is ignored; it stays in the signature
+    for the older call sites.
+    """
     if not os.path.isfile(TEMPLATE_PATH):
-        raise FileNotFoundError(
-            f"template.html not found at {TEMPLATE_PATH}\n"
-            "Create it by copying index.html -> template.html"
-        )
+        raise FileNotFoundError(f"template.html not found at {TEMPLATE_PATH}")
 
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
-        template = f.read()
+        new_content = f.read()
 
-    if PROJECTS_START not in template or PROJECTS_END not in template:
-        raise ValueError(
-            "Markers not found in template.html.\n"
-            "Add:\n"
-            "<!-- PROJECTS_START -->\n"
-            "<!-- PROJECTS_END -->"
-        )
-
-    start_i = template.index(PROJECTS_START) + len(PROJECTS_START)
-    end_i = template.index(PROJECTS_END)
-    cards = "".join(project_card_html(p) for p in projects)
-    new_content = template[:start_i] + "\n" + cards + template[end_i:]
-
-    if RECENT_REPAIRS_START in new_content and RECENT_REPAIRS_END in new_content:
-        rs = new_content.index(RECENT_REPAIRS_START) + len(RECENT_REPAIRS_START)
-        re_ = new_content.index(RECENT_REPAIRS_END)
-        new_content = (
-            new_content[:rs] + chr(10) + _recent_repairs_html() + chr(10) + "        "
-            + new_content[re_:]
-        )
+    new_content = _splice_between(new_content, RECENT_REPAIRS_START, RECENT_REPAIRS_END, _recent_repairs_html())
+    new_content = _splice_between(new_content, BENCH_PHOTOS_START, BENCH_PHOTOS_END, _bench_photos_html())
 
     if os.path.exists(SITE_PATH):
         site = load_site()
@@ -3336,13 +3344,14 @@ def rebuild_service_pages():
 def rebuild_all(projects=None):
     if projects is None:
         projects = load_projects()
-    rebuild_index_from_projects(projects)
-    rebuild_project_pages(projects)
     # Detail pages first: they assign the slugs the index cards link to.
     rebuild_repair_pages()
     rebuild_repairs_page()
     rebuild_service_pages()
-    rebuild_shop()
+    rebuild_index_from_projects()
+    # The shop and the build log were retired in the 2026-09 revamp; nothing
+    # generates shop/ or projects/ pages any more. See RETIRED-PROJECTS.md.
+    update_sitemap()
 
 
 # ---------- Shop: data ----------
@@ -3979,8 +3988,6 @@ def update_sitemap(shop: dict | None = None):
     lastmod is the date on the content itself.
     """
     sitemap_path = os.path.join(ROOT, "sitemap.xml")
-    if shop is None:
-        shop = load_shop()
 
     today = datetime.now().strftime("%Y-%m-%d")
 
@@ -3989,7 +3996,6 @@ def update_sitemap(shop: dict | None = None):
         return value if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) else today
 
     repairs = load_repairs()
-    projects = load_projects()
 
     # The newest repair date doubles as the freshness signal for the pages
     # that list them.
@@ -4009,13 +4015,7 @@ def update_sitemap(shop: dict | None = None):
                 clean_date(r.get("date")), "monthly", "0.8",
             ))
 
-    for p in projects:
-        slug = (p.get("slug") or "").strip()
-        if slug:
-            entries.append((
-                SITE_URL + "/projects/" + slug + ".html",
-                clean_date(p.get("date")), "monthly", "0.5",
-            ))
+    entries.insert(1, (SITE_URL + "/tbx/", today, "monthly", "0.9"))
 
     for svc in load_services():
         slug = (svc.get("slug") or "").strip()
@@ -4025,18 +4025,6 @@ def update_sitemap(shop: dict | None = None):
             )
     if load_services():
         entries.insert(2, (SITE_URL + "/services.html", today, "monthly", "0.9"))
-
-    shop_urls = [SITE_URL + "/shop.html"]
-    shop_urls += [
-        SITE_URL + "/shop/" + c.get("slug") + ".html"
-        for c in sorted_collections(shop) if c.get("slug")
-    ]
-    shop_urls += [
-        SITE_URL + "/shop/" + i.get("slug") + ".html"
-        for i in visible_items(shop) if i.get("slug")
-    ]
-    for u in shop_urls:
-        entries.append((u, today, "weekly", "0.6"))
 
     entries.append((SITE_URL + "/shopcat/", today, "monthly", "0.3"))
 
@@ -4942,30 +4930,18 @@ def edit_collections():
 
 def print_menu():
     print("\nCommands:")
-    print("  1) input-project   (add new build)")
-    print("  2) edit-project    (edit build details)")
-    print("  3) edit-story      (add/replace build story sections with photos + text)")
-    print("  4) list-projects   (show builds list)")
-    print("  5) rebuild         (regenerate index.html + repairs.html + project pages)")
+    print("  5) rebuild         (regenerate the homepage, repair log, services and sitemap)")
     print("  6) edit-site       (name, about, contact, tags)")
     print("  7) input-repair    (add troubleshooting entry)")
     print("  8) list-repairs    (show troubleshooting list)")
     print("  9) edit-repair     (edit troubleshooting entry)")
-    print(" 10) delete-project  (remove build + project page)")
     print(" 11) delete-repair   (remove troubleshooting entry)")
     print(" 12) undo-last       (restore latest backup)")
     print(" 13) list-backups    (show JSON backups)")
     print(" 14) restore-backup  (choose backup to restore)")
     print(" 15) publish-github  (git add/commit/push all changes)")
     print(" 16) web-ui          (open browser admin menu)")
-    print("  --- shop ---")
-    print(" 17) list-items      (show shop inventory)")
-    print(" 18) input-item      (add gear, part, or mod kit)")
-    print(" 19) edit-item       (edit a listing / add payment links)")
-    print(" 20) mark-sold       (someone bought it - run this first)")
-    print(" 21) set-stock       (restock a part or kit)")
-    print(" 22) delete-item     (remove a listing + its page)")
-    print(" 23) edit-collections(add/edit/remove shop collections)")
+    print("  (The build log and the shop were retired in the 2026-09 revamp.)")
     print("  q) quit")
 
 
@@ -4989,17 +4965,9 @@ def main():
         if cmd in ["q", "quit", "exit", "0"]:
             print("Goodbye.")
             break
-        if cmd in ["1", "input-project", "add", "new"]:
-            input_project()
-        elif cmd in ["2", "edit-project", "project-edit"]:
-            edit_project()
-        elif cmd in ["3", "edit-story", "project-steps", "steps"]:
-            edit_project_steps()
-        elif cmd in ["4", "list-projects", "list"]:
-            list_projects(load_projects())
-        elif cmd in ["5", "rebuild", "build"]:
+        if cmd in ["5", "rebuild", "build"]:
             rebuild_all()
-            print("\nRebuilt index.html + repairs.html + shop.html + projects/*.html + shop/*.html ✅")
+            print("\nRebuilt index.html + repairs.html + services + sitemap.xml")
         elif cmd in ["6", "edit-site", "site"]:
             edit_site()
         elif cmd in ["7", "input-repair", "repair", "new-repair"]:
@@ -5008,8 +4976,6 @@ def main():
             list_repairs(load_repairs())
         elif cmd in ["9", "edit-repair"]:
             edit_repair()
-        elif cmd in ["10", "delete-project", "remove-project"]:
-            delete_project()
         elif cmd in ["11", "delete-repair", "remove-repair"]:
             delete_repair()
         elif cmd in ["12", "undo-last", "undo"]:
@@ -5027,20 +4993,6 @@ def main():
             if port_raw.isdigit():
                 port = int(port_raw)
             start_web_ui(host=host or "127.0.0.1", port=port)
-        elif cmd in ["17", "list-items", "items", "inventory"]:
-            list_items(load_shop())
-        elif cmd in ["18", "input-item", "add-item", "new-item"]:
-            input_item()
-        elif cmd in ["19", "edit-item"]:
-            edit_item()
-        elif cmd in ["20", "mark-sold", "sold"]:
-            mark_sold()
-        elif cmd in ["21", "set-stock", "restock", "stock"]:
-            set_stock()
-        elif cmd in ["22", "delete-item", "remove-item"]:
-            delete_item()
-        elif cmd in ["23", "edit-collections", "collections"]:
-            edit_collections()
         else:
             print("Unknown command.")
 

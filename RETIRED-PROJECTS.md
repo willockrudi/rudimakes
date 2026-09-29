@@ -1,5 +1,24 @@
 # Retired projects — do not restore
 
+## 2026-09-29: build log and shop removed entirely
+
+The site was revamped around two things: the repair business and TBX.
+
+- **Builds tab removed.** `projects.json` is now `[]` and `manage.py` no longer
+  generates `projects/*.html`. TBX has its own page at `/tbx/` (copied from the
+  TBX project by `tools/sync_tbx.py`); `projects/tbx-home-broadcast.html` is a
+  redirect stub to it.
+- **Blu language removed** (`projects/blu-language.html` and its image).
+- **Shop removed.** `shop.html` redirects home; `shop/*.html` and the shop
+  templates are gone and `manage.py` no longer builds them. `shop.json` is kept
+  as data only. Shop Cat (`shopcat/`, the game) is not the shop and stays.
+
+**Before editing from any other checkout (e.g. the Windows folder below), `git pull`
+first.** An old `manage.py` would regenerate the shop and build pages.
+
+---
+
+
 On **2026-08-29** the build log was deliberately cut down to two projects.
 The site is being focused on repair work and the shop; the projects below are
 retired and should **not** be added back to `projects.json`.

@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TBX Home Broadcast</title>
+<link rel="canonical" href="https://rudimakes.com/tbx/">
+<meta name="description" content="TBX turns the movies and shows you own into live, scheduled television on any TV, including a CRT. Designed and built by Filament.">
+<meta name="theme-color" content="#0B0D12">
+<meta property="og:title" content="TBX Home Broadcast">
+<meta property="og:description" content="Your station. Your signal. Your broadcast.">
+<meta property="og:image" content="https://rudimakes.com/tbx/assets/brand/tbx-og.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/brand/tbx-icon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/brand/tbx-icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/brand/tbx-icon-180.png">
+<link rel="preload" href="assets/fonts/Outfit-Variable.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="assets/fonts/DMSans-Variable.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+/* Layout concept: the page is tuned like a TV. Each section is a numbered
+   channel in the header, and the box's own coral channel-number flash
+   appears top-left as you arrive on one. Single dark look on Midnight,
+   deliberately: it is the brand's ground. */
+@font-face { font-family: "Outfit"; src: url("assets/fonts/Outfit-Variable.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "DM Sans"; src: url("assets/fonts/DMSans-Variable.ttf") format("truetype"); font-weight: 100 1000; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  /* ground + neutrals */
+  --midnight: #0B0D12; --surface: #13161D; --raised: #1B1F28; --line: #2A2F3A;
+  --paper: #F7F3EA; --mute: #A29D93; --dim: #6E6A63;
+  /* glow */
+  --coral: #FF6B2C; --amber: #FFA31F; --cream: #FFE9A0; --aqua: #7FD6E6; --signal: #4F6FD6;
+  --ok: #58C98B;
+  /* type */
+  --display: "Outfit", "DM Sans", system-ui, sans-serif;
+  --text: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --s-1: .8125rem; --s0: 1rem; --s1: 1.1875rem; --s2: 1.5rem; --s3: 2rem;
+  --s4: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem); --s5: clamp(2.75rem, 1.6rem + 5vw, 5.25rem);
+  --gutter: clamp(16px, 4vw, 48px); --wrap: 1200px;
+  --bar-h: 60px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar-h) + 16px); -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--midnight); color: var(--paper);
+  font: 400 var(--s0)/1.6 var(--text); font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+img, video, svg { max-width: 100%; display: block; }
+a { color: var(--paper); text-decoration-color: var(--coral); text-underline-offset: .2em; }
+a:hover { color: var(--cream); }
+:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.02em; line-height: 1.05; text-wrap: balance; margin: 0; }
+p { margin: 0; text-wrap: pretty; }
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font: 600 var(--s-1)/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+
+/* ── header: the channel strip ─────────────────────────────────────── */
+.bar {
+  position: sticky; top: 0; z-index: 20;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: color-mix(in srgb, var(--midnight) 86%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.bar .wrap { height: var(--bar-h); display: flex; align-items: center; gap: 24px; }
+.bar .home { display: flex; align-items: center; gap: 12px; text-decoration: none; flex: none; }
+.bar .home img { height: 22px; width: auto; }
+.bar .home span { font: 500 var(--s-1)/1 var(--text); color: var(--mute); letter-spacing: .02em; white-space: nowrap; }
+.dial { display: flex; gap: 4px; margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.dial::-webkit-scrollbar { display: none; }
+.dial a {
+  display: flex; align-items: baseline; gap: 6px; padding: 8px 10px; border-radius: 8px;
+  text-decoration: none; color: var(--mute); font: 500 .875rem/1 var(--text); white-space: nowrap;
+}
+.dial a b { font: 600 .75rem/1 var(--display); color: var(--dim); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.dial a:hover { color: var(--paper); background: var(--surface); }
+.dial a[aria-current="true"] { color: var(--paper); }
+.dial a[aria-current="true"] b { color: var(--coral); }
+@media (max-width: 760px) { .bar .home span { display: none; } .dial a span { display: none; } .dial a b { font-size: .875rem; } }
+
+/* the on-screen channel flash, as the box draws it */
+.flash {
+  position: fixed; z-index: 30; left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 18px);
+  font: 700 clamp(2.75rem, 2rem + 3vw, 4.5rem)/1 var(--display); color: var(--coral);
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+  text-shadow: 0 0 18px rgba(255,107,44,.55), 0 0 2px var(--midnight);
+  opacity: 0; transition: opacity .25s; pointer-events: none;
+}
+.flash.on { opacity: 1; transition: none; }
+@media (prefers-reduced-motion: reduce) { .flash { display: none; } }
+
+/* ── hero ──────────────────────────────────────────────────────────── */
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: auto -20% -60% 30%; height: 120%;
+  background: radial-gradient(closest-side, rgba(255,107,44,.16), rgba(255,163,31,.05) 55%, transparent);
+  pointer-events: none;
+}
+.hero .wrap { position: relative; padding-block: clamp(56px, 9vw, 120px) clamp(48px, 7vw, 96px); display: grid; gap: 36px; }
+.lockup { width: min(640px, 100%); height: auto; overflow: visible; }
+.lockup path { transform-box: view-box; transform-origin: 168px 168px; }
+.hero h1 { font-size: var(--s5); max-width: 15ch; }
+.hero h1 em { font-style: normal; color: var(--coral); }
+.lede { font-size: var(--s1); color: var(--mute); max-width: 60ch; }
+.lede strong { color: var(--paper); font-weight: 500; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px; border-radius: 999px;
+  font: 600 .9375rem/1 var(--text); text-decoration: none; border: 1px solid var(--line); color: var(--paper);
+  background: transparent; cursor: pointer;
+}
+.btn:hover { border-color: var(--mute); color: var(--paper); }
+.btn.primary { background: var(--coral); color: var(--midnight); border-color: var(--coral); }
+.btn.primary:hover { background: #FF8752; border-color: #FF8752; color: var(--midnight); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lockup .m { animation: ignite .55s cubic-bezier(.2,.7,.2,1) both; }
+  .lockup .m-signal { animation-delay: 0s; }
+  .lockup .m-aqua   { animation-delay: .3s; }
+  .lockup .m-cream  { animation-delay: .6s; }
+  .lockup .m-amber  { animation-delay: 1.2s; }
+  .lockup .m-coral  { animation-delay: 1.8s; }
+  .lockup .w { animation: word .7s cubic-bezier(.2,.7,.2,1) 3.2s both; }
+  .lockup { animation: glow 1.4s ease-out 3.2s both; }
+}
+@keyframes ignite { from { opacity: 0; transform: scale(.55); } 55% { opacity: 1; filter: brightness(1.5); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes word { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+@keyframes glow { from { filter: drop-shadow(0 0 0 rgba(255,107,44,0)); } 35% { filter: drop-shadow(0 0 28px rgba(255,107,44,.55)); } to { filter: drop-shadow(0 0 18px rgba(255,107,44,.28)); } }
+.lockup { filter: drop-shadow(0 0 18px rgba(255,107,44,.28)); }
+
+/* ── generic section rhythm ────────────────────────────────────────── */
+section.ch { padding-block: clamp(64px, 9vw, 120px); border-top: 1px solid var(--line); }
+.head { display: grid; gap: 14px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
+.head .eyebrow b { color: var(--coral); font-variant-numeric: tabular-nums; margin-right: .6em; }
+.head h2 { font-size: var(--s4); }
+.head p { color: var(--mute); font-size: var(--s1); max-width: 62ch; }
+
+/* ── power on: the CRT ─────────────────────────────────────────────── */
+.power { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+@media (max-width: 860px) { .power { grid-template-columns: 1fr; } }
+.crt {
+  background: linear-gradient(160deg, #20242E, #15181F 60%); border-radius: 34px; padding: 5.5%;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 30px 80px -30px rgba(0,0,0,.8);
+  border: 1px solid var(--line); max-width: 100%;
+}
+.crt .glass { position: relative; aspect-ratio: 4 / 3; border-radius: 7% / 9%; overflow: hidden; background: #000; }
+.crt video { width: 100%; height: 100%; object-fit: contain; }
+.crt .glass::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0,0,0,.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.8);
+}
+.crt .chin { display: flex; justify-content: space-between; align-items: center; padding-top: 4%; }
+.crt .chin img { height: 14px; width: auto; opacity: .8; }
+.crt .led { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 10px var(--coral); }
+.power .copy { display: grid; gap: 18px; }
+.power .copy h2 { font-size: var(--s3); }
+.power .copy p { color: var(--mute); }
+.sound { justify-self: start; }
+.spec { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: .875rem; color: var(--mute); padding-top: 6px; border-top: 1px solid var(--line); margin-top: 6px; padding-block-start: 16px; }
+.spec dt { color: var(--dim); }
+.spec dd { margin: 0; color: var(--paper); }
+
+/* ── idea ──────────────────────────────────────────────────────────── */
+.idea { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 80px); align-items: start; }
+@media (max-width: 860px) { .idea { grid-template-columns: 1fr; } }
+.prose { display: grid; gap: 18px; font-size: var(--s1); color: var(--mute); max-width: 60ch; }
+.prose strong { color: var(--paper); font-weight: 500; }
+.guide {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px 24px 20px;
+  font-size: .9375rem; overflow: hidden; position: relative;
+}
+.guide::before { content: ""; position: absolute; right: -90px; bottom: -90px; width: 260px; height: 260px; opacity: .12;
+  background: url("assets/brand/tbx-mark.svg") no-repeat right bottom / contain; }
+.guide .gh { font: 700 1.25rem/1 var(--display); color: var(--coral); margin-bottom: 18px; letter-spacing: -.01em; }
+.guide ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; position: relative; }
+.guide li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 4px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.guide li b { font: 700 1rem/1.35 var(--display); color: var(--coral); font-variant-numeric: tabular-nums; }
+.guide li span { color: var(--paper); }
+.guide li small { grid-column: 2; color: var(--mute); font-size: .8125rem; }
+.guide .note { margin-top: 14px; font-size: .8125rem; color: var(--dim); position: relative; }
+
+.feats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; margin-top: clamp(40px, 6vw, 72px); }
+@media (max-width: 1000px) { .feats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .feats { grid-template-columns: 1fr; } }
+.feat { background: var(--midnight); padding: 26px 24px 28px; display: grid; gap: 14px; align-content: start; }
+.feat h3 { font-size: var(--s1); display: flex; align-items: center; gap: 10px; }
+.feat h3 i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.feat ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; color: var(--mute); font-size: .9375rem; }
+.feat li::before { content: "·"; color: var(--dim); margin-right: .45em; }
+.feat code { font: 500 .875em/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--paper); }
+
+/* ── photo + screenshot slots ──────────────────────────────────────── */
+.slot { margin: 0; display: grid; gap: 10px; min-width: 0; }
+.slot .frame { position: relative; overflow: hidden; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); aspect-ratio: var(--ar, 4 / 3); }
+.slot .frame img { width: 100%; height: 100%; object-fit: cover; }
+.slot figcaption { font-size: .875rem; color: var(--mute); display: flex; gap: 10px; align-items: baseline; }
+.slot figcaption b { color: var(--paper); font-weight: 500; }
+.slot .ph { position: absolute; inset: 0; display: none; place-content: center; text-align: center; gap: 6px; padding: 16px;
+  background: url("assets/brand/pattern-stagger-tile.svg") repeat center / 120px; }
+.slot .ph::before { content: ""; position: absolute; inset: 0; background: radial-gradient(closest-side, rgba(19,22,29,.94), rgba(19,22,29,.72)); }
+.slot .ph > * { position: relative; }
+.slot .ph strong { font: 600 1rem/1.2 var(--display); }
+.slot .ph code { font: 500 .75rem/1.3 ui-monospace, "SF Mono", Menlo, monospace; color: var(--mute); overflow-wrap: anywhere; }
+.slot.empty .ph { display: grid; }
+
+.photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.photos .wide { grid-column: span 2; grid-row: span 2; }
+.photos .wide { grid-template-rows: 1fr auto; }
+.photos .wide .frame { --ar: auto; min-height: 320px; }
+@media (max-width: 860px) { .photos { grid-template-columns: repeat(2, minmax(0, 1fr)); } .photos .wide { grid-column: 1 / -1; grid-row: auto; } .photos .wide .frame { --ar: 3 / 2; min-height: 0; } }
+@media (max-width: 520px) { .photos { grid-template-columns: 1fr; } }
+
+.panel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 18px; }
+.panel .phone { grid-column: 3; grid-row: 1 / span 2; justify-self: center; width: min(100%, 300px); }
+.panel .phone .frame { --ar: 9 / 19.5; border-radius: 40px; border: 10px solid #20242E; box-shadow: 0 0 0 1px var(--line); }
+.browser .frame { --ar: 16 / 10; padding-top: 28px; }
+.browser .frame::before { content: attr(data-url); position: absolute; inset: 0 0 auto 0; height: 28px; display: flex; align-items: center; padding-inline: 12px;
+  font: 500 .6875rem/1 ui-monospace, "SF Mono", Menlo, monospace; color: var(--dim); background: var(--raised); border-bottom: 1px solid var(--line); z-index: 1; }
+.browser .frame img, .browser .frame .ph { top: 28px; }
+.browser .frame img { position: absolute; left: 0; right: 0; bottom: 0; height: calc(100% - 28px); object-position: top; }
+@media (max-width: 860px) { .panel { grid-template-columns: repeat(2, minmax(0, 1fr)); } .panel .phone { grid-column: 1 / -1; grid-row: auto; } }
+@media (max-width: 520px) { .panel { grid-template-columns: 1fr; } }
+
+/* ── brand ─────────────────────────────────────────────────────────── */
+.sub { font: 600 var(--s2)/1.2 var(--display); margin: clamp(48px, 7vw, 88px) 0 20px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.sub small { font: 400 .9375rem/1.4 var(--text); color: var(--mute); }
+.sub:first-of-type { margin-top: 0; }
+.logos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 640px) { .logos { grid-template-columns: 1fr; } }
+.card { border-radius: 16px; aspect-ratio: 16 / 10; display: grid; place-items: center; padding: 12%; border: 1px solid var(--line); max-width: 100%; }
+.card img { width: 100%; height: auto; }
+.card.k-mark img { width: 42%; }
+.card.k-dark { background: var(--midnight); }
+.card.k-paper { background: var(--paper); border-color: var(--paper); }
+.card.k-coral { background: var(--coral); border-color: var(--coral); }
+.mono { width: 100%; aspect-ratio: 535.158 / 168; background: var(--midnight);
+  -webkit-mask: url("assets/brand/tbx-logo-mono.svg") no-repeat center / contain; mask: url("assets/brand/tbx-logo-mono.svg") no-repeat center / contain; }
+.logos figure { margin: 0; display: grid; gap: 10px; }
+.logos figcaption { font-size: .875rem; color: var(--mute); }
+.logos figcaption b { color: var(--paper); font-weight: 500; }
+
+.build { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 860px) { .build { grid-template-columns: 1fr; } }
+.construct { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: clamp(16px, 3vw, 32px); overflow-x: auto; }
+.construct svg { width: 100%; min-width: 460px; height: auto; }
+.construct text { font-family: var(--text); fill: var(--mute); font-size: 7px; }
+.construct text.k { fill: var(--paper); font-weight: 600; }
+.build .prose { font-size: var(--s0); }
+
+.swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.sw { display: grid; gap: 10px; }
+.sw i { display: block; aspect-ratio: 5 / 4; border-radius: 12px; border: 1px solid rgba(255,255,255,.06); }
+.sw div { display: grid; gap: 2px; font-size: .875rem; }
+.sw b { font: 600 1rem/1.2 var(--display); }
+.sw code { font: 500 .8125rem/1.3 ui-monospace, "SF Mono", Menlo, monospace; color: var(--paper); }
+.sw span { color: var(--mute); font-size: .8125rem; }
+.swatches + .swatches { margin-top: 26px; }
+@media (max-width: 760px) {
+  .swatches { grid-template-columns: 1fr; gap: 10px; }
+  .sw { grid-template-columns: 64px 1fr; align-items: center; gap: 14px; }
+  .sw i { aspect-ratio: 1; }
+}
+
+.type { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 760px) { .type { grid-template-columns: 1fr; } }
+.spec-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 18px; align-content: space-between; min-height: 240px; }
+.spec-card .meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: .8125rem; color: var(--mute); }
+.spec-card .meta b { color: var(--paper); font-weight: 500; white-space: nowrap; }
+.spec-card .big-o { font: 600 clamp(2.5rem, 1.8rem + 3vw, 4rem)/1 var(--display); letter-spacing: -.025em; }
+.spec-card .big-d { font: 500 clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem)/1.2 var(--text); font-variant-numeric: tabular-nums; }
+.spec-card .glyphs { font-size: .9375rem; color: var(--mute); overflow-wrap: anywhere; }
+
+.timeline { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; }
+.tl { position: relative; min-width: 760px; height: 230px; margin-inline: 76px; }
+.tl .axis { position: absolute; left: 0; right: 0; top: 114px; height: 2px; background: var(--line); }
+.tl .tick { position: absolute; top: 126px; transform: translateX(-50%); font-size: .75rem; color: var(--dim); font-variant-numeric: tabular-nums; }
+.tl .tick::before { content: ""; position: absolute; left: 50%; top: -12px; width: 1px; height: 6px; background: var(--dim); }
+.tl .beat { position: absolute; transform: translateX(-50%); display: grid; justify-items: center; gap: 6px; width: 132px; text-align: center; }
+.tl .beat.up { bottom: calc(100% - 96px); }
+.tl .beat.down { top: 152px; }
+.tl .beat b { font: 600 .9375rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.tl .beat span { font-size: .8125rem; color: var(--mute); line-height: 1.3; }
+.tl .dot { position: absolute; top: 115px; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 4px var(--surface); }
+.tl .held { position: absolute; top: 114px; height: 2px; background: linear-gradient(90deg, var(--paper), var(--dim)); }
+
+/* ── patterns ──────────────────────────────────────────────────────── */
+.patterns { display: grid; gap: 0; }
+.pat { position: relative; height: clamp(220px, 30vw, 420px); background-repeat: repeat; background-position: center; }
+.pat figcaption { position: absolute; left: var(--gutter); bottom: 18px; background: var(--midnight); color: var(--paper); border-radius: 999px; padding: 8px 14px; font-size: .8125rem; display: flex; gap: 8px; }
+.pat figcaption b { font-weight: 600; }
+.pat figcaption span { color: var(--mute); }
+.pat.rings { background-image: url("assets/brand/pattern-rings-tile.svg"); background-size: 200px; }
+.pat.scallop { background-image: url("assets/brand/pattern-scallop-tile.svg"); background-size: 150px; }
+.pat.stagger { background-image: url("assets/brand/pattern-stagger-tile.svg"); background-size: 170px; }
+.pat.scallop-mono { background-image: url("assets/brand/pattern-scallop-mono-tile.svg"); background-size: 96px; }
+.pat-row { display: grid; grid-template-columns: 1fr 1fr; }
+@media (max-width: 640px) { .pat-row { grid-template-columns: 1fr; } }
+
+/* ── status ────────────────────────────────────────────────────────── */
+.status { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+@media (max-width: 860px) { .status { grid-template-columns: 1fr; } }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.list li b { font-weight: 500; }
+.list li p { grid-column: 1; color: var(--mute); font-size: .9375rem; }
+.pill { grid-column: 2; grid-row: 1; align-self: start; font: 600 .6875rem/1 var(--text); letter-spacing: .08em; text-transform: uppercase; padding: 6px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: rgba(88,201,139,.12); }
+.pill.next { color: var(--amber); background: rgba(255,163,31,.12); }
+.pill.built { color: var(--aqua); background: rgba(127,214,230,.12); }
+.col-title { font: 600 var(--s1)/1.2 var(--display); margin-bottom: 14px; }
+
+/* ── footer ────────────────────────────────────────────────────────── */
+footer { border-top: 1px solid var(--line); padding-block: 56px calc(56px + env(safe-area-inset-bottom, 0px)); position: relative; overflow: hidden; }
+footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px; align-items: end; }
+footer .sign img { height: 40px; width: auto; margin-bottom: 18px; }
+footer p { color: var(--mute); font-size: .9375rem; }
+footer .maker { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+footer .maker img { height: 26px; width: auto; margin: 0; }
+footer .tag { font: 600 var(--s2)/1.2 var(--display); color: var(--paper); margin-bottom: 8px; }
+footer .right { text-align: right; font-size: .875rem; color: var(--mute); display: grid; gap: 6px; }
+@media (max-width: 640px) { footer .wrap { grid-template-columns: 1fr; } footer .right { text-align: left; } }
+
+/* concept gallery + colorways */
+.concept .frame { background: #EDEBE6; }
+.concept .frame::after, .colorways .frame::after { content: "Design concept"; position: absolute; left: 10px; bottom: 10px; font: 600 .6875rem/1 var(--text); letter-spacing: .04em; padding: 6px 8px; border-radius: 999px; background: rgba(11,13,18,.78); color: var(--paper); }
+.slot figcaption { flex-wrap: wrap; }
+.colorways { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(20px, 4vw, 48px); align-items: center; margin-top: clamp(28px, 4vw, 44px); }
+.colorways h3 { font: 600 var(--s2)/1.15 var(--display); margin: 0 0 10px; }
+.colorways p { color: var(--mute); margin: 0 0 18px; }
+.colorways .frame { --ar: 746 / 301; background: #EDEBE6; }
+.cw-dots { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: .875rem; color: var(--mute); }
+.cw-dots li { display: flex; align-items: center; gap: 8px; }
+.cw-dots li::before { content: ""; width: 16px; height: 16px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(247,243,234,.25); }
+@media (max-width: 860px) { .colorways { grid-template-columns: 1fr; } }
+
+/* companion */
+.buddy { margin-bottom: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
+.buddy-tv .screen { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; background: radial-gradient(120% 90% at 50% 45%, #171B24, var(--midnight) 70%); border: 10px solid #1D2129; box-shadow: inset 0 0 60px rgba(0,0,0,.6), 0 0 0 1px var(--line); overflow: hidden; display: grid; place-items: center; }
+.buddy-tv canvas { width: min(58%, 330px); height: auto; image-rendering: pixelated; margin-top: 12%; }
+.osd-num { position: absolute; top: 6%; left: 6%; font: 700 clamp(1.75rem, 1rem + 2.5vw, 2.75rem)/1 var(--display); color: var(--coral); text-shadow: 0 0 14px rgba(255,107,44,.55); font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--paper); color: var(--midnight); font: 500 clamp(.9375rem, .8rem + .5vw, 1.125rem)/1.2 var(--text); white-space: nowrap; max-width: 88%; overflow: hidden; text-overflow: ellipsis; }
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--paper); transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
+.status-tag { margin: 12px 0 0; font-size: .8125rem; color: var(--mute); }
+.buddy-ctl { display: grid; gap: 22px; }
+.buddy-ctl fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; }
+.buddy-ctl legend, .field span { font: 600 .8125rem/1 var(--text); color: var(--mute); letter-spacing: .02em; padding: 0; margin-bottom: 10px; display: block; }
+.field input { width: 100%; font: 500 1.125rem/1 var(--text); color: var(--paper); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.field input:focus { outline: 2px solid var(--coral); outline-offset: 1px; border-color: transparent; }
+.swatches, .moods { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatches button { width: 40px; height: 40px; border-radius: 50%; background: var(--c); border: 2px solid var(--midnight); box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.swatches button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--paper); }
+.moods button { font: 500 .875rem/1 var(--text); color: var(--paper); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+.moods button:hover { border-color: var(--mute); }
+.moods button[aria-pressed="true"] { background: var(--coral); color: var(--midnight); border-color: var(--coral); }
+.moments { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.moments li { background: var(--midnight); padding: 20px 20px 22px; display: grid; gap: 8px; align-content: start; }
+.moments b { font: 600 1rem/1.2 var(--display); color: var(--coral); }
+.moments span { color: var(--mute); font-size: .9375rem; }
+.concept .wide .frame img { object-fit: contain; }
+.soon { color: var(--mute); font-size: .9375rem; padding: 18px 20px; border: 1px dashed var(--line); border-radius: 14px; margin: 0; }
+.slot.sheet { margin-top: clamp(28px, 4vw, 44px); }
+.slot.sheet .frame { --ar: 3 / 2; background: #F3EFE6; }
+.slot.sheet .frame img { object-fit: contain; }
+.slot.spot .frame { --ar: 16 / 9; background: #000; }
+.slot.spot video { width: 100%; height: 100%; display: block; }
+@media (max-width: 860px) { .buddy { grid-template-columns: 1fr; } }
+
+/* rudimakes.com site strip (added by tools/sync_tbx.py) */
+.site-strip { background: #0F0E0C; border-bottom: 1px solid var(--line); }
+.site-strip .wrap { height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.site-strip .fil { display: flex; align-items: center; line-height: 0; flex: none; }
+.site-strip .fil img { height: 26px; width: auto; }
+.site-strip nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.site-strip nav::-webkit-scrollbar { display: none; }
+.site-strip nav a { font: 500 .875rem/1 var(--text); color: var(--mute); text-decoration: none; padding: 8px 12px; border-radius: 999px; white-space: nowrap; }
+.site-strip nav a:hover { color: var(--paper); background: var(--surface); }
+.site-strip nav a[aria-current="page"] { color: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
+@media (max-width: 560px) { .site-strip .fil img { height: 22px; } .site-strip nav a { padding: 8px 9px; font-size: .8125rem; } .site-strip nav a.opt { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="site-strip">
+  <div class="wrap">
+    <a class="fil" href="../" aria-label="Filament, rudimakes.com home"><img src="../images/filament-logo-dark.svg" alt="filament" width="104" height="32"></a>
+    <nav aria-label="rudimakes.com">
+      <a href="./" aria-current="page">TBX</a>
+      <a href="../services.html">Services</a>
+      <a href="../repairs.html">Repair Log</a>
+      <a class="opt" href="../#about">About</a>
+      <a href="../#contact">Contact</a>
+    </nav>
+  </div>
+</div>
+<header class="bar">
+  <div class="wrap">
+    <a class="home" href="#top" aria-label="TBX Home Broadcast, back to top"><img src="assets/brand/tbx-logo-dark.svg" alt="tbx" width="70" height="22"><span>Home Broadcast</span></a>
+    <nav class="dial" aria-label="Sections">
+      <a href="#on" data-ch="01"><b>01</b><span>Power on</span></a>
+      <a href="#idea" data-ch="02"><b>02</b><span>The idea</span></a>
+      <a href="#product" data-ch="03"><b>03</b><span>The box</span></a>
+      <a href="#companion" data-ch="04"><b>04</b><span>Companion</span></a>
+      <a href="#spot" data-ch="05"><b>05</b><span>The spot</span></a>
+      <a href="#panel" data-ch="06"><b>06</b><span>Control panel</span></a>
+      <a href="#brand" data-ch="07"><b>07</b><span>Brand</span></a>
+      <a href="#patterns" data-ch="08"><b>08</b><span>Patterns</span></a>
+      <a href="#status" data-ch="09"><b>09</b><span>Status</span></a>
+    </nav>
+  </div>
+</header>
+<div class="flash" aria-hidden="true"></div>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <svg class="lockup" viewBox="0 0 535.158 168" role="img" aria-label="tbx">
+      <path class="w" fill="#F7F3EA" d="M262.19 168Q250.43 168 241.61 164.3Q232.79 160.59 227.98 151.95Q223.17 143.3 223.17 128.44V74.48H203.28V52.17H223.17L226.31 21.77H251.21V52.17H282.97V74.48H251.19V128.64Q251.19 138 254.96 141.43Q258.72 144.85 267.99 144.85H281.97V168ZM359.03 170.8Q349.65 170.8 341.67 168.13Q333.69 165.45 327.37 160.43Q321.06 155.42 316.58 148.18H315.88L313.79 168H289.92V3.36H317.94V68.61Q323.6 60.86 333.54 55.11Q343.49 49.37 357.93 49.37Q375.2 49.37 387.76 57.28Q400.32 65.2 407.19 78.92Q414.06 92.65 414.06 110.17Q414.06 127.57 407.19 141.3Q400.32 155.02 387.96 162.91Q375.59 170.8 359.03 170.8ZM351.74 147.21Q361.96 147.21 369.61 142.46Q377.25 137.71 381.47 129.39Q385.68 121.06 385.68 109.99Q385.68 99.01 381.47 90.64Q377.25 82.27 369.61 77.55Q361.96 72.82 351.74 72.82Q341.57 72.82 333.84 77.56Q326.1 82.29 321.85 90.63Q317.59 98.96 317.59 110.05Q317.59 121.04 321.85 129.39Q326.1 137.75 333.84 142.48Q341.57 147.21 351.74 147.21ZM415.07 168 456.88 110.08 415.07 52.17H445.31L474.81 94.65H475.51L505.06 52.17H535.16L493.35 110.08L535.16 168H505.06L475.51 125.41H474.81L445.31 168Z"/><path class="m m-coral" fill="#FF6B2C" d="M0 168A168 168 0 0 1 168 0L168 25A143 143 0 0 0 25 168Z"/><path class="m m-amber" fill="#FFA31F" d="M36 168A132 132 0 0 1 168 36L168 61A107 107 0 0 0 61 168Z"/><path class="m m-cream" fill="#FFE9A0" d="M72 168A96 96 0 0 1 168 72L168 97A71 71 0 0 0 97 168Z"/><path class="m m-aqua" fill="#7FD6E6" d="M108 168A60 60 0 0 1 168 108L168 134A34 34 0 0 0 134 168Z"/><path class="m m-signal" fill="#4F6FD6" d="M134 168A34 34 0 0 1 168 134L168 168Z"/>
+    </svg>
+    <h1>Your station. Your signal. <em>Your broadcast.</em></h1>
+    <p class="lede">TBX turns the movies and shows you already own into <strong>live, scheduled television</strong>. Numbered channels, commercial breaks, a guide, and static between stations, on any TV, including the CRT in the basement. It is a small box that behaves like an appliance: you turn it on and it is already broadcasting.</p>
+    <div class="ctas">
+      <a class="btn primary" href="#on">See it turn on</a>
+      <a class="btn" href="#spot">Watch the spot</a>
+      <a class="btn" href="#status">Where it stands today</a>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="on" data-ch="01">
+  <div class="wrap power">
+    <div class="crt">
+      <div class="glass">
+        <video id="bumper" src="assets/video/tbx-startup.mp4" poster="assets/video/tbx-startup-poster.jpg" muted playsinline preload="metadata" aria-label="The TBX startup bumper as it plays at power-on"></video>
+      </div>
+      <div class="chin"><img src="assets/brand/tbx-logo-dark.svg" alt="" width="45" height="14"><span class="led" aria-hidden="true"></span></div>
+    </div>
+    <div class="copy">
+      <p class="eyebrow"><b class="num" style="color:var(--coral)">01</b>&nbsp; Power on</p>
+      <h2>No logos. No desktop. Just the station coming on the air.</h2>
+      <p>Power the box and the screen stays black until the startup bumper lights the mark, arc by arc. Then TBX tunes back to the channel you were last watching, joining whatever is on right where the schedule says it should be.</p>
+      <button class="btn sound" id="sound" type="button" aria-pressed="false">Play with sound</button>
+      <dl class="spec">
+        <dt>Prototype</dt><dd>Raspberry Pi 5</dd>
+        <dt>Picture</dt><dd class="num">720 × 480 to a CRT over RF, or HDMI to any TV</dd>
+        <dt>Media</dt><dd>Your own files on a USB drive</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="idea" data-ch="02">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>02</b>The idea</p>
+      <h2>Flip, don't scroll.</h2>
+    </div>
+    <div class="idea">
+      <div class="prose">
+        <p>Streaming made everything available and made watching feel like homework. You open an app, scroll rows of posters, and half the time you close it again without choosing anything.</p>
+        <p>Broadcast TV never asked you to choose. Something was always on. You flipped until something caught you, and <strong>the flipping was part of the fun</strong>: the static between stations, the commercial you half remember, the show already twenty minutes in.</p>
+        <p>TBX brings that back using the library you already have. You arrange your media into <strong>numbered channels with schedules</strong>, and TBX runs them like a station, around the clock, whether or not anyone is watching. Tune in and you land mid-programme. Flip away and it keeps going without you.</p>
+        <p>It is built to feel like a piece of home electronics rather than software: it boots straight to picture, it is set up from your phone, and it looks right on a thirty-year-old television.</p>
+      </div>
+      <aside class="guide" aria-label="Example guide listing">
+        <p class="gh">tbx guide</p>
+        <ul>
+          <li><b>CH 00</b><span>Guide</span><small>Live listing of what is airing on every channel</small></li>
+          <li><b>CH 01</b><span>Movie Night</span><small>Features in order, commercial breaks between</small></li>
+          <li><b>CH 07</b><span>Indy 500</span><small>Shuffled, all day</small></li>
+          <li><b>CH 99</b><span>TBX Games</span><small>Tune in to play</small></li>
+        </ul>
+        <p class="note">Channel names from the prototype's own guide.</p>
+      </aside>
+    </div>
+
+    <div class="feats">
+      <div class="feat">
+        <h3><i style="background:var(--signal)"></i>Channels</h3>
+        <ul>
+          <li>Numbered channels 01 to 98</li>
+          <li>A live guide on 00, games on 99</li>
+          <li>Tuning joins a show in progress</li>
+          <li>Static on a channel with nothing scheduled</li>
+          <li>The channel number flashes on every tune</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <h3><i style="background:var(--aqua)"></i>Programming</h3>
+        <ul>
+          <li>Morning, day, evening and night schedules</li>
+          <li>Sequential, shuffle or smart order</li>
+          <li>Commercial breaks from themed ad pools</li>
+          <li>A midnight routine and a sign-off</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <h3><i style="background:var(--amber)"></i>Station identity</h3>
+        <ul>
+          <li>Startup bumper at power-on</li>
+          <li>Channel idents and station IDs</li>
+          <li>Guide channel with its own theme music</li>
+          <li>Every piece replaceable with your own</li>
+        </ul>
+      </div>
+      <div class="feat">
+        <h3><i style="background:var(--coral)"></i>Control</h3>
+        <ul>
+          <li>Control panel in any browser on your network</li>
+          <li>Phone remote at <code>/remote</code></li>
+          <li>Guided setup wizards</li>
+          <li>Drop files on the network share and they are filed and converted</li>
+          <li>A DVD ripping wizard for physical media</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="product" data-ch="03">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>03</b>The box</p>
+      <h2>A box, not an app.</h2>
+      <p>One small unit behind the TV. Plug in the drive with your media and it becomes a station.</p>
+    </div>
+    <h3 class="sub">Where it&rsquo;s going <small>Design concept. These are renders, not photos; the production enclosure is in development.</small></h3>
+    <div class="photos concept">
+      <figure class="slot wide"><div class="frame"><img src="assets/concept/hero-angled.jpg" alt="Concept render of the TBX box: black enclosure with a large front dial, IR window and a small white power light" loading="lazy"></div><figcaption><b>The box</b>Small enough to disappear under the TV.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/dial-closeup.jpg" alt="Concept render: close-up of the knurled channel dial and IR window" loading="lazy"></div><figcaption><b>The dial</b>Change channels with a twist.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/back-ports.jpg" alt="Concept render: back panel with USB-C power, HDMI, Ethernet and four USB ports" loading="lazy"></div><figcaption><b>Back</b>USB-C power, HDMI, Ethernet, 4 × USB.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/exploded.jpg" alt="Concept render: exploded view showing a Raspberry Pi 5 above a 2.5-inch drive" loading="lazy"></div><figcaption><b>Inside</b>Raspberry Pi 5 and room for a large drive.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/living-room.jpg" alt="Concept render: the box on a wooden TV stand beneath a wall-mounted TV" loading="lazy"></div><figcaption><b>At home</b>Quiet, compact, made to blend in.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/coral-detail.jpg" alt="Concept render: translucent coral enclosure detail around the dial" loading="lazy"></div><figcaption><b>Translucent</b>A glimpse of what&rsquo;s inside.</figcaption></figure>
+    </div>
+    <div class="colorways">
+      <div class="cw-copy">
+        <h3>Same soul. Different colors.</h3>
+        <p>Every colorway is one of the six colours of the glow, from bold and bright to classic and clean.</p>
+        <ul class="cw-dots" aria-label="Colorways"><li style="--c:#FF6B2C">Coral</li><li style="--c:#FFA31F">Amber</li><li style="--c:#FFE9A0">Cream</li><li style="--c:#7FD6E6">Aqua</li><li style="--c:#4F6FD6">Signal blue</li><li style="--c:#0B0D12">Midnight</li></ul>
+      </div>
+      <figure class="slot"><div class="frame"><img src="assets/concept/colorways-grid.jpg" alt="Concept render: the box in translucent coral, amber, cream, aqua and blue, and solid black" loading="lazy"></div></figure>
+    </div>
+    <h3 class="sub">What's in the box <small>Packaging concept by Filament.</small></h3>
+    <div class="photos concept pack">
+      <figure class="slot wide"><div class="frame"><img src="assets/concept/pack-front.jpg" alt="Concept render: cream TBX box with the Filament mark, the TBX Home Broadcast lockup and the line Your channels. Your way." loading="lazy"></div><figcaption><b>The box</b>Your channels. Your way.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/pack-open-companion.jpg" alt="Concept render: open box with the TBX unit and power supply; the lid reads Better TV. A little brighter., under the glowing filament mark." loading="lazy"></div><figcaption><b>Open it</b>Better TV. A little brighter.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="assets/concept/pack-companion-detail.jpg" alt="Concept render: the companion printed on the box with the words Always here." loading="lazy"></div><figcaption><b>Always here</b>The companion comes along.</figcaption></figure>
+    </div>
+    <h3 class="sub">The prototype, today <small>Prototype 1, the working unit behind every screenshot and video on this page.</small></h3>
+    <div class="photos" data-soon="Photos of the working prototype on its CRT are being added.">
+      <figure class="slot wide"><div class="frame"><img src="assets/photos/product-01.jpg" alt="Prototype 1: a black box with a TBX label, on an orange backdrop" loading="lazy"><div class="ph"><strong>Prototype 1</strong><code>assets/photos/product-01.jpg</code></div></div><figcaption><b>Prototype 1</b>The box that runs the demo.</figcaption></figure>
+      <figure class="slot "><div class="frame"><img src="assets/photos/product-02.jpg" alt="The TBX label on the front corner of Prototype 1, on pink" loading="lazy"><div class="ph"><strong>Front</strong><code>assets/photos/product-02.jpg</code></div></div><figcaption><b>Front</b>Just a label and a box, for now.</figcaption></figure>
+      <figure class="slot "><div class="frame"><img src="assets/photos/product-03.jpg" alt="Prototype 1 back panel: power cable, panel-mount HDMI and USB ports, a red power button and a second round button, on blue" loading="lazy"><div class="ph"><strong>Back panel</strong><code>assets/photos/product-03.jpg</code></div></div><figcaption><b>Back panel</b>Power in, HDMI, USB.</figcaption></figure>
+      <figure class="slot "><div class="frame"><img src="assets/photos/product-04.jpg" alt="Prototype 1 from above with its power cable, on yellow" loading="lazy"><div class="ph"><strong>From above</strong><code>assets/photos/product-04.jpg</code></div></div><figcaption><b>From above</b>A single cable to the wall.</figcaption></figure>
+      <figure class="slot "><div class="frame"><img src="assets/photos/product-05.jpg" alt="Close-up of the HDMI and USB ports and the red power button on Prototype 1, on red" loading="lazy"><div class="ph"><strong>Up close</strong><code>assets/photos/product-05.jpg</code></div></div><figcaption><b>Up close</b>Power button, HDMI and USB.</figcaption></figure>
+      <figure class="slot "><div class="frame"><img src="assets/photos/product-06.jpg" alt="Prototype 1 tilted up on a purple backdrop" loading="lazy"><div class="ph"><strong>Every angle</strong><code>assets/photos/product-06.jpg</code></div></div><figcaption><b>Every angle</b>A real box you can pick up.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="companion" data-ch="04">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>04</b>Companion</p>
+      <h2>A small friend for big moments.</h2>
+      <p>Every TBX comes with a companion: a little pixel creature with floppy ears who lives in the broadcast. You name it and pick its colour. It hosts the guide channel, pops up when you flip channels, and is quietly around when you&rsquo;re watching something good.</p>
+    </div>
+    <div class="buddy">
+      <div class="buddy-tv" aria-live="polite">
+        <div class="screen">
+          <span class="osd-num" aria-hidden="true">00</span>
+          <p class="bubble" id="buddy-say">Good evening.</p>
+          <canvas id="buddy" width="240" height="187" role="img" aria-label="The TBX companion"></canvas>
+        </div>
+        <p class="status-tag">In development &middot; coming to the TV guide</p>
+      </div>
+      <form class="buddy-ctl" id="buddy-form" autocomplete="off">
+        <label class="field"><span>Name yours</span><input id="buddy-name" maxlength="14" placeholder="e.g. Blip" spellcheck="false"></label>
+        <fieldset><legend>Colour</legend><div class="swatches" id="buddy-colors"></div></fieldset>
+        <fieldset><legend>Try a mood</legend><div class="moods" id="buddy-moods"></div></fieldset>
+      </form>
+    </div>
+    <h3 class="sub">Where it shows up <small>Moments, not a permanent overlay: it never sits on top of your show.</small></h3>
+    <ul class="moments">
+      <li><b>Guide channel</b><span>Walks in, says hello by name, looks up at what&rsquo;s coming, gets sleepy late at night.</span></li>
+      <li><b>Channel flip</b><span>Peeks in beside the channel number for a beat, then gets out of the way.</span></li>
+      <li><b>New channel</b><span>Make one from your phone and it does a happy jump on the TV.</span></li>
+      <li><b>New shows</b><span>Curious sparkle when fresh media lands on the drive.</span></li>
+      <li><b>Power on</b><span>A quick wave after the startup bumper, then off to the side.</span></li>
+    </ul>
+    <figure class="slot sheet"><div class="frame"><img src="assets/concept/tbx-companion-concept-sheet.jpg" alt="Concept sheet for the TBX companion: expressions, animation frames and where it appears" loading="lazy"></div><figcaption><b>Concept sheet</b>Expressions, animation frames and contexts.</figcaption></figure>
+  </div>
+</section>
+
+<section class="ch" id="spot" data-ch="05">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>05</b>The spot</p>
+      <h2>Forty seconds of TBX.</h2>
+      <p>The startup bumper, a channel flip, the box, making a channel from a phone, the guide, the companion and the colours, cut like a station promo. The control panel and guide are the real thing; product shots are design renders.</p>
+    </div>
+    <figure class="slot spot"><div class="frame"><video src="assets/video/tbx-ad.mp4" poster="assets/video/tbx-ad-poster.jpg" controls playsinline preload="none"></video></div></figure>
+  </div>
+</section>
+
+<section class="ch" id="panel" data-ch="06">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>06</b>Control panel</p>
+      <h2>Program it from the couch.</h2>
+      <p>Everything is set up from a web control panel the box serves on your home network. Make a channel on your phone and watch the TV change a moment later.</p>
+    </div>
+    <div class="panel" data-soon="Screenshots of the control panel are being added.">
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/"><img src="assets/screens/ui-01.png" alt="Dashboard" loading="lazy"><div class="ph"><strong>Dashboard</strong><code>assets/screens/ui-01.png</code></div></div><figcaption><b>Dashboard</b><span>What is on air, at a glance</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels"><img src="assets/screens/ui-02.png" alt="Channels" loading="lazy"><div class="ph"><strong>Channels</strong><code>assets/screens/ui-02.png</code></div></div><figcaption><b>Channels</b><span>The whole lineup</span></figcaption></figure>
+      <figure class="slot phone"><div class="frame"><img src="assets/screens/ui-05.png" alt="Phone remote" loading="lazy"><div class="ph"><strong>Phone remote</strong><code>assets/screens/ui-05.png</code></div></div><figcaption><b>Phone remote</b><span>Tune, flip, volume</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels"><img src="assets/screens/ui-03.png" alt="New channel" loading="lazy"><div class="ph"><strong>New channel</strong><code>assets/screens/ui-03.png</code></div></div><figcaption><b>New channel</b><span>Name it, number it, fill it</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="channel 00"><img src="assets/screens/ui-04.png" alt="Guide channel" loading="lazy"><div class="ph"><strong>Guide channel</strong><code>assets/screens/ui-04.png</code></div></div><figcaption><b>Guide channel</b><span>Channel 00 on the TV</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/settings/identity"><img src="assets/screens/ui-06.png" alt="Companion settings: name it and pick its colour" loading="lazy"><div class="ph"><strong>Your companion</strong><code>assets/screens/ui-06.png</code></div></div><figcaption><b>Your companion</b><span>Name it, pick its colour</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels/media"><img src="assets/screens/ui-07.png" alt="Media bank" loading="lazy"><div class="ph"><strong>Media bank</strong><code>assets/screens/ui-07.png</code></div></div><figcaption><b>Media bank</b><span>Everything on the drive</span></figcaption></figure>
+      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels/schedule"><img src="assets/screens/ui-08.png" alt="Schedule" loading="lazy"><div class="ph"><strong>Schedule</strong><code>assets/screens/ui-08.png</code></div></div><figcaption><b>Schedule</b><span>Morning, day, evening, night</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="brand" data-ch="07">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>07</b>Brand</p>
+      <h2>The glow.</h2>
+      <p>The mark is a quarter of a rainbow rising from a corner: a signal spreading outward, and a nod to the colour bars and sign-on cards that used to fill the screen before the day's programmes began. The wordmark is lowercase because the box lives in a living room.</p>
+    </div>
+
+    <h3 class="sub">Logo versions <small>Always use the supplied artwork; never retype the wordmark.</small></h3>
+    <div class="logos">
+      <figure><div class="card k-dark"><img src="assets/brand/tbx-logo-dark.svg" alt="tbx logo on Midnight"></div><figcaption><b>Primary</b> · glow colours on Midnight</figcaption></figure>
+      <figure><div class="card k-paper"><img src="assets/brand/tbx-logo-light.svg" alt="tbx logo on Paper"></div><figcaption><b>On Paper</b> · deep colours hold up on light grounds</figcaption></figure>
+      <figure><div class="card k-coral"><div class="mono" role="img" aria-label="tbx logo in one colour on Coral"></div></div><figcaption><b>One colour</b> · Midnight on Coral, inner arc and disk merge</figcaption></figure>
+      <figure><div class="card k-dark k-mark"><img src="assets/brand/tbx-mark.svg" alt="tbx mark"></div><figcaption><b>Mark</b> · app icon, favicon, on-screen bug</figcaption></figure>
+    </div>
+
+    <h3 class="sub">Construction <small>Measured in units of a 168-unit square.</small></h3>
+    <div class="build">
+      <div class="construct">
+        <svg viewBox="-24 -34 300 262" role="img" aria-label="Construction of the tbx mark: a 168-unit square, arcs 25 units thick with 11-unit gaps, all centred on the bottom-right corner."><rect x="0" y="0" width="168" height="168" fill="none" stroke="#2A2F3A" stroke-width=".8" stroke-dasharray="3 3"/><path fill="#FF6B2C" fill-opacity=".9" d="M0 168A168 168 0 0 1 168 0L168 25A143 143 0 0 0 25 168Z"/><path fill="#FFA31F" fill-opacity=".9" d="M36 168A132 132 0 0 1 168 36L168 61A107 107 0 0 0 61 168Z"/><path fill="#FFE9A0" fill-opacity=".9" d="M72 168A96 96 0 0 1 168 72L168 97A71 71 0 0 0 97 168Z"/><path fill="#7FD6E6" fill-opacity=".9" d="M108 168A60 60 0 0 1 168 108L168 134A34 34 0 0 0 134 168Z"/><path fill="#4F6FD6" fill-opacity=".9" d="M134 168A34 34 0 0 1 168 134L168 168Z"/><path d="M0 168A168 168 0 0 1 168 0" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M25 168A143 143 0 0 1 168 25" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M36 168A132 132 0 0 1 168 36" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M61 168A107 107 0 0 1 168 61" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M72 168A96 96 0 0 1 168 72" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M97 168A71 71 0 0 1 168 97" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M108 168A60 60 0 0 1 168 108" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><path d="M134 168A34 34 0 0 1 168 134" fill="none" stroke="#F7F3EA" stroke-opacity=".35" stroke-width=".5"/><circle cx="168" cy="168" r="3" fill="#F7F3EA"/><text class="k" x="162" y="179" text-anchor="end">centre</text><path d="M0 -14H168M0 -18V-10M168 -18V-10" stroke="#A29D93" stroke-width=".6"/><text class="k" x="84.0" y="-20" text-anchor="middle">168u</text><path d="M192 0V168" stroke="#2A2F3A" stroke-width=".6"/><path d="M189 0H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="2.5">r 168</text><path d="M189 25H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="27.5">r 143</text><path d="M189 36H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="38.5">r 132</text><path d="M189 61H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="63.5">r 107</text><path d="M189 72H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="74.5">r 96</text><path d="M189 97H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="99.5">r 71</text><path d="M189 108H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="110.5">r 60</text><path d="M189 134H195" stroke="#A29D93" stroke-width=".6"/><text x="199" y="136.5">r 34</text><path d="M0 194H168" stroke="#2A2F3A" stroke-width=".6"/><path d="M0 191V197" stroke="#A29D93" stroke-width=".6"/><text x="12.5" y="205" text-anchor="middle" class="k">25</text><path d="M25 191V197" stroke="#A29D93" stroke-width=".6"/><text x="30.5" y="205" text-anchor="middle">11</text><path d="M36 191V197" stroke="#A29D93" stroke-width=".6"/><text x="48.5" y="205" text-anchor="middle" class="k">25</text><path d="M61 191V197" stroke="#A29D93" stroke-width=".6"/><text x="66.5" y="205" text-anchor="middle">11</text><path d="M72 191V197" stroke="#A29D93" stroke-width=".6"/><text x="84.5" y="205" text-anchor="middle" class="k">25</text><path d="M97 191V197" stroke="#A29D93" stroke-width=".6"/><text x="102.5" y="205" text-anchor="middle">11</text><path d="M108 191V197" stroke="#A29D93" stroke-width=".6"/><text x="121.0" y="205" text-anchor="middle" class="k">26</text><path d="M134 191V197" stroke="#A29D93" stroke-width=".6"/><text x="151.0" y="205" text-anchor="middle" class="k">34</text><path d="M168 191V197" stroke="#A29D93" stroke-width=".6"/><text x="0" y="218">arc · gap widths</text></svg>
+      </div>
+      <div class="prose">
+        <p>Five shapes share one centre, the bottom-right corner of the square. Four arcs are <strong>25 units</strong> thick with <strong>11-unit</strong> gaps between them; the aqua arc sits directly on the signal-blue quarter-disk.</p>
+        <p>In the lockup the wordmark stands <strong>0.21 × the mark's height</strong> to its right. Its baseline sits on the mark's flat bottom and its ascenders reach the top. It is DM Sans SemiBold, tightened to −0.035 em, and supplied as outlines.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">Glow palette <small>Coral is the accent. Text on Coral is always Midnight.</small></h3>
+    <div class="swatches">
+      <div class="sw"><i style="background:var(--coral)"></i><div><b>Coral</b><code>#FF6B2C</code><span>Accent, buttons, channel number</span></div></div>
+      <div class="sw"><i style="background:var(--amber)"></i><div><b>Amber</b><code>#FFA31F</code><span>Warnings, second arc</span></div></div>
+      <div class="sw"><i style="background:var(--cream)"></i><div><b>Cream</b><code>#FFE9A0</code><span>Third arc, highlights</span></div></div>
+      <div class="sw"><i style="background:var(--aqua)"></i><div><b>Aqua</b><code>#7FD6E6</code><span>Live and on-air states</span></div></div>
+      <div class="sw"><i style="background:var(--signal)"></i><div><b>Signal blue</b><code>#4F6FD6</code><span>The first light of the bumper</span></div></div>
+    </div>
+    <div class="swatches">
+      <div class="sw"><i style="background:var(--midnight)"></i><div><b>Midnight</b><code>#0B0D12</code><span>The ground everything sits on</span></div></div>
+      <div class="sw"><i style="background:var(--surface)"></i><div><b>Surface</b><code>#13161D</code><span>Panels and cards</span></div></div>
+      <div class="sw"><i style="background:var(--line)"></i><div><b>Line</b><code>#2A2F3A</code><span>Borders and dividers</span></div></div>
+      <div class="sw"><i style="background:var(--mute)"></i><div><b>Mute</b><code>#A29D93</code><span>Secondary text</span></div></div>
+      <div class="sw"><i style="background:var(--paper)"></i><div><b>Paper</b><code>#F7F3EA</code><span>Text, and the light ground</span></div></div>
+    </div>
+
+    <h3 class="sub">Type <small>Two families, both open licence, both embedded on the box.</small></h3>
+    <div class="type">
+      <div class="spec-card"><div class="meta"><b>Display · Outfit</b><span>Headings, big numbers, on-TV titles</span></div><p class="big-o">Good morning</p><p class="glyphs" style="font-family:var(--display)">Aa Bb Cc 0123456789 · Tonight on 04</p></div>
+      <div class="spec-card"><div class="meta"><b>Text · DM Sans</b><span>Guide listings, interface, body</span></div><p class="big-d">Channel 3 · 7:00 PM</p><p class="glyphs">Aa Bb Cc 0123456789 · The quick brown fox tunes in late.</p></div>
+    </div>
+
+    <h3 class="sub">Startup bumper <small>5.5 seconds, drawn to scale.</small></h3>
+    <div class="timeline">
+      <div class="tl" role="img" aria-label="Bumper timeline: signal blue ignites at 0.0 seconds, cream arc at 0.6, amber arc at 1.2, coral arc at 1.8, wordmark and glow at 3.2, hold from 4.5 and cut at 5.5.">
+        <div class="axis"></div><div class="held" style="left:58.182%;width:41.818%"></div><span class="tick" style="left:0.000%">0s</span><span class="tick" style="left:18.182%">1s</span><span class="tick" style="left:36.364%">2s</span><span class="tick" style="left:54.545%">3s</span><span class="tick" style="left:72.727%">4s</span><span class="tick" style="left:90.909%">5s</span><i class="dot" style="left:0.000%;background:var(--signal)"></i><div class="beat up" style="left:0.000%"><b>0.0s</b><span>Signal blue ignites</span></div><i class="dot" style="left:10.909%;background:var(--cream)"></i><div class="beat down" style="left:10.909%"><b>0.6s</b><span>Cream arc</span></div><i class="dot" style="left:21.818%;background:var(--amber)"></i><div class="beat up" style="left:21.818%"><b>1.2s</b><span>Amber arc</span></div><i class="dot" style="left:32.727%;background:var(--coral)"></i><div class="beat down" style="left:32.727%"><b>1.8s</b><span>Coral arc</span></div><i class="dot" style="left:58.182%;background:var(--paper)"></i><div class="beat up" style="left:58.182%"><b>3.2s</b><span>Wordmark and glow</span></div><i class="dot" style="left:81.818%;background:var(--mute)"></i><div class="beat down" style="left:81.818%"><b>4.5s</b><span>Hold</span></div><i class="dot" style="left:100.000%;background:var(--dim)"></i><div class="beat up" style="left:100.000%"><b>5.5s</b><span>Cut to the channel</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="patterns" data-ch="08" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>08</b>Patterns</p>
+      <h2>Built from one shape.</h2>
+      <p>Turn the mark around its corner four times and the arcs close into full rings. Stack half-rings and they become a scallop. Every pattern below is generated from the same geometry as the logo, for packaging, merchandise, the box's panels and the guide channel.</p>
+    </div>
+  </div>
+  <div class="patterns">
+    <figure class="pat rings" style="margin:0"><figcaption><b>Rings</b><span>glow on Midnight</span></figcaption></figure>
+    <div class="pat-row">
+      <figure class="pat scallop" style="margin:0"><figcaption><b>Scallop</b><span>deep colours on Paper</span></figcaption></figure>
+      <figure class="pat scallop-mono" style="margin:0"><figcaption><b>Coral scallop</b><span>one colour</span></figcaption></figure>
+    </div>
+    <figure class="pat stagger" style="margin:0"><figcaption><b>Stagger</b><span>the upright mark, half-step repeat</span></figcaption></figure>
+  </div>
+</section>
+
+<section class="ch" id="status" data-ch="09">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>09</b>Status</p>
+      <h2>Where it stands today.</h2>
+      <p>TBX is a working prototype. It runs every day on a Raspberry Pi 5 connected to a CRT, and the live demo is that same box.</p>
+    </div>
+    <div class="status">
+      <div>
+        <p class="col-title">Working today</p>
+        <ul class="list">
+          <li><b>Boots straight to broadcast</b><span class="pill ok">Working</span><p>Black screen, startup bumper, then the last channel you watched.</p></li>
+          <li><b>Scheduled channels</b><span class="pill ok">Working</span><p>Day-part schedules, three playback orders, and tuning that joins shows in progress.</p></li>
+          <li><b>A station's in-between moments</b><span class="pill ok">Working</span><p>Commercial breaks, idents, station IDs, midnight and sign-off bumpers, static on empty channels.</p></li>
+          <li><b>Guide and games channels</b><span class="pill ok">Working</span><p>A live guide on 00 with theme music; TBX Games on 99.</p></li>
+          <li><b>Control panel and phone remote</b><span class="pill ok">Working</span><p>Channels, schedules, media and setup wizards from any browser at home.</p></li>
+          <li><b>Getting media in</b><span class="pill ok">Working</span><p>Network-share drop-in with automatic filing and conversion, a DVD ripping wizard and a PC converter.</p></li>
+          <li><b>Stays on the air</b><span class="pill ok">Working</span><p>If the player stops, a watchdog restarts it in about two seconds and retunes.</p></li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-title">Next</p>
+        <ul class="list">
+          <li><b>Power button</b><span class="pill built">Designed</span><p>Soft-power latch circuit designed and its software done; the board is next to build.</p></li>
+          <li><b>IR remote</b><span class="pill next">In progress</span><p>Receiver supported in software; choosing the remote hardware.</p></li>
+          <li><b>Appliance OS image</b><span class="pill next">Planned</span><p>Move from a desktop OS to a minimal image that runs only TBX.</p></li>
+          <li><b>Enclosure</b><span class="pill next">Planned</span><p>A finished case with a channel-number display and status lights.</p></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="sign">
+      <img src="assets/brand/tbx-logo-dark.svg" alt="tbx" width="127" height="40">
+      <p class="tag">Your station. Your signal. Your broadcast.</p>
+      <p class="maker"><span>TBX Home Broadcast is designed and built by</span> <img src="assets/brand/filament-logo-dark.svg" alt="Filament" width="150" height="30"></p>
+    </div>
+    <div class="right">
+      <span>Contact via <a href="mailto:info@rudimakes.com">info@rudimakes.com</a></span>
+      <span class="num">Prototype · 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // Missing photo or screenshot. With ?slots in the URL, show the branded
+  // placeholder (with the file path to drop the image at); otherwise hide the
+  // empty slot, and if a whole grid is empty, say what's coming instead.
+  const editing = new URLSearchParams(location.search).has("slots");
+  document.querySelectorAll(".slot img").forEach((img) => {
+    const empty = () => {
+      const slot = img.closest(".slot");
+      slot.classList.add("empty");
+      if (editing) return;
+      const grid = slot.parentElement;
+      slot.hidden = true;
+      if (grid.querySelector(".slot:not([hidden])")) return;
+      const note = document.createElement("p");
+      note.className = "soon";
+      note.textContent = grid.dataset.soon || "Images coming soon.";
+      grid.replaceWith(note);
+    };
+    if (img.complete && img.naturalWidth === 0) empty();
+    img.addEventListener("error", empty);
+  });
+
+  // Channel strip + on-screen channel flash, like the box draws on tune.
+  const flash = document.querySelector(".flash");
+  const links = [...document.querySelectorAll(".dial a")];
+  let timer, current = null;
+  const tune = (ch) => {
+    if (ch === current) return;
+    current = ch;
+    links.forEach((a) => a.setAttribute("aria-current", String(a.dataset.ch === ch)));
+    if (!ch) return;
+    flash.textContent = ch;
+    flash.classList.add("on");
+    clearTimeout(timer);
+    timer = setTimeout(() => flash.classList.remove("on"), 1600);
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) tune(e.target.dataset.ch); });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("section[data-ch]").forEach((s) => io.observe(s));
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) tune(null); }, { rootMargin: "-45% 0px -50% 0px" })
+    .observe(document.querySelector(".hero"));
+
+  // The bumper plays when the CRT is on screen, then rests on black before replaying.
+  const v = document.getElementById("bumper");
+  const btn = document.getElementById("sound");
+  let visible = false, wait;
+  const play = () => { v.currentTime = 0; v.play().catch(() => {}); };
+  new IntersectionObserver(([e]) => {
+    visible = e.isIntersecting;
+    if (visible && v.paused) play(); else if (!visible) { v.pause(); clearTimeout(wait); }
+  }, { threshold: 0.5 }).observe(v);
+  v.addEventListener("ended", () => { clearTimeout(wait); wait = setTimeout(() => { if (visible) play(); }, 2500); });
+  btn.addEventListener("click", () => {
+    v.muted = !v.muted;
+    btn.setAttribute("aria-pressed", String(!v.muted));
+    btn.textContent = v.muted ? "Play with sound" : "Mute";
+    clearTimeout(wait); play();
+  });
+  // TBX companion: same sprite data the TV overlay will use (assets/brand/companion).
+  (() => {
+    const S = {"w":20,"h":17,"eye":"#F7F3EA","colors":{"coral":"#FF6B2C","amber":"#FFA31F","cream":"#FFE9A0","aqua":"#7FD6E6","signal":"#4F6FD6","midnight":"#0B0D12"},"states":{"idle":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"blink":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"twitch":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"sleepy":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."]],"accent":null},"happy":{"frames":[["..........a.........",".........a.a........","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":"aqua"},"curious":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############..a","...##############.a.","..######o###o#####.a",".####.##o###o######.","#####.##o###o###.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."]],"accent":"coral"},"surprised":{"frames":[["..........a.........","....................","........######......","......#########.....","....#############...","...######o###o###...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."]],"accent":"coral"},"looking_up":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...######o###o###...","..#######o###o####..",".####.###o###o#####.","#####.##########.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."]],"accent":null},"walk":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.","...........##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##...........","...................."]],"accent":null},"jump":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","....................","...................."],["........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","....................","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"wave":{"frames":[["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null}}};
+    const cv = document.getElementById("buddy");
+    if (!cv) return;
+    const cx = cv.getContext("2d");
+    const cw = 12, ch = 11;   // the concept art's pixels are slightly wider than tall
+    const accents = { aqua: "#7FD6E6", coral: "#FF6B2C" };
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+                    set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+    let color = store.get("tbx-buddy-color") || "signal";
+    let name = store.get("tbx-buddy-name") || "";
+    let mood = "idle", frame = 0, until = 0;
+    const say = document.getElementById("buddy-say");
+    const hello = () => {
+      const h = new Date().getHours();
+      const part = h < 5 ? "Up late?" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+      return name ? (part.endsWith("?") ? `${part} It's ${name}.` : `${part}. I'm ${name}.`) : `${part}.`;
+    };
+    const draw = () => {
+      const st = S.states[mood], fr = st.frames[frame % st.frames.length];
+      const body = S.colors[color];
+      cx.clearRect(0, 0, cv.width, cv.height);
+      fr.forEach((row, r) => [...row].forEach((px, c) => {
+        if (px === ".") return;
+        cx.fillStyle = px === "#" ? body : px === "o" ? S.eye : accents[st.accent] || "#7FD6E6";
+        cx.fillRect(c * cw, r * ch, cw, ch);
+      }));
+      if (color === "midnight") { // a soft rim so a midnight buddy reads on a midnight screen
+        cx.globalCompositeOperation = "destination-over";
+        cx.shadowColor = "rgba(247,243,234,.55)"; cx.shadowBlur = 10;
+        fr.forEach((row, r) => [...row].forEach((px, c) => { if (px !== ".") { cx.fillStyle = "#0B0D12"; cx.fillRect(c * cw, r * ch, cw, ch); } }));
+        cx.shadowBlur = 0; cx.globalCompositeOperation = "source-over";
+      }
+    };
+    const setMood = (m, ms = 2400) => { mood = m; frame = 0; until = performance.now() + ms; markMood(); draw(); };
+    // controls
+    const moods = { idle: "Idle", happy: "Happy", curious: "Curious", surprised: "Surprised", sleepy: "Sleepy", wave: "Wave", jump: "Jump", looking_up: "Looking up" };
+    const mBox = document.getElementById("buddy-moods");
+    Object.entries(moods).forEach(([k, label]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.m = k;
+      b.addEventListener("click", () => setMood(k, k === "idle" ? 0 : 3200)); mBox.append(b);
+    });
+    const markMood = () => mBox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mood)));
+    const cBox = document.getElementById("buddy-colors");
+    const cNames = { coral: "Coral", amber: "Amber", cream: "Cream", aqua: "Aqua", signal: "Signal blue", midnight: "Midnight" };
+    Object.keys(S.colors).forEach((k) => {
+      const b = document.createElement("button"); b.type = "button"; b.style.setProperty("--c", S.colors[k]);
+      b.setAttribute("aria-label", cNames[k] || k); b.dataset.c = k;
+      b.addEventListener("click", () => { color = k; store.set("tbx-buddy-color", k); mark(); setMood("happy", 1600); });
+      cBox.append(b);
+    });
+    const mark = () => cBox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.c === color)));
+    const input = document.getElementById("buddy-name");
+    input.value = name;
+    input.addEventListener("input", () => { name = input.value.trim(); store.set("tbx-buddy-name", name); say.textContent = hello(); });
+    input.addEventListener("change", () => { if (name) setMood("wave", 2600); });
+    document.getElementById("buddy-form").addEventListener("submit", (e) => { e.preventDefault(); if (name) setMood("wave", 2600); });
+    say.textContent = hello(); mark(); markMood(); draw();
+    if (reduce) return;
+    // idle life: blink now and then, return to idle after a mood, react to channel flips
+    let last = 0, blinkAt = performance.now() + 2500;
+    const tick = (t) => {
+      if (t - last > 180) {
+        last = t; frame++;
+        if (mood !== "idle" && until && t > until) { mood = "idle"; until = 0; markMood(); }
+        if (mood === "idle" && t > blinkAt) { mood = "blink"; until = t + 160; blinkAt = t + 2500 + Math.random() * 3500; }
+        draw();
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    const num = document.querySelector(".osd-num");
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) { num.textContent = "04"; setMood("wave", 2200); } }, { threshold: .6 })
+      .observe(document.querySelector(".buddy-tv"));
+  })();
+})();
+</script>
+</body>
+</html>

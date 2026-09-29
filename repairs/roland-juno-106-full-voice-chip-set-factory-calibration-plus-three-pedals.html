@@ -12,11 +12,12 @@
   <meta property="og:url" content="https://rudimakes.com/repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html" />
   <meta property="og:type" content="article" />
   <link rel="canonical" href="https://rudimakes.com/repairs/roland-juno-106-full-voice-chip-set-factory-calibration-plus-three-pedals.html" />
+  <link rel="icon" type="image/svg+xml" href="../images/filament-mark.svg" />
   <link rel="icon" type="image/png" href="../images/favicon.png" />
   <link rel="apple-touch-icon" href="../images/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Outfit:wght@400;500;600;700&display=swap" />
   <link rel="stylesheet" href="../style.css" />
   <script type="application/ld+json">
   {
@@ -98,19 +99,19 @@
 
   <nav>
     <div class="nav-inner">
-      <a class="nav-logo" href="../index.html"><img class="nav-mark" src="../images/filament-mark.png" alt="" width="20" height="40" decoding="async"><span>Filament</span></a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <a class="nav-logo" href="../index.html" aria-label="Filament, home"><img class="logo-on-dark" src="../images/filament-logo-dark.svg" alt="filament" width="120" height="36"><img class="logo-on-light" src="../images/filament-logo-light.svg" alt="" width="120" height="36"></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-controls="navMenu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul id="navMenu">
+        <li><a href="../tbx/" data-tbx>TBX</a></li>
         <li><a href="../services.html">Services</a></li>
         <li><a href="../repairs.html" class="active">Repair Log</a></li>
-        <li><a href="../shop.html">Shop</a></li>
-        <li><a href="../index.html#builds">Builds</a></li>
+        <li><a href="../index.html#about">About</a></li>
         <li><a href="../index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button">Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme">Light</button>
       </div>
     </div>
   </nav>
@@ -194,16 +195,32 @@
     </section>
   </main>
 
-  <footer>
-    <div class="container">
-      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
-      <div class="footer-links">
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" aria-label="Filament, home"><img class="logo-on-dark" src="../images/filament-logo-dark.svg" alt="filament" width="150" height="46"><img class="logo-on-light" src="../images/filament-logo-light.svg" alt="" width="150" height="46"></a>
+        <p>Amp and synth repair in Indianapolis, and the home of TBX Home Broadcast.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="../tbx/">TBX</a>
+        <a href="../services.html">Services</a>
+        <a href="../repairs.html">Repair Log</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
         <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
         <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
         <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
         <a href="../shopcat/" target="_blank" rel="noopener">Shop Cat</a>
       </div>
+    </div>
+    <div class="container footer-base">
+      <p>&copy; <span id="year"></span> Filament LLC &middot; Rudi Willock</p>
+      <p><a href="mailto:info@rudimakes.com">info@rudimakes.com</a> &middot; <a href="tel:+13178336133">(317) 833-6133</a></p>
     </div>
   </footer>
 

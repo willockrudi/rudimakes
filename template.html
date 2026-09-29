@@ -4,19 +4,20 @@
   <meta charset="UTF-8" />
   {{SITE_VERIFICATION}}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Amp &amp; Synth Repair in Indianapolis | Filament</title>
-  <meta name="description" content="Tube amp, synthesizer, and pedal repair in Indianapolis. Real diagnostics on a real bench, a written record of the work, and a 30-day labor warranty." />
-  <meta property="og:title" content="Amp &amp; Synth Repair in Indianapolis | Filament" />
-  <meta property="og:description" content="Tube amp, synthesizer, and pedal repair in Indianapolis. Real diagnostics on a real bench, a written record of the work, and a 30-day labor warranty." />
+  <title>Filament | Amp &amp; Synth Repair in Indianapolis, and TBX Home Broadcast</title>
+  <meta name="description" content="Rudi Willock repairs tube amps, synthesizers and vintage keyboards in Indianapolis, and designs products under Filament, starting with TBX Home Broadcast." />
+  <meta property="og:title" content="Filament | Amp &amp; Synth Repair in Indianapolis, and TBX Home Broadcast" />
+  <meta property="og:description" content="Rudi Willock repairs tube amps, synthesizers and vintage keyboards in Indianapolis, and designs products under Filament, starting with TBX Home Broadcast." />
   <meta property="og:image" content="https://rudimakes.com/images/og.png" />
   <meta property="og:url" content="https://rudimakes.com/" />
   <link rel="canonical" href="https://rudimakes.com/" />
   <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="images/filament-mark.svg" />
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="apple-touch-icon" href="images/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Outfit:wght@400;500;600;700&display=swap" />
   <link rel="stylesheet" href="style.css" />
   <script type="application/ld+json">
   {
@@ -98,214 +99,173 @@
   </script>
   {{FAQ_SCHEMA}}
 </head>
-<body>
+<body class="home">
 
-  <!-- NAVIGATION -->
   <nav>
     <div class="nav-inner">
-      <a class="nav-logo" href="index.html"><img class="nav-mark" src="images/filament-mark.png" alt="" width="20" height="40" decoding="async"><span>Filament</span></a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <a class="nav-logo" href="index.html" aria-label="Filament, home"><img class="logo-on-dark" src="images/filament-logo-dark.svg" alt="filament" width="120" height="36"><img class="logo-on-light" src="images/filament-logo-light.svg" alt="" width="120" height="36"></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-controls="navMenu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul id="navMenu">
+        <li><a href="tbx/" data-tbx>TBX</a></li>
         <li><a href="services.html">Services</a></li>
         <li><a href="repairs.html">Repair Log</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="#builds">Builds</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">Light</button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme">Light</button>
       </div>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <p class="hero-eyebrow">Indianapolis, Indiana</p>
-      <h1 class="hero-title">Amp & Synth<br>Repair</h1>
-      <p class="hero-subtitle">Filament &nbsp;·&nbsp; Bench Service &nbsp;·&nbsp; Diagnostics &nbsp;·&nbsp; Restoration</p>
-      <p class="hero-bio">
-        I'm Rudi - a repair technician and builder based in Indianapolis. I fix tube amplifiers,
-        synthesizers, pedals, and music electronics. Every repair gets real diagnostics on a real bench.
-        No guesswork, no runaround. You deal directly with the tech doing the work.
-      </p>
-      <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">Get a Repair Quote</a>
-        <a href="#services" class="btn btn-outline">See What I Fix</a>
+  <header class="hero-home">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> Filament &middot; Indianapolis, Indiana</p>
+        <h1 class="hero-title">I fix the gear<br>that made music.<br><em>Then I design what&rsquo;s next.</em></h1>
+        <p class="hero-bio">I&rsquo;m Rudi Willock. On the bench I bring tube amps, synthesizers and vintage keyboards back to life. Off it, I design products of my own &mdash; starting with <a href="tbx/">TBX Home Broadcast</a>.</p>
+        <div class="hero-cta">
+          <a href="tbx/" class="btn btn-primary">Tune in to TBX <span aria-hidden="true">&rarr;</span></a>
+          <a href="repairs.html#intake" class="btn btn-outline">Book a repair</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg class="filament-art" viewBox="0 0 180 612">
+          <path class="f-glow" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725" transform="translate(-418.5 -216.5)"/>
+          <path class="f-line" pathLength="1" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725" transform="translate(-418.5 -216.5)"/>
+        </svg>
       </div>
     </div>
-  </section>
+  </header>
 
   <main>
+
+    <!-- TWO DOORS -->
+    <section class="doors" aria-label="What I do">
+      <div class="container doors-grid">
+        <a class="door door-design" href="tbx/">
+          <img src="images/home/product-01.jpg" alt="TBX prototype, a small black box on an orange background" width="806" height="644" loading="eager" decoding="async">
+          <div class="door-text">
+            <span class="door-num">01 &middot; Design</span>
+            <h2>TBX Home Broadcast</h2>
+            <p>Your own TV station, running your own shows.</p>
+            <span class="door-go">See the project <span aria-hidden="true">&rarr;</span></span>
+          </div>
+        </a>
+        <a class="door door-repair" href="services.html">
+          <img src="images/repairs/moog-minimoog-model-d.jpg" alt="Minimoog Model D on the repair bench" loading="eager" decoding="async">
+          <div class="door-text">
+            <span class="door-num">02 &middot; Repair</span>
+            <h2>The bench</h2>
+            <p>Tube amps, synths, Hammond, Leslie and Rhodes.</p>
+            <span class="door-go">See services <span aria-hidden="true">&rarr;</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- TBX FEATURE -->
+    <section id="tbx" class="tbx-feature">
+      <div class="container tbx-grid">
+        <div class="tbx-screen">
+          <div class="crt-frame">
+            <video src="images/home/tbx-loop.mp4" poster="images/home/tbx-loop-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="TBX starting up, the channel guide, and the companion"></video>
+          </div>
+          <p class="tbx-caption">From the TBX spot: startup, the channel guide, and the companion.</p>
+        </div>
+        <div class="tbx-copy">
+          <p class="section-label">Now designing</p>
+          <h2 class="section-title">Your station.<br>Your signal.<br><em>Your broadcast.</em></h2>
+          <p>TBX turns the movies and shows you already own into live, scheduled television: numbered channels, a guide, commercial breaks, and static between stations. It works on any TV, including the CRT in the basement. You set it up from your phone, and when you turn it on it is already broadcasting.</p>
+          <ul class="tbx-facts">
+            <li><strong>Prototype 1</strong><span>running on real hardware today</span></li>
+            <li><strong>Any TV</strong><span>HDMI, or coax to a vintage CRT</span></li>
+            <li><strong>Your library</strong><span>no subscriptions, no feeds</span></li>
+          </ul>
+          <a href="tbx/" class="btn btn-primary">Explore TBX <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <div class="container tbx-strip" aria-label="TBX prototype photos">
+        <a href="tbx/#product"><img src="images/home/product-03.jpg" alt="TBX prototype rear panel with HDMI and USB ports" loading="lazy" decoding="async" width="700" height="321"></a>
+        <a href="tbx/#product"><img src="images/home/product-06.jpg" alt="TBX prototype at an angle on a purple background" loading="lazy" decoding="async" width="521" height="357"></a>
+        <a href="tbx/#product"><img src="images/home/product-05.jpg" alt="TBX prototype ports on a red background" loading="lazy" decoding="async" width="829" height="305"></a>
+      </div>
+    </section>
 
     <!-- SERVICES -->
     <section id="services" class="section services-section">
       <div class="container">
-        <div class="section-header">
-          <p class="section-label">Services</p>
-          <h2 class="section-title">What I Repair</h2>
-          <p class="section-note">Hands-on bench work for tube amps, synthesizers, and music electronics. If it has circuits and it's broken, I can probably fix it.</p>
+        <div class="section-header split">
+          <div>
+            <p class="section-label">Repair</p>
+            <h2 class="section-title">Amp &amp; synth repair,<br>done properly.</h2>
+          </div>
+          <p class="section-note">Real diagnostics on a real bench in Indianapolis. You deal directly with the tech doing the work, and every job is written up. Drop off by appointment, or ship it in from anywhere.</p>
         </div>
-        <div class="grid-3">
-          <div class="feature-card">
-            <h3><a href="services/tube-amp-repair.html">Tube Amplifiers</a></h3>
-            <p>Retube, bias, recap, hum diagnosis, intermittent faults, and full restoration. Fender, Marshall, Vox, Mesa, boutique - all makes and eras.</p>
-          </div>
-          <div class="feature-card">
-            <h3><a href="services/synthesizer-repair.html">Synthesizers</a></h3>
-            <p>Vintage and modern synth repair. Key contacts, voice cards, power supplies, calibration, and component-level troubleshooting.</p>
-          </div>
-          <div class="feature-card">
-            <h3>Pedals & Effects</h3>
-            <p>Troubleshooting, switch and jack repair, component replacement, and modifications. All brands and formats.</p>
-          </div>
-          <div class="feature-card">
-            <h3><a href="services/keyboard-organ-service.html">Hammond, Leslie &amp; Rhodes</a></h3>
-            <p>Electromechanical keyboards - AO-28 recapping and hum, Leslie motor service, Rhodes tuning, voicing, and pickup setup.</p>
-          </div>
-          <div class="feature-card">
-            <h3><a href="services/pro-audio-repair.html">Pro Audio & Backline</a></h3>
-            <p>As a working backline tech, I service professional audio gear across all major brands and touring systems.</p>
-          </div>
-          <div class="feature-card">
-            <h3>Custom & Unusual Jobs</h3>
-            <p>Circuit design, one-off builds, vintage restoration, and weird projects that other shops won't touch. If it's interesting, I'm in.</p>
-          </div>
-        </div>
-        <div style="text-align: center; margin-top: 2.5rem;">
-          <a href="services.html" class="btn btn-outline">All Services</a>
-          <a href="repairs.html#pricing" class="btn btn-outline" style="margin-left:0.5rem;">See Full Pricing</a>
+        <ol class="service-list">
+          <li><a href="services/tube-amp-repair.html"><span class="n">01</span><h3>Tube amplifiers</h3><p>Retube, bias, recap, hum and intermittent faults, full restoration. Fender, Marshall, Vox, Mesa and boutique.</p></a></li>
+          <li><a href="services/synthesizer-repair.html"><span class="n">02</span><h3>Synthesizers</h3><p>Vintage and modern. Key contacts, voice cards, power supplies, calibration, component-level work.</p></a></li>
+          <li><a href="services/keyboard-organ-service.html"><span class="n">03</span><h3>Hammond, Leslie &amp; Rhodes</h3><p>AO-28 recaps and hum, Leslie motor service, Rhodes tuning, voicing and pickup setup.</p></a></li>
+          <li><a href="services/pro-audio-repair.html"><span class="n">04</span><h3>Pro audio &amp; backline</h3><p>A working backline tech servicing professional audio gear across all major brands.</p></a></li>
+          <li><a href="services.html"><span class="n">05</span><h3>Pedals &amp; effects</h3><p>Switches, jacks, component replacement and mods. All brands and formats.</p></a></li>
+          <li><a href="#contact"><span class="n">06</span><h3>Custom &amp; unusual</h3><p>Circuit design, one-off builds and the weird jobs other shops won&rsquo;t touch.</p></a></li>
+        </ol>
+        <div class="row-cta">
+          <a href="repairs.html#intake" class="btn btn-primary">Get a repair quote</a>
+          <a href="repairs.html#pricing" class="btn btn-outline">Pricing</a>
+          <a href="services.html" class="btn btn-ghost">All services <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
     </section>
 
-    <!-- RECENT REPAIRS -->
-    <section id="recent-repairs" class="section" style="border-top: 1px solid var(--border);">
+    <!-- FROM THE BENCH -->
+    <section id="recent-repairs" class="section bench-section">
       <div class="container">
-        <div class="section-header">
-          <p class="section-label">Repair Log</p>
-          <h2 class="section-title">Recent From the Bench</h2>
+        <div class="section-header split">
+          <div>
+            <p class="section-label">Repair log</p>
+            <h2 class="section-title">From the bench.</h2>
+          </div>
           <p class="section-note">Every repair gets written up: what came in, what it actually turned out to be, and what fixed it.</p>
         </div>
-        <ul class="related-repairs">
+      </div>
+      <div class="bench-strip" aria-label="Recent repairs with photos">
+        <!-- BENCH_PHOTOS_START -->
+        <!-- BENCH_PHOTOS_END -->
+      </div>
+      <div class="container">
+        <ul class="related-repairs recent-list">
         <!-- RECENT_REPAIRS_START -->
         <!-- RECENT_REPAIRS_END -->
         </ul>
-        <div style="text-align: center; margin-top: 2.5rem;">
-          <a href="repairs.html" class="btn btn-outline">Read the Full Repair Log</a>
+        <div class="row-cta">
+          <a href="repairs.html" class="btn btn-outline">Read the full repair log <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
     </section>
 
-    <!-- TRUST / WHY WORK WITH ME -->
-    <section id="why" class="section trust-section">
-      <div class="container">
-        <div class="section-header">
-          <p class="section-label">Why Filament</p>
-          <h2 class="section-title">What You Get</h2>
-        </div>
-        <div class="trust-grid">
-          <div class="trust-item">
-            <span class="trust-marker">01</span>
-            <h3>Real Diagnostics</h3>
-            <p>Every repair starts with proper diagnosis - not parts-swapping. I trace the actual fault before I touch anything.</p>
-          </div>
-          <div class="trust-item">
-            <span class="trust-marker">02</span>
-            <h3>Direct Communication</h3>
-            <p>You talk to the person doing the work. No front desk, no middleman. I explain what I find and what it costs before I proceed.</p>
-          </div>
-          <div class="trust-item">
-            <span class="trust-marker">03</span>
-            <h3>Documented Work</h3>
-            <p>Every repair is logged - diagnosis, fix, parts used. You get a clear record of what was done and why.</p>
-          </div>
-          <div class="trust-item">
-            <span class="trust-marker">04</span>
-            <h3>Fair, Honest Pricing</h3>
-            <p>$75 bench fee applied to your repair total. Labor billed at published rates. No surprises, no upselling.</p>
-          </div>
-          <div class="trust-item">
-            <span class="trust-marker">05</span>
-            <h3>Warranty</h3>
-            <p>30-day labor warranty on all repairs. If something I fixed comes back, I make it right.</p>
-          </div>
-          <div class="trust-item">
-            <span class="trust-marker">06</span>
-            <h3>Working Tech, Not a Reseller</h3>
-            <p>I'm a bench technician and backline tech - not a shop that farms out work. Your gear stays on my bench from start to finish.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- REPAIR PROCESS -->
+    <!-- HOW IT WORKS -->
     <section id="process" class="section process-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-label">How It Works</p>
-          <h2 class="section-title">The Repair Process</h2>
-          <p class="section-note">From first contact to finished repair - here's what to expect.</p>
+          <p class="section-label">How a repair works</p>
+          <h2 class="section-title">Five steps, no surprises.</h2>
         </div>
-        <div class="process-steps">
-          <div class="process-step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-              <h3>Reach Out</h3>
-              <p>Email me with what you've got and what's wrong. Include the make, model, and symptoms. I'll let you know if I can help and give you a rough idea of timeline.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-              <h3>Drop Off</h3>
-              <p>Bring your gear to my shop in Indianapolis (by appointment). I'll do an intake and confirm the reported issue.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-              <h3>Diagnosis</h3>
-              <p>I put it on the bench, trace the fault, and figure out what's actually going on. Then I contact you with findings, options, and a cost estimate before any repair work begins.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-number">4</div>
-            <div class="step-content">
-              <h3>Repair & Test</h3>
-              <p>Once approved, I do the repair, test thoroughly, and document everything. Standard turnaround is 3–7 days. Rush service available.</p>
-            </div>
-          </div>
-          <div class="process-step">
-            <div class="step-number">5</div>
-            <div class="step-content">
-              <h3>Pickup</h3>
-              <p>I let you know when it's ready. You get your gear back with a written summary of the work and a 30-day labor warranty.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BUILDS -->
-    <section id="builds" class="projects">
-      <div class="container">
-        <div class="section-header">
-          <p class="section-label">Build Log</p>
-          <h2 class="section-title">Things I've Built</h2>
-          <p class="section-note">{{BUILD_LOG_NOTE}}</p>
-        </div>
-
-        <!-- Filters -->
-        <div class="filter-bar">
-          <input id="search" class="search" type="search" placeholder="Search builds..." />
-          <div id="tagFilters" class="tag-filters"></div>
-        </div>
-
-        <!-- PROJECTS_START -->
-        <!-- PROJECTS_END -->
+        <ol class="steps">
+          <li><span class="n">1</span><h3>Reach out</h3><p>Email the make, model and symptoms. I&rsquo;ll tell you if I can help and give you a rough timeline.</p></li>
+          <li><span class="n">2</span><h3>Drop off or ship</h3><p>Bring it to the shop by appointment, or ship it in. I do an intake and confirm the issue.</p></li>
+          <li><span class="n">3</span><h3>Diagnosis</h3><p>I trace the fault, then send findings, options and an estimate before any repair work begins.</p></li>
+          <li><span class="n">4</span><h3>Repair &amp; test</h3><p>Once you approve, I fix it, test it properly and document everything. Usually 3&ndash;7 days.</p></li>
+          <li><span class="n">5</span><h3>Pickup</h3><p>You get your gear back with a written summary and a 30-day labor warranty.</p></li>
+        </ol>
+        <ul class="promises">
+          <li><strong>Real diagnostics.</strong> I trace the actual fault before I touch anything.</li>
+          <li><strong>Straight pricing.</strong> $75 bench fee applied to the repair, published labor rates.</li>
+          <li><strong>Your gear stays here.</strong> No farming out. It&rsquo;s on my bench start to finish.</li>
+        </ul>
       </div>
     </section>
 
@@ -314,7 +274,7 @@
       <div class="container">
         <div class="section-header">
           <p class="section-label">FAQ</p>
-          <h2 class="section-title">Common Questions</h2>
+          <h2 class="section-title">Common questions.</h2>
         </div>
         <div class="faq-list">
           <details class="faq-item">
@@ -354,64 +314,65 @@
     </section>
 
     <!-- ABOUT -->
-    <section id="about" class="about">
-      <div class="container">
-        <div class="section-header">
+    <section id="about" class="section about">
+      <div class="container about-inner">
+        <img class="about-portrait" src="images/rudi-portrait-round.jpg"
+             alt="Rudi Willock, repair technician and designer, founder of Filament"
+             width="440" height="440" loading="lazy" decoding="async">
+        <div class="about-body">
           <p class="section-label">About</p>
-          <h2 class="section-title">Who I Am</h2>
-        </div>
-        <div class="about-inner">
-          <img class="about-portrait" src="images/rudi-portrait.jpg"
-               alt="Rudi Willock, repair technician and owner of Filament, Indianapolis"
-               width="220" height="220" loading="lazy" decoding="async">
-          <div class="about-body">
-            <p>{{ABOUT_TEXT}}</p>
-            <div class="tags">
-              <!-- TAGS_START -->
-              <!-- TAGS_END -->
-            </div>
+          <h2 class="section-title">Hi, I&rsquo;m Rudi.</h2>
+          <p>{{ABOUT_TEXT}}</p>
+          <div class="tags">
+            <!-- TAGS_START -->
+            <!-- TAGS_END -->
           </div>
         </div>
       </div>
     </section>
 
     <!-- CONTACT -->
-    <section id="contact" class="contact">
-      <div class="container">
-        <div class="section-header">
-          <p class="section-label">Contact</p>
-          <h2 class="section-title">Get Your Gear Fixed</h2>
-        </div>
-        <p class="contact-lead">Ready to get your amp, synth, or pedal repaired? Email me with the make, model, and what's going on. I'll get back to you with next steps.</p>
+    <section id="contact" class="section contact">
+      <div class="container contact-inner">
+        <p class="section-label">Contact</p>
+        <h2 class="section-title">Let&rsquo;s talk.</h2>
+        <p class="contact-lead">Got an amp, synth or pedal that needs help? Send the make, model and what it&rsquo;s doing. Want to talk about TBX, a collaboration or a custom build? Same inbox.</p>
         <div class="contact-cta-block">
-          <a href="repairs.html#intake" class="btn btn-primary btn-lg">Submit a Repair Inquiry</a>
-          <p class="contact-email-sub"><a href="tel:+13178336133">(317) 833-6133</a> &nbsp;&middot;&nbsp; {{EMAIL}}</p>
+          <a href="repairs.html#intake" class="btn btn-primary btn-lg">Start a repair inquiry</a>
+          <a href="mailto:info@rudimakes.com" class="btn btn-outline btn-lg">info@rudimakes.com</a>
         </div>
-        <p class="contact-also">Local drop-off and pickup by appointment in Indianapolis. Not local? Ship it &mdash; I take mail-in repairs from anywhere, and the process is the same either way.</p>
-        <p class="contact-also">Also open to consulting, custom builds, and conversations about music technology.</p>
-        <div class="social-links">
-          <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener" class="social-link">▶ YouTube</a>
-          <a href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener" class="social-link">◈ Instagram</a>
-          <a href="https://github.com/willockrudi" target="_blank" rel="noopener" class="social-link">⌥ GitHub</a>
-          <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener" class="social-link">in LinkedIn</a>
-        </div>
+        <p class="contact-also"><a href="tel:+13178336133">(317) 833-6133</a> &middot; Local drop-off by appointment in Indianapolis &middot; Mail-in from anywhere</p>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <p>&copy; <span id="year"></span> Rudi Makes &middot; Filament LLC</p>
-      <p class="footer-tagline">Amp repair, synth repair, and electronics service in Indianapolis.</p>
-      <div class="footer-links">
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" aria-label="Filament, home"><img class="logo-on-dark" src="images/filament-logo-dark.svg" alt="filament" width="150" height="46"><img class="logo-on-light" src="images/filament-logo-light.svg" alt="" width="150" height="46"></a>
+        <p>Amp and synth repair in Indianapolis, and the home of TBX Home Broadcast.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="tbx/">TBX</a>
+        <a href="services.html">Services</a>
+        <a href="repairs.html">Repair Log</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Elsewhere</h4>
         <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg" target="_blank" rel="noopener">YouTube</a>
         <a href="https://instagram.com/rudimakes" target="_blank" rel="noopener">Instagram</a>
         <a href="https://github.com/willockrudi" target="_blank" rel="noopener">GitHub</a>
         <a href="https://linkedin.com/in/rudiwillock" target="_blank" rel="noopener">LinkedIn</a>
         <a href="shopcat/" target="_blank" rel="noopener">Shop Cat</a>
       </div>
+    </div>
+    <div class="container footer-base">
+      <p>&copy; <span id="year"></span> Filament LLC &middot; Rudi Willock</p>
+      <p><a href="mailto:info@rudimakes.com">info@rudimakes.com</a> &middot; <a href="tel:+13178336133">(317) 833-6133</a></p>
     </div>
   </footer>
 
@@ -449,84 +410,26 @@
       const toggle = document.getElementById("navToggle");
       const menu = document.getElementById("navMenu");
       if (!toggle || !menu) return;
-      toggle.addEventListener("click", () => menu.classList.toggle("is-open"));
+      toggle.addEventListener("click", () => {
+        const open = menu.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      menu.addEventListener("click", (e) => {
+        if (e.target.closest("a")) { menu.classList.remove("is-open"); toggle.setAttribute("aria-expanded", "false"); }
+      });
     })();
   </script>
 
   <script>
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-gallery-toggle]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-gallery-toggle");
-      const gallery = document.getElementById(id);
-      if (!gallery) return;
-      const open = gallery.classList.toggle("is-open");
-      btn.textContent = open ? "Hide photos" : "More photos";
-    });
-  </script>
-
-  <script>
     (function () {
-      const search = document.getElementById("search");
-      const tagWrap = document.getElementById("tagFilters");
-      const cards = Array.from(document.querySelectorAll(".project-card"));
-      if (!search || !tagWrap || cards.length === 0) return;
-      const tagSet = new Set();
-      for (const c of cards) {
-        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean).forEach(t => tagSet.add(t));
-      }
-      // Rank tags by how many cards carry them. Alphabetical order put "120hz"
-      // and "6550" first, which tells a visitor nothing.
-      const counts = new Map();
-      for (const c of cards) {
-        (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean)
-          .forEach(t => counts.set(t, (counts.get(t) || 0) + 1));
-      }
-      const ranked = Array.from(tagSet).sort((a, b) => {
-        const d = (counts.get(b) || 0) - (counts.get(a) || 0);
-        return d !== 0 ? d : a.localeCompare(b);
-      });
-      const PRIMARY = 12;
-      const hasOverflow = ranked.length > PRIMARY;
-      let showAll = false;
-      let activeTag = "all";
-
-      function renderTags() {
-        tagWrap.innerHTML = "";
-        const shown = showAll ? ranked : ranked.slice(0, PRIMARY);
-        // Keep the active tag reachable even when the tail is collapsed.
-        if (activeTag !== "all" && !shown.includes(activeTag)) shown.push(activeTag);
-        for (const t of ["all", ...shown]) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "tag-filter" + (t === activeTag ? " is-active" : "");
-          btn.textContent = t === "all" ? "All" : t;
-          btn.addEventListener("click", () => { activeTag = t; renderTags(); apply(); });
-          tagWrap.appendChild(btn);
-        }
-        if (hasOverflow) {
-          const more = document.createElement("button");
-          more.type = "button";
-          more.className = "tag-filter tag-filter-more";
-          more.textContent = showAll
-            ? "\u2212 Fewer tags"
-            : "+ " + (ranked.length - PRIMARY) + " more";
-          more.addEventListener("click", () => { showAll = !showAll; renderTags(); });
-          tagWrap.appendChild(more);
-        }
-      }
-      function apply() {
-        const q = (search.value || "").trim().toLowerCase();
-        for (const c of cards) {
-          const textMatch = c.textContent.toLowerCase().includes(q);
-          const cardTags = (c.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean);
-          const tagMatch = activeTag === "all" ? true : cardTags.includes(activeTag);
-          c.style.display = (textMatch && tagMatch) ? "" : "none";
-        }
-      }
-      renderTags();
-      apply();
-      search.addEventListener("input", apply);
+      // Fade sections in as they arrive. Content stays visible without JS.
+      if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const els = document.querySelectorAll(".doors, .tbx-feature, .section");
+      els.forEach((el) => el.classList.add("reveal"));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -10% 0px" });
+      els.forEach((el) => io.observe(el));
     })();
   </script>
 
