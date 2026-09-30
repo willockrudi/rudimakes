@@ -80,6 +80,7 @@ p { margin: 0; text-wrap: pretty; }
 .dial a:hover { color: var(--paper); background: var(--surface); }
 .dial a[aria-current="true"] { color: var(--paper); }
 .dial a[aria-current="true"] b { color: var(--coral); }
+@media (min-width: 761px) and (max-width: 1500px) { .dial a:not([aria-current="true"]):not(:hover):not(:focus-visible) span { display: none; } }
 @media (max-width: 760px) { .bar .home span { display: none; } .dial a span { display: none; } .dial a b { font-size: .875rem; } }
 
 /* the on-screen channel flash, as the box draws it */
@@ -344,7 +345,17 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
 /* companion */
 .buddy { margin-bottom: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(20px, 4vw, 48px); align-items: start; }
 .buddy-tv .screen { position: relative; aspect-ratio: 4 / 3; border-radius: 28px; background: radial-gradient(120% 90% at 50% 45%, #171B24, var(--midnight) 70%); border: 10px solid #1D2129; box-shadow: inset 0 0 60px rgba(0,0,0,.6), 0 0 0 1px var(--line); overflow: hidden; display: grid; place-items: center; }
-.buddy-tv canvas { width: min(58%, 330px); height: auto; image-rendering: pixelated; margin-top: 12%; }
+.buddy-tv canvas { width: min(66%, 400px); height: auto; image-rendering: pixelated; margin-top: 4%; }
+.forms { display: grid; gap: 14px; }
+.forms-title { font: 600 1rem/1.2 var(--display); margin: 10px 0 0; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.forms-title small { font: 400 .875rem/1.3 var(--text); color: var(--mute); }
+.forms-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.form { display: grid; gap: 4px; justify-items: center; text-align: center; padding: 8px 6px 10px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); color: var(--paper); cursor: pointer; font: inherit; }
+.form canvas { width: 100%; max-width: 104px; height: auto; image-rendering: pixelated; }
+.form b { font: 600 .9375rem/1.2 var(--display); }
+.form small { font-size: .75rem; color: var(--mute); }
+.form[aria-pressed="true"] { border-color: var(--coral); box-shadow: 0 0 0 1px var(--coral) inset; }
+.form:focus-visible { outline: 2px solid var(--aqua, #7FD6E6); outline-offset: 2px; }
 .osd-num { position: absolute; top: 6%; left: 6%; font: 700 clamp(1.75rem, 1rem + 2.5vw, 2.75rem)/1 var(--display); color: var(--coral); text-shadow: 0 0 14px rgba(255,107,44,.55); font-variant-numeric: tabular-nums; }
 .bubble { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--paper); color: var(--midnight); font: 500 clamp(.9375rem, .8rem + .5vw, 1.125rem)/1.2 var(--text); white-space: nowrap; max-width: 88%; overflow: hidden; text-overflow: ellipsis; }
 .bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--paper); transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
@@ -366,6 +377,18 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
 .moments span { color: var(--mute); font-size: .9375rem; }
 .concept .wide .frame img { object-fit: contain; }
 .soon { color: var(--mute); font-size: .9375rem; padding: 18px 20px; border: 1px dashed var(--line); border-radius: 14px; margin: 0; }
+.photos.games .frame { --ar: 4 / 3; background: #0B0D12; }
+.photos.games + .sub { margin-top: clamp(48px, 7vw, 88px); }
+@media (max-width: 860px) { .photos.games .wide .frame { --ar: 4 / 3; } }
+.photos.games .frame img { image-rendering: pixelated; object-fit: contain; }
+.worlds { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+@media (min-width: 1000px) { .worlds { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; } .worlds li { padding: 24px 12px 16px; } }
+.worlds li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px 16px 18px; display: grid; gap: 6px; align-content: start; overflow: hidden; }
+.worlds li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: var(--bar); }
+.worlds .n { font: 600 .75rem/1 var(--display); color: var(--mute); font-variant-numeric: tabular-nums; }
+.worlds b { font: 600 1.0625rem/1.2 var(--display); }
+.worlds span:not(.n) { color: var(--mute); font-size: .9375rem; }
+.worlds small { color: var(--coral); font-size: .8125rem; margin-top: 4px; }
 .slot.sheet { margin-top: clamp(28px, 4vw, 44px); }
 .slot.sheet .frame { --ar: 3 / 2; background: #F3EFE6; }
 .slot.sheet .frame img { object-fit: contain; }
@@ -407,12 +430,14 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <a href="#on" data-ch="01"><b>01</b><span>Power on</span></a>
       <a href="#idea" data-ch="02"><b>02</b><span>The idea</span></a>
       <a href="#product" data-ch="03"><b>03</b><span>The box</span></a>
-      <a href="#companion" data-ch="04"><b>04</b><span>Companion</span></a>
-      <a href="#spot" data-ch="05"><b>05</b><span>The spot</span></a>
-      <a href="#panel" data-ch="06"><b>06</b><span>Control panel</span></a>
-      <a href="#brand" data-ch="07"><b>07</b><span>Brand</span></a>
-      <a href="#patterns" data-ch="08"><b>08</b><span>Patterns</span></a>
-      <a href="#status" data-ch="09"><b>09</b><span>Status</span></a>
+      <a href="#companion" data-ch="04"><b>04</b><span>Pips</span></a>
+      <a href="#garden" data-ch="05"><b>05</b><span>Signal Garden</span></a>
+      <a href="#worlds" data-ch="06"><b>06</b><span>Seven Worlds</span></a>
+      <a href="#spot" data-ch="07"><b>07</b><span>The spot</span></a>
+      <a href="#panel" data-ch="08"><b>08</b><span>Control panel</span></a>
+      <a href="#brand" data-ch="09"><b>09</b><span>Brand</span></a>
+      <a href="#patterns" data-ch="10"><b>10</b><span>Patterns</span></a>
+      <a href="#status" data-ch="11"><b>11</b><span>Status</span></a>
     </nav>
   </div>
 </header>
@@ -476,7 +501,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
           <li><b>CH 00</b><span>Guide</span><small>Live listing of what is airing on every channel</small></li>
           <li><b>CH 01</b><span>Movie Night</span><small>Features in order, commercial breaks between</small></li>
           <li><b>CH 07</b><span>Indy 500</span><small>Shuffled, all day</small></li>
-          <li><b>CH 99</b><span>TBX Games</span><small>Tune in to play</small></li>
+          <li><b>CH 99</b><span>Signal Garden</span><small>Your Pip&rsquo;s home. Games start here</small></li>
         </ul>
         <p class="note">Channel names from the prototype's own guide.</p>
       </aside>
@@ -487,7 +512,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
         <h3><i style="background:var(--signal)"></i>Channels</h3>
         <ul>
           <li>Numbered channels 01 to 98</li>
-          <li>A live guide on 00, games on 99</li>
+          <li>A live guide on 00, Signal Garden on 99</li>
           <li>Tuning joins a show in progress</li>
           <li>Static on a channel with nothing scheduled</li>
           <li>The channel number flashes on every tune</li>
@@ -570,41 +595,107 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
 <section class="ch" id="companion" data-ch="04">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>04</b>Companion</p>
+      <p class="eyebrow"><b>04</b>Pips</p>
       <h2>A small friend for big moments.</h2>
-      <p>Every TBX comes with a companion: a little pixel creature with floppy ears who lives in the broadcast. You name it and pick its colour. It hosts the guide channel, pops up when you flip channels, and is quietly around when you&rsquo;re watching something good.</p>
+      <p>Every TBX comes with a Pip: a little pixel creature with floppy ears and no arms, who lives in the broadcast. You name it and pick its colour from your phone. It hosts the guide channel, and on channel 99 it has a whole world to live in.</p>
     </div>
     <div class="buddy">
       <div class="buddy-tv" aria-live="polite">
         <div class="screen">
           <span class="osd-num" aria-hidden="true">00</span>
           <p class="bubble" id="buddy-say">Good evening.</p>
-          <canvas id="buddy" width="240" height="187" role="img" aria-label="The TBX companion"></canvas>
+          <canvas id="buddy" width="312" height="264" role="img" aria-label="Your Pip"></canvas>
         </div>
-        <p class="status-tag">In development &middot; coming to the TV guide</p>
+        <p class="status-tag">The real sprites, drawn live from the same data the TV uses</p>
       </div>
       <form class="buddy-ctl" id="buddy-form" autocomplete="off">
         <label class="field"><span>Name yours</span><input id="buddy-name" maxlength="14" placeholder="e.g. Blip" spellcheck="false"></label>
         <fieldset><legend>Colour</legend><div class="swatches" id="buddy-colors"></div></fieldset>
-        <fieldset><legend>Try a mood</legend><div class="moods" id="buddy-moods"></div></fieldset>
+        <fieldset><legend>Try a move</legend><div class="moods" id="buddy-moods"></div></fieldset>
       </form>
     </div>
     <h3 class="sub">Where it shows up <small>Moments, not a permanent overlay: it never sits on top of your show.</small></h3>
     <ul class="moments">
-      <li><b>Guide channel</b><span>Walks in, says hello by name, looks up at what&rsquo;s coming, gets sleepy late at night.</span></li>
-      <li><b>Channel flip</b><span>Peeks in beside the channel number for a beat, then gets out of the way.</span></li>
-      <li><b>New channel</b><span>Make one from your phone and it does a happy jump on the TV.</span></li>
-      <li><b>New shows</b><span>Curious sparkle when fresh media lands on the drive.</span></li>
-      <li><b>Power on</b><span>A quick wave after the startup bumper, then off to the side.</span></li>
+      <li><b>Guide channel</b><span>Walks in, looks up at what&rsquo;s coming on, perks its ears to say hello, and gets sleepy late at night. Motion only, no words on the TV.</span></li>
+      <li><b>Channel 99</b><span>Its home: Signal Garden, a village the whole family shares, played with the TV remote.</span></li>
+      <li><b>Your phone</b><span>Name it and pick its colour in the control panel. The name stays yours; the TV never shows it.</span></li>
+      <li><b>It grows up</b><span>How the family plays shapes it: twenty forms, a few of them secret.</span></li>
     </ul>
-    <figure class="slot sheet"><div class="frame"><img src="assets/concept/tbx-companion-concept-sheet.jpg" alt="Concept sheet for the TBX companion: expressions, animation frames and where it appears" loading="lazy"></div><figcaption><b>Concept sheet</b>Expressions, animation frames and contexts.</figcaption></figure>
+    <h3 class="sub">It grows up <small>Every form, drawn from the game&rsquo;s own sprites. Tap one to try it on above.</small></h3>
+    <div class="forms" id="pip-forms" aria-label="Pip forms"></div>
+    <figure class="slot sheet"><div class="frame"><img src="assets/concept/tbx-companion-concept-sheet.jpg" alt="The original hand-drawn concept sheet for the Pips: expressions, animation frames and contexts" loading="lazy"></div><figcaption><b>Where it started</b>The first concept sheet. The walk and jump above are traced from it.</figcaption></figure>
   </div>
 </section>
 
-<section class="ch" id="spot" data-ch="05">
+<section class="ch" id="garden" data-ch="05">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>05</b>The spot</p>
+      <p class="eyebrow"><b>05</b>Signal Garden</p>
+      <h2>Channel 99 is a place.</h2>
+      <p>Tune to 99 and your Pip walks out of the TV into Signal Garden: a little village the whole family shares on one box. Grow bonsai, build and furnish a house, fish the pond, explore the caves under the village and trade at the market. Everything is played with the TV remote, and it all lives on the box: no accounts, no cloud.</p>
+    </div>
+    <div class="photos games" data-soon="Screenshots from Signal Garden are being added.">
+      <figure class="slot game wide"><div class="frame"><img src="assets/screens/games/garden-village.png" alt="Signal Garden: a family's five Pips in the village in front of their houses" loading="lazy"><div class="ph"><strong>The village</strong><code>assets/screens/games/garden-village.png</code></div></div><figcaption><b>The village</b>Every Pip in the family, and everyone&rsquo;s house.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-market.png" alt="The market row: Lost Pip stalls under colour-bar awnings, and the Wandering Tinker" loading="lazy"><div class="ph"><strong>The market</strong><code>assets/screens/games/garden-market.png</code></div></div><figcaption><b>The market</b>Rescued Pips run the stalls. Some days, a Tinker visits.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-night.png" alt="The village at night: stars, lit windows, Pips asleep" loading="lazy"><div class="ph"><strong>After dark</strong><code>assets/screens/games/garden-night.png</code></div></div><figcaption><b>After dark</b>Lights on, and the Pips go to bed.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-house.png" alt="Inside a furnished two-storey Pip house" loading="lazy"><div class="ph"><strong>Home</strong><code>assets/screens/games/garden-house.png</code></div></div><figcaption><b>Home</b>From a tent to a two-storey, furnished your way.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-bonsai.png" alt="Choosing the shape of a bonsai: upright, windswept, cascade, broom, literati" loading="lazy"><div class="ph"><strong>Bonsai</strong><code>assets/screens/games/garden-bonsai.png</code></div></div><figcaption><b>Bonsai</b>Grow trees from seeds won in games, and shape them.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-stall.png" alt="Trading at a Lost Pip's fish stall, at Master level" loading="lazy"><div class="ph"><strong>A stall</strong><code>assets/screens/games/garden-stall.png</code></div></div><figcaption><b>A stall</b>Merchants level up the more the family trades.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-static-board.png" alt="The garden TV board showing each family member's channel price for static" loading="lazy"><div class="ph"><strong>The Static Market</strong><code>assets/screens/games/garden-static-board.png</code></div></div><figcaption><b>The Static Market</b>Everyone&rsquo;s price on the garden TV. Whose is climbing?</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-kiosk-static.png" alt="The Repairman robot's kiosk showing this week's static prices as a bar chart" loading="lazy"><div class="ph"><strong>The Repairman</strong><code>assets/screens/games/garden-kiosk-static.png</code></div></div><figcaption><b>The Repairman</b>He buys your jars at your channel&rsquo;s price.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/garden-undersignal.png" alt="The Undersignal: caves under the village with ore to crack" loading="lazy"><div class="ph"><strong>The Undersignal</strong><code>assets/screens/games/garden-undersignal.png</code></div></div><figcaption><b>The Undersignal</b>Caves under the village, full of things to find.</figcaption></figure>
+    </div>
+    <h3 class="sub">A week in the garden <small>Built around the family&rsquo;s real week, so there&rsquo;s always something to come back for.</small></h3>
+    <ul class="moments">
+      <li><b>Sunday morning</b><span>Crackle the Static Peddler rolls in with jars of charged static.</span></li>
+      <li><b>All week</b><span>Every Pip&rsquo;s channel pays its own price for static, changing at noon. Mail jars to whoever&rsquo;s price is climbing.</span></li>
+      <li><b>Saturday</b><span>Race day, and the last day to sell before the TV signs off for the week.</span></li>
+      <li><b>Any day</b><span>Stalls restock, a Wandering Tinker may pass through, the trees need care, and the fish are biting.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="ch" id="worlds" data-ch="06">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>06</b>The Seven Worlds</p>
+      <h2>Put your planet back on the air.</h2>
+      <p>Your planet&rsquo;s signal shattered into the seven bars of the test pattern, and each bar flew off to its own world. Climb into the TV rocket on the village launch pad and go get them: a platform adventure across seven worlds, each with a boss and a crystal of colour to bring home. Light all seven and Station 99 is back on the air.</p>
+    </div>
+    <div class="photos games" data-soon="Screenshots from Pip Flyer are being added.">
+      <figure class="slot game wide"><div class="frame"><img src="assets/screens/games/garden-launchpad.png" alt="The TV rocket on its launch pad beside Station 99's aerial, five colour bars lit" loading="lazy"><div class="ph"><strong>Lift-off</strong><code>assets/screens/games/garden-launchpad.png</code></div></div><figcaption><b>Lift-off</b>An old TV with rabbit ears, and the aerial the bars light up.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-space.png" alt="Pip Flyer in 3D: the rocket from behind, climbing through clouds into the signal" loading="lazy"><div class="ph"><strong>The climb</strong><code>assets/screens/games/flyer-space.png</code></div></div><figcaption><b>The climb</b>Out of the garden and into 3D.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-starmap.png" alt="The star map of the Seven Worlds, three cleared" loading="lazy"><div class="ph"><strong>The star map</strong><code>assets/screens/games/flyer-starmap.png</code></div></div><figcaption><b>The star map</b>Clear a world to fly on to the next.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-gate.png" alt="A 3D boss on the way between worlds: the Static Gate" loading="lazy"><div class="ph"><strong>Between worlds</strong><code>assets/screens/games/flyer-gate.png</code></div></div><figcaption><b>Between worlds</b>The flight has its own fights.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-tunnel.png" alt="The rocket banking through the signal tunnel past a broken satellite" loading="lazy"><div class="ph"><strong>The tunnel</strong><code>assets/screens/games/flyer-tunnel.png</code></div></div><figcaption><b>The tunnel</b>Auto-zap on, so it plays well on a remote.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-world.png" alt="Tidewave: the Pip on a pier over the sea" loading="lazy"><div class="ph"><strong>Tidewave</strong><code>assets/screens/games/flyer-world.png</code></div></div><figcaption><b>Tidewave</b>Hop, stomp, and pulse with your ears.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-world-jungle.png" alt="Cable Jungle: hanging cables and platforms" loading="lazy"><div class="ph"><strong>Cable Jungle</strong><code>assets/screens/games/flyer-world-jungle.png</code></div></div><figcaption><b>Cable Jungle</b>Every world plays differently.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-boss.png" alt="The Dish, the boss of Amber Dunes, among old antennas" loading="lazy"><div class="ph"><strong>A boss</strong><code>assets/screens/games/flyer-boss.png</code></div></div><figcaption><b>A boss</b>One per world, each with its own pattern.</figcaption></figure>
+      <figure class="slot game"><div class="frame"><img src="assets/screens/games/flyer-chamber.png" alt="A crystal chamber in Echo Nebula with ore and the glowing bar crystal" loading="lazy"><div class="ph"><strong>The crystal</strong><code>assets/screens/games/flyer-chamber.png</code></div></div><figcaption><b>The crystal</b>The prize: one bar of colour, going home.</figcaption></figure>
+    </div>
+    <h3 class="sub">The worlds <small>In test-pattern order. Each also hides a Lost Pip, who moves into the village.</small></h3>
+    <ol class="worlds">
+        <li style="--bar:#ECEAE4"><span class="n">1</span><b>Snowfield</b><span>A hush of snow-static</span><small>Boss: The Big Static</small></li>
+        <li style="--bar:#FFD640"><span class="n">2</span><b>Amber Dunes</b><span>Old antennas in the sand</span><small>Boss: The Dish</small></li>
+        <li style="--bar:#48CEDE"><span class="n">3</span><b>Tidewave</b><span>A sea world</span><small>Boss: The Feedback Eel</small></li>
+        <li style="--bar:#5CC462"><span class="n">4</span><b>Cable Jungle</b><span>Vines of old wiring</span><small>Boss: The Tangle</small></li>
+        <li style="--bar:#E258C4"><span class="n">5</span><b>Echo Nebula</b><span>Low gravity</span><small>Boss: The Echo</small></li>
+        <li style="--bar:#E84034"><span class="n">6</span><b>The Forge</b><span>A factory planet</span><small>Boss: The Overdrive</small></li>
+        <li style="--bar:#3C5AD6"><span class="n">7</span><b>The Deep</b><span>The Drift&rsquo;s shore</span><small>Boss: The Static King</small></li>
+    </ol>
+    <h3 class="sub">Three acts <small>A story the family plays through together. Progress is shared by everyone on the box.</small></h3>
+    <ul class="moments acts">
+      <li><b>Act 1: Home</b><span>Settle the village, grow the garden, and dig into the mystery under it.</span></li>
+      <li><b>Act 2: The Seven Worlds</b><span>Seven platform worlds and seven bosses. Bring the colour home and the station lights up.</span></li>
+      <li><b>Act 3: The universe</b><span>Next: relight the worlds you rescued, one by one.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="ch" id="spot" data-ch="07">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>07</b>The spot</p>
       <h2>Forty seconds of TBX.</h2>
       <p>The startup bumper, a channel flip, the box, making a channel from a phone, the guide, the companion and the colours, cut like a station promo. The control panel and guide are the real thing; product shots are design renders.</p>
     </div>
@@ -612,10 +703,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="panel" data-ch="06">
+<section class="ch" id="panel" data-ch="08">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>06</b>Control panel</p>
+      <p class="eyebrow"><b>08</b>Control panel</p>
       <h2>Program it from the couch.</h2>
       <p>Everything is set up from a web control panel the box serves on your home network. Make a channel on your phone and watch the TV change a moment later.</p>
     </div>
@@ -632,10 +723,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="brand" data-ch="07">
+<section class="ch" id="brand" data-ch="09">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>07</b>Brand</p>
+      <p class="eyebrow"><b>09</b>Brand</p>
       <h2>The glow.</h2>
       <p>The mark is a quarter of a rainbow rising from a corner: a signal spreading outward, and a nod to the colour bars and sign-on cards that used to fill the screen before the day's programmes began. The wordmark is lowercase because the box lives in a living room.</p>
     </div>
@@ -690,10 +781,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="patterns" data-ch="08" style="padding-bottom:0">
+<section class="ch" id="patterns" data-ch="10" style="padding-bottom:0">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>08</b>Patterns</p>
+      <p class="eyebrow"><b>10</b>Patterns</p>
       <h2>Built from one shape.</h2>
       <p>Turn the mark around its corner four times and the arcs close into full rings. Stack half-rings and they become a scallop. Every pattern below is generated from the same geometry as the logo, for packaging, merchandise, the box's panels and the guide channel.</p>
     </div>
@@ -708,10 +799,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="status" data-ch="09">
+<section class="ch" id="status" data-ch="11">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>09</b>Status</p>
+      <p class="eyebrow"><b>11</b>Status</p>
       <h2>Where it stands today.</h2>
       <p>TBX is a working prototype. It runs every day on a Raspberry Pi 5 connected to a CRT, and the live demo is that same box.</p>
     </div>
@@ -722,7 +813,8 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
           <li><b>Boots straight to broadcast</b><span class="pill ok">Working</span><p>Black screen, startup bumper, then the last channel you watched.</p></li>
           <li><b>Scheduled channels</b><span class="pill ok">Working</span><p>Day-part schedules, three playback orders, and tuning that joins shows in progress.</p></li>
           <li><b>A station's in-between moments</b><span class="pill ok">Working</span><p>Commercial breaks, idents, station IDs, midnight and sign-off bumpers, static on empty channels.</p></li>
-          <li><b>Guide and games channels</b><span class="pill ok">Working</span><p>A live guide on 00 with theme music; TBX Games on 99.</p></li>
+          <li><b>Guide channel and Pips</b><span class="pill ok">Working</span><p>A live guide on 00 with theme music, hosted by your Pip.</p></li>
+          <li><b>Signal Garden and the Seven Worlds</b><span class="pill ok">Playable</span><p>Channel 99: the village, the market, the caves, and Pip Flyer&rsquo;s seven worlds, all playable on the prototype. Being tuned through family play.</p></li>
           <li><b>Control panel and phone remote</b><span class="pill ok">Working</span><p>Channels, schedules, media and setup wizards from any browser at home.</p></li>
           <li><b>Getting media in</b><span class="pill ok">Working</span><p>Network-share drop-in with automatic filing and conversion, a DVD ripping wizard and a PC converter.</p></li>
           <li><b>Stays on the air</b><span class="pill ok">Working</span><p>If the player stops, a watchdog restarts it in about two seconds and retunes.</p></li>
@@ -731,7 +823,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <div>
         <p class="col-title">Next</p>
         <ul class="list">
-          <li><b>Power button</b><span class="pill built">Designed</span><p>Soft-power latch circuit designed and its software done; the board is next to build.</p></li>
+          <li><b>Power button</b><span class="pill built">Designed</span><p>A front button wired straight to the Pi&rsquo;s own power header, software done; fitting it is next.</p></li>
           <li><b>IR remote</b><span class="pill next">In progress</span><p>Receiver supported in software; choosing the remote hardware.</p></li>
           <li><b>Appliance OS image</b><span class="pill next">Planned</span><p>Move from a desktop OS to a minimal image that runs only TBX.</p></li>
           <li><b>Enclosure</b><span class="pill next">Planned</span><p>A finished case with a channel-number display and status lights.</p></li>
@@ -757,6 +849,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </footer>
 
+<script src="assets/js/pips-data.js"></script>
 <script>
 (() => {
   // Missing photo or screenshot. With ?slots in the URL, show the branded
@@ -817,19 +910,64 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
     btn.textContent = v.muted ? "Play with sound" : "Mute";
     clearTimeout(wait); play();
   });
-  // TBX companion: same sprite data the TV overlay will use (assets/brand/companion).
+  // Pips: the real sprite sheet (assets/js/pips-data.js, generated from
+  // assets/brand/companion/sprites.json), drawn the way tbxkit/companion.py draws it.
   (() => {
-    const S = {"w":20,"h":17,"eye":"#F7F3EA","colors":{"coral":"#FF6B2C","amber":"#FFA31F","cream":"#FFE9A0","aqua":"#7FD6E6","signal":"#4F6FD6","midnight":"#0B0D12"},"states":{"idle":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"blink":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"twitch":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"sleepy":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..################..",".####.#############.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."]],"accent":null},"happy":{"frames":[["..........a.........",".........a.a........","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":"aqua"},"curious":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############..a","...##############.a.","..######o###o#####.a",".####.##o###o######.","#####.##o###o###.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."]],"accent":"coral"},"surprised":{"frames":[["..........a.........","....................","........######......","......#########.....","....#############...","...######o###o###...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."]],"accent":"coral"},"looking_up":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...######o###o###...","..#######o###o####..",".####.###o###o#####.","#####.##########.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."]],"accent":null},"walk":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###",".####.##########.###","..##..#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.","...........##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######...##.",".......#######...#..",".......#######......",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##...........","...................."]],"accent":null},"jump":{"frames":[["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","....................","...................."],["........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","....................","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null},"wave":{"frames":[["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##.......","...................."],["....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","....................","...................."],["....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##.......","...................."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".##....#######....##",".......#######....#.",".......#######....#.",".......##..##......."],["....................","....................","....................","........######......","......#########.....","....#############...","...##############...","..#######o###o####..",".####.###o###o#####.","#####.###o###o##.###","#####.##########.###","####..##########.###",".##...#########..###",".......#######....##",".......#######....#.",".......#######......",".......##..##......."]],"accent":null}}};
+    const S = window.PIPS;
     const cv = document.getElementById("buddy");
-    if (!cv) return;
+    if (!cv || !S) return;
     const cx = cv.getContext("2d");
-    const cw = 12, ch = 11;   // the concept art's pixels are slightly wider than tall
-    const accents = { aqua: "#7FD6E6", coral: "#FF6B2C" };
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const CW = 12, CH = 11;   // the concept art's pixels are slightly wider than tall
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const lighten = (h, k) => `rgb(${hex(h).map((v) => Math.round(v + (255 - v) * k)).join(",")})`;
     const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
                     set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
-    let color = store.get("tbx-buddy-color") || "signal";
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // one frame of a state, with an evolution form, onto a 26x24-cell canvas
+    const paint = (ctx, state, index, color, formKey) => {
+      const st = S.states[state], n = st.frames.length, i = index % n;
+      const rows = st.frames[i], lift = st.lifts ? st.lifts[i] : 0;
+      const body = S.colors[color], form = formKey ? S.forms[formKey] : null;
+      const accent = S.colors[st.accent] || "#7FD6E6";
+      const cell = (x, y, c) => { if (x >= 0 && y >= 0 && x < S.w && y < S.h) { ctx.fillStyle = c; ctx.fillRect(x * CW, y * CH, CW, CH); } };
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      const solid = new Set(), isBody = new Set();
+      let seed = 7;
+      const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      const greys = [40, 70, 110, 160, 210];
+      if (color === "midnight") {       // a soft rim so a midnight Pip reads on a midnight screen
+        rows.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== ".") solid.add(x + "," + y); }));
+        solid.forEach((k) => { const [x, y] = k.split(",").map(Number);
+          [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { if (!solid.has((x + dx) + "," + (y + dy))) cell(x + dx, y + dy, "rgba(247,243,234,.55)"); }); });
+      }
+      rows.forEach((row, y) => [...row].forEach((ch, x) => {
+        if (ch === ".") return;
+        let c = ch === "#" ? body : ch === "o" ? S.eye : accent;
+        if (ch === "#") { isBody.add(x + "," + y); if (form && form.static) { const v = greys[Math.floor(rnd() * 5)]; c = `rgb(${v},${v},${v})`; } }
+        cell(x, y, c);
+      }));
+      if (!form) return;
+      const fc = (code) => code === "B" ? body : code === "L" ? lighten(body, .35) : code;
+      const up = lift + (form.lift || 0);
+      (form.marks || []).forEach(([x, y, code]) => { if (isBody.has(x + "," + (y - lift))) cell(x, y - lift, fc(code)); });
+      (form.acc || []).forEach(([x, y, code]) => {
+        const yy = y - up;
+        const taken = yy >= 0 && yy < S.h && x >= 0 && x < S.w && rows[yy][x] !== ".";
+        if (!taken) cell(x, yy, fc(code));
+      });
+      if (form.glow) {
+        const [gx, gy] = form.glow_at, [r, g, b] = hex(form.glow);
+        const px = (gx + .5) * CW, py = (gy - up + .5) * CH;
+        [[4, .27], [2, .43]].forEach(([rad, al]) => { ctx.fillStyle = `rgba(${r},${g},${b},${al})`; ctx.beginPath(); ctx.arc(px, py, rad * CW, 0, 7); ctx.fill(); });
+      }
+    };
+
+    let color = store.get("tbx-buddy-color") || "coral";
+    if (!S.colors[color]) color = "coral";
     let name = store.get("tbx-buddy-name") || "";
+    let form = store.get("tbx-pip-form") || "";
+    if (form && !S.forms[form]) form = "";
     let mood = "idle", frame = 0, until = 0;
     const say = document.getElementById("buddy-say");
     const hello = () => {
@@ -837,25 +975,11 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       const part = h < 5 ? "Up late?" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
       return name ? (part.endsWith("?") ? `${part} It's ${name}.` : `${part}. I'm ${name}.`) : `${part}.`;
     };
-    const draw = () => {
-      const st = S.states[mood], fr = st.frames[frame % st.frames.length];
-      const body = S.colors[color];
-      cx.clearRect(0, 0, cv.width, cv.height);
-      fr.forEach((row, r) => [...row].forEach((px, c) => {
-        if (px === ".") return;
-        cx.fillStyle = px === "#" ? body : px === "o" ? S.eye : accents[st.accent] || "#7FD6E6";
-        cx.fillRect(c * cw, r * ch, cw, ch);
-      }));
-      if (color === "midnight") { // a soft rim so a midnight buddy reads on a midnight screen
-        cx.globalCompositeOperation = "destination-over";
-        cx.shadowColor = "rgba(247,243,234,.55)"; cx.shadowBlur = 10;
-        fr.forEach((row, r) => [...row].forEach((px, c) => { if (px !== ".") { cx.fillStyle = "#0B0D12"; cx.fillRect(c * cw, r * ch, cw, ch); } }));
-        cx.shadowBlur = 0; cx.globalCompositeOperation = "source-over";
-      }
-    };
+    const draw = () => paint(cx, mood, frame, color, form);
     const setMood = (m, ms = 2400) => { mood = m; frame = 0; until = performance.now() + ms; markMood(); draw(); };
+
     // controls
-    const moods = { idle: "Idle", happy: "Happy", curious: "Curious", surprised: "Surprised", sleepy: "Sleepy", wave: "Wave", jump: "Jump", looking_up: "Looking up" };
+    const moods = { idle: "Idle", perk: "Hello", happy: "Happy", curious: "Curious", surprised: "Surprised", sleepy: "Sleepy", walk: "Walk", jump: "Jump", looking_up: "Look up" };
     const mBox = document.getElementById("buddy-moods");
     Object.entries(moods).forEach(([k, label]) => {
       const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.m = k;
@@ -867,21 +991,55 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
     Object.keys(S.colors).forEach((k) => {
       const b = document.createElement("button"); b.type = "button"; b.style.setProperty("--c", S.colors[k]);
       b.setAttribute("aria-label", cNames[k] || k); b.dataset.c = k;
-      b.addEventListener("click", () => { color = k; store.set("tbx-buddy-color", k); mark(); setMood("happy", 1600); });
+      b.addEventListener("click", () => { color = k; store.set("tbx-buddy-color", k); mark(); drawForms(); setMood("happy", 1600); });
       cBox.append(b);
     });
     const mark = () => cBox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.c === color)));
     const input = document.getElementById("buddy-name");
     input.value = name;
     input.addEventListener("input", () => { name = input.value.trim(); store.set("tbx-buddy-name", name); say.textContent = hello(); });
-    input.addEventListener("change", () => { if (name) setMood("wave", 2600); });
-    document.getElementById("buddy-form").addEventListener("submit", (e) => { e.preventDefault(); if (name) setMood("wave", 2600); });
-    say.textContent = hello(); mark(); markMood(); draw();
+    input.addEventListener("change", () => { if (name) setMood("perk", 2600); });
+    document.getElementById("buddy-form").addEventListener("submit", (e) => { e.preventDefault(); if (name) setMood("perk", 2600); });
+
+    // the forms gallery: every form in your colour; tap one to try it on
+    const fBox = document.getElementById("pip-forms");
+    const groups = [
+      ["First forms", "The fruit it eats and how it&rsquo;s cared for", (k, f) => !f.stage && f.stat !== "Prism"],
+      ["Grown up", "A second evolution, later on", (k, f) => f.stage && f.stat !== "Prism"],
+      ["Secret forms", "Rare, from Prism fruit. They grow up too", (k, f) => f.stat === "Prism"],
+    ];
+    const cards = [];
+    const card = (key, title, note) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "form"; b.dataset.f = key;
+      const c = document.createElement("canvas"); c.width = S.w * CW; c.height = S.h * CH; c.setAttribute("aria-hidden", "true");
+      b.append(c); b.insertAdjacentHTML("beforeend", `<b>${title}</b><small>${note}</small>`);
+      b.addEventListener("click", () => { form = key; store.set("tbx-pip-form", key); markForms(); setMood("happy", 2200);
+        document.querySelector(".buddy-tv").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }); });
+      cards.push([c, key]); return b;
+    };
+    if (fBox) {
+      const first = document.createElement("div"); first.className = "forms-row";
+      first.append(card("", "Original", "Where every Pip starts"));
+      groups.forEach(([title, sub, pick], gi) => {
+        const row = gi === 0 ? first : document.createElement("div");
+        if (gi) { row.className = "forms-row"; }
+        const h = document.createElement("p"); h.className = "forms-title"; h.innerHTML = `${title} <small>${sub}</small>`;
+        fBox.append(h); fBox.append(row);
+        Object.entries(S.forms).filter(([k, f]) => pick(k, f)).forEach(([k, f]) => {
+          const note = f.stage ? `From ${(S.forms[f.base] || {}).title || f.base}` : f.stat === "Prism" ? "Secret" : `${f.stat} &middot; ${f.mood}`;
+          row.append(card(k, f.title, note));
+        });
+      });
+    }
+    const markForms = () => fBox && fBox.querySelectorAll(".form").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === form)));
+    const drawForms = () => cards.forEach(([c, key]) => paint(c.getContext("2d"), "idle", 0, color, key));
+
+    say.textContent = hello(); mark(); markMood(); markForms(); drawForms(); draw();
     if (reduce) return;
-    // idle life: blink now and then, return to idle after a mood, react to channel flips
+    // idle life: blink now and then, back to idle after a move, 8 frames a second like the TV
     let last = 0, blinkAt = performance.now() + 2500;
     const tick = (t) => {
-      if (t - last > 180) {
+      if (t - last > 125) {
         last = t; frame++;
         if (mood !== "idle" && until && t > until) { mood = "idle"; until = 0; markMood(); }
         if (mood === "idle" && t > blinkAt) { mood = "blink"; until = t + 160; blinkAt = t + 2500 + Math.random() * 3500; }
@@ -891,7 +1049,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
     };
     requestAnimationFrame(tick);
     const num = document.querySelector(".osd-num");
-    new IntersectionObserver(([e]) => { if (e.isIntersecting) { num.textContent = "04"; setMood("wave", 2200); } }, { threshold: .6 })
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) { num.textContent = "00"; setMood("perk", 2200); } }, { threshold: .6 })
       .observe(document.querySelector(".buddy-tv"));
   })();
 })();
