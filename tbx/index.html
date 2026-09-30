@@ -87,9 +87,10 @@ p { margin: 0; text-wrap: pretty; }
 .flash {
   position: fixed; z-index: 30; left: max(var(--gutter), env(safe-area-inset-left, 0px));
   top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 18px);
-  font: 700 clamp(2.75rem, 2rem + 3vw, 4.5rem)/1 var(--display); color: var(--coral);
+  font: 700 clamp(2.75rem, 2rem + 3vw, 4.5rem)/1 var(--display);
   font-variant-numeric: tabular-nums; letter-spacing: -.01em;
-  text-shadow: 0 0 18px rgba(255,107,44,.55), 0 0 2px var(--midnight);
+  /* like the box draws it: aqua phosphor with a hot core, glowing, no outline */
+  color: #B8EDF6; text-shadow: 0 0 1px #7FD6E6, 0 0 4px rgba(127,214,230,.85), 0 0 12px rgba(127,214,230,.55), 0 0 28px rgba(127,214,230,.35), 0 0 40px rgba(11,13,18,.45);
   opacity: 0; transition: opacity .25s; pointer-events: none;
 }
 .flash.on { opacity: 1; transition: none; }
@@ -356,7 +357,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
 .form small { font-size: .75rem; color: var(--mute); }
 .form[aria-pressed="true"] { border-color: var(--coral); box-shadow: 0 0 0 1px var(--coral) inset; }
 .form:focus-visible { outline: 2px solid var(--aqua, #7FD6E6); outline-offset: 2px; }
-.osd-num { position: absolute; top: 6%; left: 6%; font: 700 clamp(1.75rem, 1rem + 2.5vw, 2.75rem)/1 var(--display); color: var(--coral); text-shadow: 0 0 14px rgba(255,107,44,.55); font-variant-numeric: tabular-nums; }
+.osd-num { position: absolute; top: 6%; left: 6%; font: 700 clamp(1.75rem, 1rem + 2.5vw, 2.75rem)/1 var(--display); color: #B8EDF6; text-shadow: 0 0 1px #7FD6E6, 0 0 4px rgba(127,214,230,.85), 0 0 12px rgba(127,214,230,.55), 0 0 28px rgba(127,214,230,.35), 0 0 40px rgba(11,13,18,.45); font-variant-numeric: tabular-nums; }
 .bubble { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); margin: 0; padding: 10px 16px; border-radius: 14px; background: var(--paper); color: var(--midnight); font: 500 clamp(.9375rem, .8rem + .5vw, 1.125rem)/1.2 var(--text); white-space: nowrap; max-width: 88%; overflow: hidden; text-overflow: ellipsis; }
 .bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--paper); transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
 .status-tag { margin: 12px 0 0; font-size: .8125rem; color: var(--mute); }
