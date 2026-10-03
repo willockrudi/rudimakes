@@ -48,6 +48,31 @@
     items.forEach((el) => io.observe(el));
   }
 
+  // the site is a television: type a channel number to tune. Never announced.
+  const dial = { "01": "/tbx/", "02": "/hyperworld/", "99": "/99/" };
+  let digits = "", osd = null, wait = 0;
+  const show = (num, note) => {
+    if (!osd) { osd = document.createElement("div"); osd.className = "osd"; osd.setAttribute("aria-live", "polite"); document.body.append(osd); }
+    osd.innerHTML = num + (note ? "<small>" + note + "</small>" : "");
+    osd.hidden = false;
+  };
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || !/^[0-9]$/.test(e.key)) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+    digits = (digits + e.key).slice(-2);
+    clearTimeout(wait);
+    show(digits.padEnd(2, "-"));
+    if (digits.length < 2) { wait = setTimeout(() => { digits = ""; osd.hidden = true; }, 2200); return; }
+    const num = digits, to = dial[num];
+    digits = "";
+    if (to && location.pathname !== to) {
+      wait = setTimeout(() => { location.href = to; }, 650);
+    } else {
+      show(num, to ? "" : "no signal");
+      wait = setTimeout(() => { osd.hidden = true; }, 2200);
+    }
+  });
+
   // left open late at night, the tab signs off
   const title = document.title;
   document.addEventListener("visibilitychange", () => {

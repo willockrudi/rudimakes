@@ -212,7 +212,23 @@ p { margin: 0 0 1.1em; }
 .ch .row .air { margin-left: auto; align-self: center; }
 .ch.off { color: var(--faint); padding: 1.1rem 0; }
 .ch.off .num, .ch.off .name { color: var(--faint); }
-.ch.off .name { font-size: 1rem; font-family: var(--mono); letter-spacing: .04em; }
+.ch.off .line { color: var(--faint); margin-top: .35rem; }
+/* a channel whose name is not ours to say yet */
+.withheld { display: inline-block; height: .8em; background: var(--rule); vertical-align: -.05em; }
+
+/* the on-screen channel number, when someone tunes with the keyboard */
+.osd {
+  position: fixed;
+  top: 72px;
+  right: var(--gutter);
+  z-index: 60;
+  color: var(--signal);
+  font: 400 2rem/1 var(--mono);
+  letter-spacing: .06em;
+  text-align: right;
+  pointer-events: none;
+}
+.osd small { display: block; margin-top: .5rem; font-size: .6875rem; color: var(--dim); }
 
 /* a black frame where a picture has not come in yet */
 .nopic { display: grid; place-items: center; aspect-ratio: 16 / 9; color: var(--faint); background: #000; }

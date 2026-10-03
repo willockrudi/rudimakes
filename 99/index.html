@@ -3,15 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>studio · Filament</title>
-<meta name="description" content="Filament is a world-building studio.">
-<meta property="og:title" content="studio · Filament">
-<meta property="og:description" content="Filament is a world-building studio.">
-<meta property="og:image" content="https://rudimakes.com/images/og-filament.png">
-<meta property="og:url" content="https://rudimakes.com/studio/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://rudimakes.com/studio/">
+<title>ch 99</title>
+<meta name="robots" content="noindex">
 <meta name="theme-color" content="#14120F">
 <link rel="icon" type="image/svg+xml" href="../images/filament-mark.svg">
 <script>try{var t=localStorage.getItem("filament-lights");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
@@ -31,20 +24,20 @@
   </a>
   <nav aria-label="Site">
     <a href="../#worlds">worlds</a>
-    <a href="../studio/" aria-current="page">studio</a>
+    <a href="../studio/">studio</a>
     <button class="lights" type="button" aria-label="Lights"><span class="sw"></span><span class="word"><span class="off">lights off</span><span class="on">lights on</span></span></button>
   </nav>
 </header>
 
 <main>
-  <article class="page">
-    <!-- The workshop portrait goes here, at its own aspect ratio (class "tall" for portrait, "wide" to break out):
-         <figure class="photo tall"><img src="../images/studio/workshop.jpg" alt="" width="" height=""></figure> -->
-    <p class="label mono">studio</p>
-    <h1>Who&rsquo;s behind the light.</h1>
-    <p>Filament is a world-building studio. It began at the workbench, rebuilding synthesizers and old electronics, learning how things are made by bringing them back. Now it builds worlds, and the station they will air on.</p>
-    <p><a class="u" href="mailto:info@rudimakes.com">info@rudimakes.com</a></p>
-  </article>
+  <section class="still">
+    <div>
+      <canvas id="pip" width="312" height="264" role="img" aria-label="A Pip" style="width:104px;margin:0 auto 3rem;image-rendering:pixelated"></canvas>
+      <p class="label mono">ch 99</p>
+      <p style="margin:1.25rem 0 0;font-family:var(--serif);font-style:italic;color:var(--dim)">You weren&rsquo;t meant to find this yet.</p>
+      <p class="label mono" style="margin-top:3rem"><a href="mailto:info@rudimakes.com?subject=ch%2099">say hello</a></p>
+    </div>
+  </section>
 </main>
 
 <footer class="foot">
@@ -57,6 +50,25 @@
   <p class="signoff mono">this concludes tonight's transmission.</p>
 </footer>
 
+<script src="../tbx/assets/js/pips-data.js"></script>
+<script>
+(() => {
+  const S = window.PIPS, cv = document.getElementById("pip");
+  if (!S || !cv) return;
+  const cx = cv.getContext("2d");
+  const paint = (state) => {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    S.states[state].frames[0].forEach((row, y) => [...row].forEach((ch, x) => {
+      if (ch === ".") return;
+      cx.fillStyle = ch === "o" ? S.eye : S.colors.amber;
+      cx.fillRect(x * 12, y * 11, 12, 11);
+    }));
+  };
+  paint("idle");
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !S.states.blink) return;
+  setInterval(() => { paint("blink"); setTimeout(() => paint("idle"), 160); }, 4600);
+})();
+</script>
 <script src="../filament.js" defer></script>
 </body>
 </html>
