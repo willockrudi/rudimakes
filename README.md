@@ -23,7 +23,7 @@ for a portrait. Each page has a comment where its picture goes.
 date, a title and the text: `\n\n` between paragraphs, `*word*` for italics. At 6pm that
 Sunday (visitor's time) the homepage shows the title, the opening line and "read"; the
 full reading is at `/resonance/`. The homepage lets it go after 9 days, so a missed week
-shows nothing there. You can write weeks ahead. The moon beside it is the real
+shows nothing there. You can write weeks ahead. To post one early, add `"live": "2026-10-03T12:00:00"`; it still shows its Sunday date. The moon beside it is the real
 phase, worked out automatically.
 
 ```json

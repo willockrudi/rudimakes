@@ -71,9 +71,11 @@
 
     fetch("/resonance.json", { cache: "no-cache" }).then((x) => x.json()).then((list) => {
       const now = Date.now();
+      // "live" (optional, e.g. "2026-10-03T12:00") posts a reading early; its date stays its Sunday
       const entry = list
         .map((e) => ({ ...e, at: new Date(e.date + "T18:00:00").getTime() }))
-        .filter((e) => e.text && e.at <= now && (full || now < e.at + 9 * 864e5))
+        .map((e) => ({ ...e, from: e.live ? new Date(e.live).getTime() : e.at }))
+        .filter((e) => e.text && e.from <= now && (full || now < e.at + 9 * 864e5))
         .sort((a, b) => b.at - a.at)[0];
       if (!entry) return;
       const paras = String(entry.text).split(/\n\s*\n/);
