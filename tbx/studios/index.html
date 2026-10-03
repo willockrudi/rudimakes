@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tbx · a call for channels</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14120F">
+<link rel="icon" type="image/svg+xml" href="../../images/filament-mark.svg">
+<script>try{var t=localStorage.getItem("filament-lights");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../filament.css">
+<style>
+/* Inside the frame, TBX keeps its own world: Midnight, the glow, Outfit and DM Sans.
+   It stays on Midnight with the lights on, the way a screen does. */
+@font-face { font-family: "Outfit"; src: url("../assets/fonts/Outfit-Variable.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "DM Sans"; src: url("../assets/fonts/DMSans-Variable.ttf") format("truetype"); font-weight: 100 1000; font-display: swap; }
+.tbx {
+  --midnight: #0B0D12; --paper: #F7F3EA; --mute: #A29D93; --line: #2A2F3A;
+  --coral: #FF6B2C; --aqua: #7FD6E6;
+  background: var(--midnight);
+  color: var(--paper);
+  font: 400 1.0625rem/1.65 "DM Sans", var(--sans);
+}
+.tbx a:hover { color: var(--coral); }
+.tbx .col { max-width: 36rem; margin: 0 auto; padding: 0 var(--gutter); }
+.tbx h1, .tbx h2 { font-family: "Outfit", var(--sans); font-weight: 500; letter-spacing: -.02em; margin: 0; }
+.tbx h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1; }
+.tbx h2 { font-size: 1.5rem; line-height: 1.15; }
+.tbx .chno { font: 400 .75rem/1 var(--mono); letter-spacing: .06em; color: var(--aqua); }
+
+.tbx .open { padding: 16vh 0 0; text-align: center; }
+.tbx .open .chno { display: block; margin-bottom: 2rem; }
+.tbx .screen { position: relative; max-width: 60rem; margin: 12vh auto 0; padding: 0 var(--gutter); }
+.tbx .screen video { width: 100%; height: auto; background: #000; }
+.tbx .play {
+  display: block; margin: 1rem auto 0; padding: 8px 4px;
+  border: 0; background: none; color: var(--mute);
+  font: 400 .75rem/1 var(--mono); letter-spacing: .04em; cursor: pointer;
+}
+.tbx .play:hover { color: var(--paper); }
+
+.tbx .words { padding: 18vh 0 0; }
+.tbx .words p { margin: 0 0 1.4em; }
+.tbx .words .one { color: var(--mute); margin-top: 3.5rem; }
+
+.tbx .glimpse { padding: 20vh 0 0; }
+.tbx .glimpse .chno { display: block; margin-bottom: 1rem; }
+.tbx .glimpse p { color: var(--mute); margin: .6rem 0 0; }
+.tbx .frame { max-width: 52rem; margin: 0 auto 2rem; padding: 0 var(--gutter); }
+/* game screens are cropped past their on-screen controls */
+.tbx .frame .crop { overflow: hidden; background: #000; }
+.tbx .frame img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.tbx .garden .crop { aspect-ratio: 1280 / 800; }
+.tbx .garden img { object-position: 50% 53%; }
+.tbx .worlds .crop { aspect-ratio: 1280 / 900; }
+.tbx .worlds img { object-position: 50% 0; }
+.tbx .pip { display: grid; place-items: center; padding: 6vh 0 2rem; }
+.tbx .pip canvas { width: 156px; height: auto; image-rendering: pixelated; }
+
+.tbx .invite { padding: 24vh 0 20vh; text-align: center; }
+.tbx .invite a {
+  font-family: "Outfit", var(--sans); font-size: 1.25rem; font-weight: 400;
+  border-bottom: 1px solid var(--line); padding-bottom: 4px;
+}
+.tbx .invite a:hover { border-color: var(--coral); }
+
+/* a call for channels: simple, and still unexplained */
+.tbx .open { padding-bottom: 0; }
+.tbx .lead { color: var(--mute); margin: 1.75rem auto 0; max-width: 30rem; }
+.tbx .no { display: block; font: 400 .75rem/1 var(--mono); letter-spacing: .06em; color: var(--coral); margin: 0 0 1.5rem; }
+.tbx .lines { padding: 16vh 0 0; text-align: center; }
+.tbx .lines p { margin: 0 0 1.6rem; font-family: "Outfit", var(--sans); font-size: 1.25rem; color: var(--paper); }
+.tbx .lines p:nth-child(2) { color: var(--mute); }
+.tbx .lines p:last-child { color: var(--mute); font-size: 1.0625rem; margin: 0; }
+.tbx .invite .small { margin: 1.75rem auto 0; max-width: 22rem; color: var(--mute); font-size: .8125rem; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="../../" aria-label="Filament">
+    <svg viewBox="0 0 180 612" aria-hidden="true"><path class="f" transform="translate(-418.5 -216.5)" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725"/></svg>
+    filament
+  </a>
+  <nav aria-label="Site">
+    <a href="../../#worlds">worlds</a>
+    <a href="../../studio/">studio</a>
+    <button class="lights" type="button" aria-label="Lights"><span class="sw"></span><span class="word"><span class="off">lights off</span><span class="on">lights on</span></span></button>
+  </nav>
+</header>
+
+<main class="tbx">
+  <section class="open">
+    <div class="col">
+      <span class="chno">ch 01 &middot; a call for channels</span>
+      <span class="no" id="no" hidden></span>
+      <h1>Your channel is waiting.</h1>
+      <p class="lead">TBX is a television network that anyone can own a station on. Studios, networks and makers: the first channels are being chosen now.</p>
+    </div>
+  </section>
+
+  <section class="lines">
+    <div class="col">
+      <p>Not an upload. A station.</p>
+      <p>Your shows, your schedule, your signal.</p>
+      <p>Every TBX tuned in sees the same thing at the same moment.</p>
+    </div>
+  </section>
+
+  <section class="invite">
+    <a href="mailto:info@rudimakes.com?subject=A%20channel%20on%20TBX&amp;body=Who%20you%20are%20%28independent%20maker%20/%20studio%20/%20network%20or%20distributor%29%3A%0A%0AName%3A%0A%0ACompany%3A%0A%0AWhat%20you%27d%20put%20on%20the%20air%2C%20in%20a%20sentence%3A%0A%0AA%20link%20to%20finished%20or%20released%20work%20%28a%20reel%2C%20a%20slate%2C%20a%20catalogue%29%3A%0A">Ask about a channel</a>
+    <p class="small">Send links to finished or released work, not unproduced ideas.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <a href="mailto:info@rudimakes.com">info@rudimakes.com</a>
+  <div class="links">
+    <a href="https://instagram.com/rudimakes">instagram</a>
+    <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg">youtube</a>
+    <span>&copy; Filament LLC</span>
+  </div>
+  <p class="signoff mono">this concludes tonight's transmission.</p>
+</footer>
+
+<script>
+// the card in the box can carry its number: /tbx/studios/?no=07
+(() => {
+  const n = new URLSearchParams(location.search).get("no");
+  if (!n || !/^\d{1,2}$/.test(n)) return;
+  const el = document.getElementById("no");
+  el.textContent = "no. " + n.padStart(2, "0") + " of 30";
+  el.hidden = false;
+})();
+</script>
+<script src="../../filament.js" defer></script>
+</body>
+</html>

@@ -17,3 +17,6 @@ business/
 # Image editor sources - keep locally, don't publish
 *.xcf
 *.psd
+
+# Local notes for Claude
+CLAUDE.md
