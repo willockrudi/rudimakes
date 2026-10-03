@@ -3348,7 +3348,10 @@ def rebuild_all(projects=None):
     rebuild_repair_pages()
     rebuild_repairs_page()
     rebuild_service_pages()
-    rebuild_index_from_projects()
+    # The homepage is no longer generated: since the 2026-10 Filament redesign,
+    # index.html, tbx/, hyperworld/ and studio/ are written by hand.
+    # template.html and rebuild_index_from_projects() are kept only for repair's
+    # move to its own site. The repair pages stay live but unlinked until then.
     # The shop and the build log were retired in the 2026-09 revamp; nothing
     # generates shop/ or projects/ pages any more. See RETIRED-PROJECTS.md.
     update_sitemap()
@@ -4002,9 +4005,13 @@ def update_sitemap(shop: dict | None = None):
     repair_dates = [clean_date(r.get("date")) for r in repairs]
     newest_repair = max(repair_dates) if repair_dates else today
 
+    # Filament's own pages first; the repair pages below stay listed so search
+    # traffic keeps reaching them until repair moves to its own site.
     entries = [
-        (SITE_URL + "/", newest_repair, "weekly", "1.0"),
-        (SITE_URL + "/repairs.html", newest_repair, "weekly", "0.9"),
+        (SITE_URL + "/", today, "weekly", "1.0"),
+        (SITE_URL + "/hyperworld/", today, "monthly", "0.8"),
+        (SITE_URL + "/studio/", today, "monthly", "0.7"),
+        (SITE_URL + "/repairs.html", newest_repair, "weekly", "0.6"),
     ]
 
     for r in repairs:

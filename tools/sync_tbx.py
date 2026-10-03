@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-Copy the TBX investor page into this site at tbx/ (served as rudimakes.com/tbx/).
+Copy the TBX investor page into this site as the TBX press kit, at
+tbx/press/ (served as rudimakes.com/tbx/press/, unlisted and noindex).
 
-The page itself is authored in the TBX project (~/Documents/tbx/landing), so it
-can be previewed on its own. This script copies it here and adds the
-rudimakes.com navigation strip above the page's own channel bar, plus the
-canonical/og URLs for its new home. Run it after changing the landing page:
+rudimakes.com/tbx/ itself is the hand-written TBX world page (tbx/index.html)
+and is never touched by this script. The press page shares its media with it
+through tbx/assets/, so this script refreshes that folder too.
+
+The page is authored in the TBX project (~/Documents/tbx/landing), so it can be
+previewed on its own. Run this after changing the landing page:
 
     python3 tools/sync_tbx.py [path/to/landing]
 """
@@ -16,52 +19,59 @@ from pathlib import Path
 
 SITE = Path(__file__).resolve().parents[1]
 SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home() / "Documents/tbx/landing"
-DST = SITE / "tbx"
-URL = "https://rudimakes.com/tbx/"
+ASSETS = SITE / "tbx" / "assets"
+DST = SITE / "tbx" / "press"
+URL = "https://rudimakes.com/tbx/press/"
 
 STRIP_CSS = """
-/* rudimakes.com site strip (added by tools/sync_tbx.py) */
-.site-strip { background: #0F0E0C; border-bottom: 1px solid var(--line); }
-.site-strip .wrap { height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.site-strip .fil { display: flex; align-items: center; line-height: 0; flex: none; }
-.site-strip .fil img { height: 26px; width: auto; }
-.site-strip nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-.site-strip nav::-webkit-scrollbar { display: none; }
-.site-strip nav a { font: 500 .875rem/1 var(--text); color: var(--mute); text-decoration: none; padding: 8px 12px; border-radius: 999px; white-space: nowrap; }
-.site-strip nav a:hover { color: var(--paper); background: var(--surface); }
-.site-strip nav a[aria-current="page"] { color: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
-@media (max-width: 560px) { .site-strip .fil img { height: 22px; } .site-strip nav a { padding: 8px 9px; font-size: .8125rem; } .site-strip nav a.opt { display: none; } }
+/* rudimakes.com press strip (added by tools/sync_tbx.py) */
+.site-strip { background: #14120F; border-bottom: 1px solid var(--line); }
+.site-strip .wrap { height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.site-strip a { font: 400 .75rem/1 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .04em; color: #EFE7DA; opacity: .7; text-decoration: none; }
+.site-strip a:hover { color: #F0A02B; opacity: 1; }
 """
 
 STRIP_HTML = """<div class="site-strip">
   <div class="wrap">
-    <a class="fil" href="../" aria-label="Filament, rudimakes.com home"><img src="../images/filament-logo-dark.svg" alt="filament" width="104" height="32"></a>
-    <nav aria-label="rudimakes.com">
-      <a href="./" aria-current="page">TBX</a>
-      <a href="../services.html">Services</a>
-      <a href="../repairs.html">Repair Log</a>
-      <a class="opt" href="../#about">About</a>
-      <a href="../#contact">Contact</a>
-    </nav>
+    <a href="../">&larr; tbx</a>
+    <a href="../../">filament</a>
   </div>
 </div>
 """
 
 
-def main():
-    page = (SRC / "index.html").read_text(encoding="utf-8")
-    if DST.exists():
-        shutil.rmtree(DST)
-    shutil.copytree(SRC / "assets", DST / "assets")
-
+def to_press(page: str) -> str:
+    """Rewrite the landing page for its home one folder below tbx/."""
+    # drop any strip a previous sync added
+    page = re.sub(r"\n/\* rudimakes\.com [^*]*\*/.*?(?=</style>)", "\n", page, count=1, flags=re.S)
+    page = re.sub(r'<div class="site-strip">.*?</nav>\s*</div>\s*</div>\s*', "", page, count=1, flags=re.S)
+    # media lives one level up, shared with the world page
+    page = re.sub(r'(["(])assets/', r"\1../assets/", page)
     page = page.replace("</style>", STRIP_CSS + "</style>", 1)
     page = page.replace('<header class="bar">', STRIP_HTML + '<header class="bar">', 1)
-    if 'rel="canonical"' not in page:
-        page = page.replace("</title>", '</title>\n<link rel="canonical" href="' + URL + '">', 1)
+    page = re.sub(r'\s*<link rel="canonical"[^>]*>', "", page)
+    page = page.replace(
+        "</title>",
+        '</title>\n<link rel="canonical" href="' + URL + '">\n<meta name="robots" content="noindex">',
+        1,
+    )
     page = re.sub(r'(<meta property="og:url" content=")[^"]*', r"\g<1>" + URL, page)
     # og:image must be absolute for link previews
-    page = re.sub(r'(<meta property="og:image" content=")(?!https?:)([^"]*)', lambda m: m.group(1) + URL + m.group(2), page)
-    (DST / "index.html").write_text(page, encoding="utf-8")
+    page = re.sub(
+        r'(<meta property="og:image" content=")(?:https://rudimakes\.com/tbx/|\.\./)?(?!https?:)([^"]*)',
+        lambda m: m.group(1) + "https://rudimakes.com/tbx/" + m.group(2).replace("../", ""),
+        page,
+    )
+    return page
+
+
+def main():
+    page = (SRC / "index.html").read_text(encoding="utf-8")
+    if ASSETS.exists():
+        shutil.rmtree(ASSETS)
+    shutil.copytree(SRC / "assets", ASSETS)
+    DST.mkdir(parents=True, exist_ok=True)
+    (DST / "index.html").write_text(to_press(page), encoding="utf-8")
     print("synced", SRC, "->", DST)
 
 
