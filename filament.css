@@ -192,6 +192,37 @@ p { margin: 0 0 1.1em; }
   padding: 24vh var(--gutter) 0;
 }
 .log .date { color: var(--dim); margin: 0 0 2.5rem; }
+/* resonance: the weekly reading, under the date like the top of a log */
+.resonance { margin: -1rem 0 3.5rem; }
+.resonance > p.mono { display: flex; align-items: center; gap: .6rem; color: var(--dim); margin: 0 0 1rem; }
+.moon { width: 15px; height: 15px; flex: none; }
+.moon circle { fill: none; stroke: var(--mark); stroke-width: 1.1; }
+.moon path { fill: var(--mark); }
+.resonance .reading {
+  font: 400 1rem/1.65 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  color: var(--fg);
+  max-width: 32rem;
+}
+.resonance .reading p { margin: 0 0 .9em; }
+.resonance .reading p:last-child { margin: 0; }
+.resonance .title {
+  margin: 0 0 .6rem;
+  font: 400 1.5rem/1.1 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  letter-spacing: -.01em;
+}
+.resonance .title:empty { display: none; }
+.resonance .more { display: inline-block; margin-top: 1rem; color: var(--dim); }
+.resonance .more:hover { color: var(--light); }
+
+/* the full reading, on its own page */
+.resonance.full { margin: 0; }
+.resonance.full > p.mono { margin-bottom: 2rem; }
+.resonance.full .title { font-size: clamp(2.25rem, 7vw, 3.5rem); font-weight: 300; margin: 0 0 2.5rem; }
+.resonance.full .reading { font-size: 1.0625rem; }
+.resonance.full .reading p { margin: 0 0 1.25em; }
+
 .channels { list-style: none; margin: 0; padding: 0; }
 .channels li { border-top: 1px solid var(--rule); }
 .channels li:last-child { border-bottom: 1px solid var(--rule); }
