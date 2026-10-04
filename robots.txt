@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+# generator templates, not pages
+Disallow: /repair_template.html
+Disallow: /repairs_template.html
+Disallow: /service_template.html
+Disallow: /services_template.html
 
 Sitemap: https://rudimakes.com/sitemap.xml

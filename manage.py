@@ -3368,7 +3368,8 @@ def rebuild_all(projects=None):
     rebuild_service_pages()
     # The homepage is no longer generated: since the 2026-10 Filament redesign,
     # index.html, tbx/, hyperworld/ and studio/ are written by hand.
-    # template.html and rebuild_index_from_projects() are kept only for repair's
+    # template.html was removed from the site (2026-10-04); it is in git history
+    # if repair needs it, and rebuild_index_from_projects() stays for that
     # move to its own site. The repair pages stay live but unlinked until then.
     # The shop and the build log were retired in the 2026-09 revamp; nothing
     # generates shop/ or projects/ pages any more. See RETIRED-PROJECTS.md.
