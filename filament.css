@@ -307,6 +307,12 @@ p { margin: 0 0 1.1em; }
   font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
   letter-spacing: -.03em;
 }
+.still .logline {
+  max-width: 30rem;
+  margin: 0 auto 1.5rem;
+  font: 400 1.125rem/1.5 var(--serif);
+  text-wrap: balance;
+}
 .still .label { color: var(--dim); margin: 0; }
 
 /* ---------- a breath of static between pages ---------- */
