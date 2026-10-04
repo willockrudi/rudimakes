@@ -1662,3 +1662,7 @@ html[data-theme="light"] .hero-home { background: radial-gradient(60rem 36rem at
 .step-content p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
 @media (max-width: 900px) { .trust-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .trust-grid { grid-template-columns: 1fr; } }
+
+/* The repair pages' own name (they are kept apart from Filament). */
+.nav-wordmark { font-family: var(--font-head); font-weight: 600; font-size: 1.25rem; line-height: 1; letter-spacing: -0.01em; color: var(--text); text-decoration: none; }
+.nav-logo.nav-wordmark { line-height: 1; }

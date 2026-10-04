@@ -2779,6 +2779,25 @@ def _splice_between(content: str, start: str, end: str, inner: str) -> str:
     return content[:a] + chr(10) + inner + chr(10) + "        " + content[b:]
 
 
+# The repair business, kept apart from Filament (which is the studio on the
+# homepage). Repair pages describe and link to this entity only.
+REPAIR_ID = SITE_URL + "/services.html#repair"
+
+
+def repair_business() -> dict:
+    site = load_site() if os.path.exists(SITE_PATH) else {}
+    return {
+        "@type": "LocalBusiness",
+        "@id": REPAIR_ID,
+        "name": site.get("name") or "Rudi Makes",
+        "url": SITE_URL + "/services.html",
+        "email": site.get("email", ""),
+        "telephone": "+1-317-833-6133",
+        "address": {"@type": "PostalAddress", "addressLocality": "Indianapolis",
+                    "addressRegion": "IN", "addressCountry": "US"},
+    }
+
+
 def rebuild_index_from_projects(projects=None):
     """Regenerate index.html (the homepage) from template.html.
 
@@ -2962,7 +2981,7 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
         plain = f"{device}: {plain}"
     meta_desc = html.escape((plain[:157] + "...") if len(plain) > 160 else plain, quote=True)
 
-    og_image = f"{SITE_URL}/{img}" if img else f"{SITE_URL}/images/og-repairs.png"
+    og_image = f"{SITE_URL}/{img}" if img else f"{SITE_URL}/images/og-repair.png"
 
     schema = {
         "@context": "https://schema.org",
@@ -2974,8 +2993,7 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
         "author": {"@type": "Person", "name": "Rudi Willock"},
         "publisher": {
             "@type": "Organization",
-            "name": "Filament",
-            "legalName": site.get("legal_name", ""),
+            "name": site.get("name") or "Rudi Makes",
         },
         "about": device or raw_title,
     }
@@ -2994,16 +3012,16 @@ def repair_detail_html(r: dict, site: dict, template: str, all_repairs=None) -> 
     schema["inLanguage"] = "en-US"
     schema["isPartOf"] = {
         "@type": "Blog",
-        "name": "Filament Repair Log",
+        "name": (site.get("name") or "Rudi Makes") + " Repair Log",
         "url": f"{SITE_URL}/repairs.html",
     }
     # Tie the write-up back to the business so these pages feed the local
     # entity instead of floating free as unattached articles.
-    schema["publisher"]["@id"] = f"{SITE_URL}/#business"
+    schema["publisher"]["@id"] = REPAIR_ID
     schema["mentions"] = {
         "@type": "Service",
         "serviceType": "Musical instrument and amplifier repair",
-        "provider": {"@id": f"{SITE_URL}/#business"},
+        "provider": {"@id": REPAIR_ID},
         "areaServed": {"@type": "City", "name": "Indianapolis"},
     }
 
@@ -3225,7 +3243,7 @@ def service_detail_html(svc: dict, site: dict, template: str, repairs: list) -> 
         "serviceType": svc.get("nav_title"),
         "description": svc.get("meta_description"),
         "url": url,
-        "provider": {"@id": SITE_URL + "/#business"},
+        "provider": repair_business(),
         "areaServed": [
             {"@type": "City", "name": "Indianapolis"},
             {"@type": "Country", "name": "United States"},
