@@ -38,7 +38,7 @@
   });
 
   // resonance: Rudi's weekly reading, from /resonance.json. Each entry's date is a
-  // Sunday; it appears at 6pm that evening (visitor's time). The homepage shows the
+  // Sunday; it appears at 6pm Eastern that evening, for everyone. The homepage shows the
   // title and opening line for 9 days, so a missed week shows nothing there;
   // /resonance/ always shows the most recent reading in full.
   const res = document.getElementById("resonance");
@@ -70,17 +70,37 @@
       });
       return el;
     };
-    const day = (t) => new Date(t)
-      .toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" })
-      .toLowerCase().replace(",", "");
+    // Times are Eastern (Rudi's clock), so a reading signs on at the same moment for
+    // everyone: "2026-10-11" = 6pm that day in New York, "2026-10-10T12:00" = noon there.
+    const ZONE = "America/New_York";
+    const eastern = (s) => {
+      const [d, t = "18:00"] = String(s).split("T");
+      const [y, m, dd] = d.split("-").map(Number);
+      const [hh, mm = 0, ss = 0] = t.split(":").map(Number);
+      const guess = Date.UTC(y, m - 1, dd, hh, mm, ss);
+      try {
+        const parts = new Intl.DateTimeFormat("en-US", { timeZone: ZONE, hourCycle: "h23",
+          year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" })
+          .formatToParts(guess);
+        const v = (k) => Number(parts.find((x) => x.type === k).value);
+        return guess - (Date.UTC(v("year"), v("month") - 1, v("day"), v("hour"), v("minute"), v("second")) - guess);
+      } catch { return new Date(y, m - 1, dd, hh, mm, ss).getTime(); }
+    };
+    const day = (t) => {
+      const o = { weekday: "long", day: "numeric", month: "long" };
+      let s;
+      try { s = new Date(t).toLocaleDateString("en-US", { ...o, timeZone: ZONE }); }
+      catch { s = new Date(t).toLocaleDateString("en-US", o); }
+      return s.toLowerCase().replace(",", "");
+    };
     const full = res.dataset.view === "full";
 
     fetch("/resonance.json", { cache: "no-cache" }).then((x) => x.json()).then((list) => {
       const now = Date.now();
       // "live" (optional, e.g. "2026-10-03T12:00") posts a reading early; its date stays its Sunday
       const published = list
-        .map((e) => ({ ...e, at: new Date(e.date + "T18:00:00").getTime() }))
-        .map((e) => ({ ...e, from: e.live ? new Date(e.live).getTime() : e.at }))
+        .map((e) => ({ ...e, at: eastern(e.date) }))
+        .map((e) => ({ ...e, from: e.live ? eastern(e.live) : e.at }))
         .filter((e) => e.text && e.from <= now)
         .sort((a, b) => b.at - a.at);
       // the full page can show any earlier reading: /resonance/?r=2026-10-04
