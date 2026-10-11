@@ -57,38 +57,63 @@
     moon.querySelector("path").setAttribute("d", p < .03 || p > .97 ? "" : limb + term);
     moon.setAttribute("aria-label", names.find(([t]) => p < t)[1] + " moon");
 
-    // a paragraph of plain text, with *words* in italics
+    // a paragraph of plain text: *words* in italics, a single line break kept as a break
     const para = (text) => {
       const el = document.createElement("p");
-      text.trim().split(/\*([^*]+)\*/).forEach((bit, i) => {
-        if (!bit) return;
-        if (i % 2) { const em = document.createElement("em"); em.textContent = bit; el.append(em); }
-        else el.append(bit);
+      text.trim().split("\n").forEach((line, n) => {
+        if (n) el.append(document.createElement("br"));
+        line.trim().split(/\*([^*]+)\*/).forEach((bit, i) => {
+          if (!bit) return;
+          if (i % 2) { const em = document.createElement("em"); em.textContent = bit; el.append(em); }
+          else el.append(bit);
+        });
       });
       return el;
     };
+    const day = (t) => new Date(t)
+      .toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" })
+      .toLowerCase().replace(",", "");
     const full = res.dataset.view === "full";
 
     fetch("/resonance.json", { cache: "no-cache" }).then((x) => x.json()).then((list) => {
       const now = Date.now();
       // "live" (optional, e.g. "2026-10-03T12:00") posts a reading early; its date stays its Sunday
-      const entry = list
+      const published = list
         .map((e) => ({ ...e, at: new Date(e.date + "T18:00:00").getTime() }))
         .map((e) => ({ ...e, from: e.live ? new Date(e.live).getTime() : e.at }))
-        .filter((e) => e.text && e.from <= now && (full || now < e.at + 9 * 864e5))
-        .sort((a, b) => b.at - a.at)[0];
+        .filter((e) => e.text && e.from <= now)
+        .sort((a, b) => b.at - a.at);
+      // the full page can show any earlier reading: /resonance/?r=2026-10-04
+      const asked = full && new URLSearchParams(location.search).get("r");
+      const entry = (asked && published.find((e) => e.date === asked))
+        || published.find((e) => full || now < e.at + 9 * 864e5);
       if (!entry) return;
       const paras = String(entry.text).split(/\n\s*\n/);
       res.querySelector(".title").textContent = entry.title || "";
       const when = res.querySelector(".when");
-      if (when) when.textContent = new Date(entry.at)
-        .toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long" })
-        .toLowerCase().replace(",", "");
+      if (when) when.textContent = day(entry.at);
       const box = res.querySelector(".reading");
       (full ? paras : paras.slice(0, 1)).forEach((t) => box.append(para(t)));
       res.hidden = false;
       const empty = document.getElementById("resonance-empty");
       if (empty) empty.hidden = true;
+
+      // the archive: every other published reading, newest first
+      const archive = document.getElementById("resonance-archive");
+      const others = published.filter((e) => e !== entry);
+      if (!archive || !others.length) return;
+      const ul = archive.querySelector("ul");
+      others.forEach((e) => {
+        const li = document.createElement("li"), a = document.createElement("a");
+        a.href = e === published[0] ? "/resonance/" : "/resonance/?r=" + e.date;
+        a.textContent = e.title || e.date;
+        const d = document.createElement("span");
+        d.className = "mono";
+        d.textContent = day(e.at);
+        li.append(a, d);
+        ul.append(li);
+      });
+      archive.hidden = false;
     }).catch(() => {});
   }
 

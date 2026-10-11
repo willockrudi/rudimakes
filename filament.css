@@ -223,6 +223,14 @@ p { margin: 0 0 1.1em; }
 .resonance.full .reading { font-size: 1.0625rem; }
 .resonance.full .reading p { margin: 0 0 1.25em; }
 
+/* the archive of earlier readings, under the full reading */
+.archive { margin: 5rem 0 0; padding-top: 2rem; border-top: 1px solid var(--rule); }
+.archive > .mono { color: var(--dim); margin: 0 0 1rem; }
+.archive ul { list-style: none; margin: 0; padding: 0; }
+.archive li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .55rem 0; }
+.archive a { font: 400 1.125rem/1.3 var(--serif); font-variation-settings: "SOFT" 100, "WONK" 0; }
+.archive li .mono { color: var(--dim); white-space: nowrap; }
+
 .channels { list-style: none; margin: 0; padding: 0; }
 .channels li { border-top: 1px solid var(--rule); }
 .channels li:last-child { border-bottom: 1px solid var(--rule); }
