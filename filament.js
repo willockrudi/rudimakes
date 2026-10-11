@@ -118,20 +118,28 @@
       const empty = document.getElementById("resonance-empty");
       if (empty) empty.hidden = true;
 
-      // the archive: every other published reading, newest first
+      // the archive: every other published reading, newest first, split around this one
       const archive = document.getElementById("resonance-archive");
-      const others = published.filter((e) => e !== entry);
-      if (!archive || !others.length) return;
-      const ul = archive.querySelector("ul");
-      others.forEach((e) => {
-        const li = document.createElement("li"), a = document.createElement("a");
-        a.href = e === published[0] ? "/resonance/" : "/resonance/?r=" + e.date;
-        a.textContent = e.title || e.date;
-        const d = document.createElement("span");
-        d.className = "mono";
-        d.textContent = day(e.at);
-        li.append(a, d);
-        ul.append(li);
+      if (!archive || published.length < 2) return;
+      archive.replaceChildren();
+      [["later", published.filter((e) => e.at > entry.at)],
+       ["earlier", published.filter((e) => e.at < entry.at)]].forEach(([label, group]) => {
+        if (!group.length) return;
+        const head = document.createElement("p");
+        head.className = "mono";
+        head.textContent = label;
+        const ul = document.createElement("ul");
+        group.forEach((e) => {
+          const li = document.createElement("li"), a = document.createElement("a");
+          a.href = e === published[0] ? "/resonance/" : "/resonance/?r=" + e.date;
+          a.textContent = e.title || e.date;
+          const d = document.createElement("span");
+          d.className = "mono";
+          d.textContent = day(e.at);
+          li.append(a, d);
+          ul.append(li);
+        });
+        archive.append(head, ul);
       });
       archive.hidden = false;
     }).catch(() => {});
