@@ -60,12 +60,9 @@
 /* game screens are cropped past their on-screen controls */
 .tbx .frame .crop { overflow: hidden; background: #000; }
 .tbx .frame img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-.tbx .garden .crop { aspect-ratio: 1280 / 800; }
-.tbx .garden img { object-position: 50% 53%; }
-.tbx .worlds .crop { aspect-ratio: 1280 / 900; }
-.tbx .worlds img { object-position: 50% 0; }
-.tbx .pip { display: grid; place-items: center; padding: 6vh 0 2rem; }
-.tbx .pip canvas { width: 156px; height: auto; image-rendering: pixelated; }
+.tbx .frame .crop { aspect-ratio: 4 / 3; }
+.tbx .plaza .crop { aspect-ratio: 16 / 10; }
+.tbx .plaza img { object-position: 50% 60%; }
 
 .tbx .invite { padding: 24vh 0 20vh; text-align: center; }
 .tbx .invite a {
@@ -105,37 +102,43 @@
     <div class="col">
       <p>Streaming put everything within reach and made watching feel like homework. Broadcast never asked you to choose. Something was already on, and you tuned in to it.</p>
       <p>TBX gives that back. The films and shows you already own become a station that runs around the clock, whether or not anyone is watching. You don&rsquo;t pick. You tune in. The power is yours again.</p>
+      <p>Turn it off and the broadcast carries on without you. Come back an hour later, or three days later, and you land mid-show, right where the schedule says you should.</p>
       <p class="one">A small box behind the television that turns your own library into live, scheduled TV, on any screen, even the CRT in the basement.</p>
     </div>
   </section>
 
-  <section class="glimpse">
-    <div class="pip"><canvas id="pip" width="312" height="264" role="img" aria-label="A Pip"></canvas></div>
+  <section class="glimpse plaza">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/plaza-strip.png" alt="Westgate Plaza at night: Rewind Video, Bside Records and the Satalite Theater in a row of lit signs across an empty parking lot" width="960" height="720" loading="lazy"></div></div>
     <div class="col">
-      <span class="chno">pips</span>
-      <h2>A small friend who lives in the broadcast.</h2>
-      <p>Every box comes with one. It hosts the guide, and grows up with the family.</p>
-    </div>
-  </section>
-
-  <section class="glimpse garden">
-    <div class="frame"><div class="crop"><img src="assets/screens/games/garden-night.png" alt="Signal Garden at night: the village asleep under a full moon" width="1280" height="960" loading="lazy"></div></div>
-    <div class="col">
-      <span class="chno">ch 99 &middot; signal garden</span>
+      <span class="chno">ch 99 &middot; westgate plaza</span>
       <h2>Channel 99 is a place.</h2>
-      <p>A village the whole family shares, played with the remote. It lives on the box.</p>
+      <p>A strip mall just off the dial, open all night. A video store, a record shop, a theater. Everything on the shelves is yours.</p>
     </div>
   </section>
-
-  <section class="glimpse worlds">
-    <div class="frame"><div class="crop"><img src="assets/screens/games/flyer-starmap.png" alt="The star map of the Seven Worlds" width="1280" height="960" loading="lazy"></div></div>
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/wtbx-across-the-lot.png" alt="WTBX, a small station building with a colour-bar sign, under a street lamp across the parking lot" width="960" height="720" loading="lazy"></div></div>
     <div class="col">
-      <span class="chno">the seven worlds</span>
-      <h2>Put your planet back on the air.</h2>
-      <p>The signal shattered into seven bars of colour. Go and bring them home.</p>
+      <span class="chno">wtbx 93.7</span>
+      <h2>The station is across the lot.</h2>
+      <p>Pull up a chair. Every channel is run from here.</p>
     </div>
   </section>
-
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/gary-weather.png" alt="Gary Bell gives the TBX Weather forecast in front of a rain map while Morris the cat sits on the desk" width="720" height="540" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">tbx weather</span>
+      <h2>Gary has the forecast.</h2>
+      <p>Your town&rsquo;s real weather, every couple of hours. Morris is not supposed to be on the desk.</p>
+    </div>
+  </section>
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/satalite-marquee.png" alt="The Satalite Theater marquee: no premieres tonight, see you at midnight" width="960" height="720" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">satalite theater</span>
+      <h2>Something is coming to the Satalite.</h2>
+      <p>The marquee will say when.</p>
+    </div>
+  </section>
   <section class="invite">
     <a href="mailto:info@rudimakes.com?subject=Tune%20in">Tune in</a>
   </section>
@@ -151,7 +154,6 @@
   <p class="signoff mono">this concludes tonight's transmission.</p>
 </footer>
 
-<script src="assets/js/pips-data.js"></script>
 <script>
 // the startup bumper plays only when asked, with sound
 (() => {
@@ -163,24 +165,6 @@
   v.addEventListener("ended", () => { v.load(); b.textContent = "play with sound"; });
 })();
 
-// a Pip, drawn from the same sprite data the TV uses; it blinks now and then
-(() => {
-  const S = window.PIPS, cv = document.getElementById("pip");
-  if (!S || !cv) return;
-  const cx = cv.getContext("2d"), CW = 12, CH = 11, body = S.colors.coral;
-  const paint = (state) => {
-    const rows = S.states[state].frames[0];
-    cx.clearRect(0, 0, cv.width, cv.height);
-    rows.forEach((row, y) => [...row].forEach((ch, x) => {
-      if (ch === ".") return;
-      cx.fillStyle = ch === "o" ? S.eye : body;
-      cx.fillRect(x * CW, y * CH, CW, CH);
-    }));
-  };
-  paint("idle");
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !S.states.blink) return;
-  setInterval(() => { paint("blink"); setTimeout(() => paint("idle"), 160); }, 5200);
-})();
 </script>
 <script src="../filament.js" defer></script>
 </body>
