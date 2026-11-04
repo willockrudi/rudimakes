@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>studio · Filament</title>
-<meta name="description" content="Filament is a world-building studio.">
+<meta name="description" content="A small studio broadcasting from somewhere in the middle of the country.">
 <meta property="og:title" content="studio · Filament">
-<meta property="og:description" content="Filament is a world-building studio.">
+<meta property="og:description" content="A small studio broadcasting from somewhere in the middle of the country.">
 <meta property="og:image" content="https://rudimakes.com/images/og-filament.png">
 <meta property="og:url" content="https://rudimakes.com/studio/">
 <meta property="og:type" content="website">
@@ -14,49 +14,428 @@
 <link rel="canonical" href="https://rudimakes.com/studio/">
 <meta name="theme-color" content="#14120F">
 <link rel="icon" type="image/svg+xml" href="../images/filament-mark.svg">
-<script>try{var t=localStorage.getItem("filament-lights");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
-<link rel="stylesheet" href="../filament.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap">
+<style>
+/* Layout: one fixed 3D stage; real HTML text scrolls over it, and each passage swells past the camera. */
+:root {
+  --ink: #14120F;      /* the site's own theme color */
+  --paper: #F3E4C8;
+  --ember: #F0A95B;
+  --room: #D9AE74;
+  --bg: var(--ink);
+  --fg: var(--paper);
+  --muted: #A99A82;
+  --halo: rgba(20, 18, 15, .85);
+  --display: "Cormorant", "Iowan Old Style", Georgia, serif;
+  --mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+:root.lights-on {
+  --bg: var(--room);
+  --fg: #1B150D;
+  --muted: #4A3A25;
+  --ember: #5C2F08;
+  --halo: rgba(233, 196, 141, .75);
+}
+html { overflow-x: clip; background: var(--bg); transition: background-color .7s ease; }
+body {
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--display);
+  overflow-x: clip;
+  transition: color .7s ease;
+}
+a { color: inherit; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+a:focus-visible, button:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+
+/* Stage. The radial glow is what remains if WebGL is unavailable. */
+.stage {
+  position: fixed; inset: 0 0 auto; height: 100lvh; z-index: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(240,169,91,.42), rgba(240,169,91,.08) 7vmin, transparent 22vmin);
+}
+.stage canvas { display: block; width: 100%; height: 100%; }
+.stage.live { background: none; }
+
+.bar {
+  position: fixed; inset: 0 0 auto; z-index: 3;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding-top: calc(18px + env(safe-area-inset-top, 0px));
+  padding-bottom: 18px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  font: 300 13px/1 var(--mono);
+  letter-spacing: .02em;
+}
+.bar a { text-decoration: none; }
+.bar a:hover, .lights:hover { color: var(--ember); }
+.bar nav { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; justify-content: flex-end; }
+.lights {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer;
+  letter-spacing: inherit;
+}
+
+main {
+  position: relative; z-index: 1;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.beat {
+  box-sizing: border-box;
+  min-height: 125svh;
+  display: flex; flex-direction: column; justify-content: center;
+  max-width: 1120px; margin-inline: auto;
+}
+.beat > .say {
+  display: flex; flex-direction: column; gap: 16px;
+  max-width: 21ch;
+  font-size: clamp(2rem, 5.2vw, 4.25rem);
+  line-height: 1.06;
+  font-weight: 300;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+  text-shadow: 0 0 .5em var(--halo), 0 0 .12em var(--halo);
+  will-change: transform, opacity;
+  transform-origin: 50% 50%;
+  position: relative;
+  isolation: isolate;
+}
+.beat > .say::before {
+  content: ""; position: absolute; inset: -1.1em -1.4em; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, var(--halo), transparent);
+}
+.beat.right { align-items: flex-end; }
+.beat.right > .say { text-align: right; }
+.beat.mid { align-items: center; }
+.beat.mid > .say { text-align: center; align-items: center; }
+
+.label { font: 300 13px/1.3 var(--mono); letter-spacing: .08em; color: var(--muted); }
+h1 { margin: 0; font: inherit; font-size: clamp(3rem, 10vw, 8rem); line-height: .96; letter-spacing: -.02em; font-style: italic; }
+.hero > .say { max-width: none; }
+h1 { max-width: 8em; text-wrap: balance; }
+.hint { position: fixed; z-index: 2; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); font: 300 13px/1 var(--mono); color: var(--muted); pointer-events: none; }
+em { font-style: italic; }
+
+.contact > .say { max-width: none; gap: 20px; }
+.mail { font-size: clamp(1.75rem, 5.6vw, 4.25rem); font-style: italic; overflow-wrap: anywhere; user-select: all; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: flex-end; font: 300 14px/1.4 var(--mono); letter-spacing: .02em; text-shadow: none; }
+.links span { color: var(--muted); }
+
+.signoff { min-height: 125svh; justify-content: flex-end; padding-block-end: 44svh; }
+.signoff > .say { font: 300 14px/1.5 var(--mono); letter-spacing: .06em; color: var(--ember); max-width: 40ch; }
+
+@media (max-width: 560px) {
+  .beat, .beat.right { align-items: flex-start; }
+  .beat.right > .say { text-align: left; }
+  .beat.mid > .say { text-align: center; }
+  .beat.mid { align-items: center; }
+  .links { justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html, body { transition: none; }
+  .beat > .say { will-change: auto; }
+}
+</style>
 </head>
 <body>
+<div class="stage" id="stage" aria-hidden="true"></div>
 
-<body>
-
-<header class="top">
-  <a class="wordmark" href="../" aria-label="Filament">
-    <svg viewBox="0 0 180 612" aria-hidden="true"><path class="f" transform="translate(-418.5 -216.5)" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725"/></svg>
-    filament
-  </a>
-  <nav aria-label="Site">
+<header class="bar">
+  <a href="../">filament</a>
+  <nav aria-label="Main">
     <a href="../#worlds">worlds</a>
     <a href="../studio/" aria-current="page">studio</a>
-    <button class="lights" type="button" aria-label="Lights"><span class="sw"></span><span class="word"><span class="off">lights off</span><span class="on">lights on</span></span></button>
+    <button class="lights" id="lights" type="button" aria-pressed="false">lights on</button>
   </nav>
 </header>
 
+<div class="hint" id="hint">scroll</div>
+
 <main>
-  <article class="page">
-    <!-- The workshop portrait goes here, at its own aspect ratio (class "tall" for portrait, "wide" to break out):
-         <figure class="photo tall"><img src="../images/studio/workshop.jpg" alt="" width="" height=""></figure> -->
-    <p class="label mono">studio</p>
-    <h1>Who&rsquo;s behind the light.</h1>
-    <p>Filament is a world-building studio. It began at the workbench, rebuilding synthesizers and old electronics, learning how things are made by bringing them back. Now it builds worlds, and the station they will air on.</p>
-    <p><a class="u" href="mailto:info@rudimakes.com">info@rudimakes.com</a></p>
-  </article>
+  <section class="beat hero">
+    <div class="say">
+      <span class="label">studio</span>
+      <h1>Who’s behind the light.</h1>
+    </div>
+  </section>
+
+  <section class="beat right">
+    <p class="say" style="margin:0">Filament is a small studio broadcasting from somewhere in the middle of the country.</p>
+  </section>
+
+  <section class="beat mid">
+    <p class="say" style="margin:0"><em>Art, stories, signals.</em></p>
+  </section>
+
+  <section class="beat">
+    <p class="say" style="margin:0">Some of it you’ll find. Some of it finds&nbsp;you.</p>
+  </section>
+
+  <section class="beat right contact">
+    <div class="say">
+      <a class="mail" href="mailto:info@rudimakes.com">info@rudimakes.com</a>
+      <div class="links">
+        <a href="https://instagram.com/rudimakes">instagram</a>
+        <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg">youtube</a>
+        <span>© Filament LLC</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="beat mid signoff">
+    <p class="say" style="margin:0">this concludes tonight’s transmission.</p>
+  </section>
 </main>
 
-<footer class="foot">
-  <a href="mailto:info@rudimakes.com">info@rudimakes.com</a>
-  <div class="links">
-    <a href="https://instagram.com/rudimakes">instagram</a>
-    <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg">youtube</a>
-    <span>&copy; Filament LLC</span>
-  </div>
-  <p class="signoff mono">this concludes tonight's transmission.</p>
-</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var lightsBtn = document.getElementById('lights');
+  var hint = document.getElementById('hint');
+  var says = [].slice.call(document.querySelectorAll('.beat > .say'));
+  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lightsTarget = 0;
 
-<script src="../filament.js" defer></script>
+  lightsBtn.addEventListener('click', function () {
+    lightsTarget = lightsTarget ? 0 : 1;
+    root.classList.toggle('lights-on', !!lightsTarget);
+    lightsBtn.textContent = lightsTarget ? 'lights off' : 'lights on';
+    lightsBtn.setAttribute('aria-pressed', String(!!lightsTarget));
+  });
+
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function smooth(a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function progress() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    return max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+  }
+
+  // Each passage is readable by default; this only adds the fly-past.
+  function layoutText() {
+    if (still) return;
+    var vh = innerHeight;
+    says.forEach(function (el) {
+      var box = el.parentElement.getBoundingClientRect();
+      var last = el.parentElement.classList.contains('signoff');
+      var rect = el.getBoundingClientRect();
+      var center = last ? rect.top + rect.height / 2 : box.top + box.height / 2;
+      var d = (center - vh / 2) / vh;
+      var a = 1 - smooth(.3, .62, Math.abs(d));
+      el.style.opacity = a.toFixed(3);
+      el.style.transform = 'scale(' + clamp(1 - d * .22, .86, 1.2).toFixed(4) + ')';
+      el.style.pointerEvents = a < .2 ? 'none' : '';
+    });
+    hint.style.opacity = 1 - smooth(0, .03, progress());
+  }
+
+  if (still) hint.hidden = true;
+  addEventListener('scroll', layoutText, { passive: true });
+  addEventListener('resize', layoutText);
+  layoutText();
+
+  // ---------- 3D ----------
+  if (!window.THREE) return;
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  } catch (e) { return; }
+
+  var stage = document.getElementById('stage');
+  var small = Math.min(innerWidth, innerHeight) < 600;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 2));
+  stage.appendChild(renderer.domElement);
+  stage.classList.add('live');
+
+  var INK = new THREE.Color(0x14120F), DARK = new THREE.Color(0x070605), ROOM = new THREE.Color(0xD9AE74);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(42, 1, .02, 200);
+  camera.rotation.order = 'YXZ';
+
+  // The coil's axis runs along the line of travel, so the camera flies through it.
+  var COIL_R = .72, COIL_LEN = 9, TURNS = 11;
+  class Coil extends THREE.Curve {
+    constructor(micro) { super(); this.micro = micro; }
+    getPoint(t, out) {
+      out = out || new THREE.Vector3();
+      var a = t * TURNS * Math.PI * 2, m = a * 16, r = COIL_R + this.micro * Math.cos(m);
+      return out.set(r * Math.cos(a), r * Math.sin(a), COIL_LEN * (.5 - t) + this.micro * Math.sin(m));
+    }
+  }
+  var coilCurve = new Coil(small ? 0 : .034);
+  var wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  scene.add(new THREE.Mesh(new THREE.TubeGeometry(coilCurve, small ? 520 : 2200, small ? .03 : .017, 5, false), wireMat));
+
+  // Cheap bloom: soft additive sprites along the wire.
+  var cv = document.createElement('canvas'); cv.width = cv.height = 128;
+  var g = cv.getContext('2d'), rg = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  rg.addColorStop(0, 'rgba(255,255,255,1)');
+  rg.addColorStop(.18, 'rgba(255,255,255,.42)');
+  rg.addColorStop(.5, 'rgba(255,255,255,.08)');
+  rg.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = rg; g.fillRect(0, 0, 128, 128);
+  var glowTex = new THREE.CanvasTexture(cv);
+  function glowMat() {
+    return new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, depthTest: false, opacity: 0 });
+  }
+  var beadMat = glowMat(), beads = small ? 40 : 88, p = new THREE.Vector3(), plain = new Coil(0);
+  for (var i = 0; i < beads; i++) {
+    var s = new THREE.Sprite(beadMat);
+    plain.getPoint(i / (beads - 1), p); s.position.copy(p); s.scale.setScalar(1.15);
+    scene.add(s);
+  }
+  var coreMat = glowMat(), core = new THREE.Sprite(coreMat);
+  scene.add(core);
+
+  // Lead wires up to the cap of a hanging bulb.
+  function lead(a, b) {
+    var c = new THREE.CatmullRomCurve3([a, new THREE.Vector3(a.x * .6, 2.6, a.z * .75), b]);
+    scene.add(new THREE.Mesh(new THREE.TubeGeometry(c, 40, .022, 5, false), leadMat));
+  }
+  var leadMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  lead(plain.getPoint(0), new THREE.Vector3(.35, 5.8, 0));
+  lead(plain.getPoint(1), new THREE.Vector3(-.35, 5.8, 0));
+
+  // Bulb glass: visible only at the rim, tinted by the filament.
+  var glassMat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    uniforms: { tint: { value: new THREE.Color(0) } },
+    vertexShader: 'varying vec3 n; varying vec3 v; void main(){ vec4 m = modelViewMatrix*vec4(position,1.); n = normalMatrix*normal; v = -m.xyz; gl_Position = projectionMatrix*m; }',
+    fragmentShader: 'uniform vec3 tint; varying vec3 n; varying vec3 v; void main(){ float f = pow(1. - abs(dot(normalize(n), normalize(v))), 3.2); gl_FragColor = vec4(tint*f, f); }'
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(6, 64, 48), glassMat));
+
+  // The room appears only with the lights on.
+  var wallMat = new THREE.MeshStandardMaterial({ color: 0xE7BE85, roughness: 1, side: THREE.BackSide });
+  var room = new THREE.Mesh(new THREE.BoxGeometry(70, 34, 110), wallMat);
+  room.position.set(0, 3, 10); scene.add(room);
+  var metal = new THREE.MeshStandardMaterial({ color: 0x8A6A3A, roughness: .45, metalness: .6 });
+  var cap = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.6, 2.6, 32), metal);
+  cap.position.y = 6.6; scene.add(cap);
+  var cord = new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, 14, 8), new THREE.MeshStandardMaterial({ color: 0x1B150D, roughness: .8 }));
+  cord.position.y = 14; scene.add(cord);
+  var trim = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(69.8, 33.8, 109.8)), new THREE.LineBasicMaterial({ color: 0x5C3D18, transparent: true, opacity: 0 }));
+  trim.position.copy(room.position); scene.add(trim);
+  var ambient = new THREE.HemisphereLight(0xFFE9C6, 0xB98446, 0); scene.add(ambient);
+  var bulbLight = new THREE.PointLight(0xFFB870, 0, 16, 2); scene.add(bulbLight);
+
+  // Motes give the dark something to move past.
+  var n = small ? 180 : 420, pos = new Float32Array(n * 3);
+  for (i = 0; i < n; i++) {
+    var ang = Math.random() * Math.PI * 2, rad = 1.6 + Math.random() * 16;
+    pos[i * 3] = Math.cos(ang) * rad; pos[i * 3 + 1] = Math.sin(ang) * rad; pos[i * 3 + 2] = -16 + Math.random() * 66;
+  }
+  var mg = new THREE.BufferGeometry(); mg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  var moteMat = new THREE.PointsMaterial({ size: .07, map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0 });
+  scene.add(new THREE.Points(mg, moteMat));
+
+  // Tungsten color: black, deep red, orange, amber, near white.
+  var ramp = [[0, 0, 0], [.42, .05, .01], [1, .34, .07], [1, .68, .33], [1, .92, .74]];
+  var heatColor = new THREE.Color();
+  function setHeat(h) {
+    var f = clamp(h, 0, 1) * (ramp.length - 1), k = Math.min(Math.floor(f), ramp.length - 2), t = f - k;
+    heatColor.setRGB(lerp(ramp[k][0], ramp[k + 1][0], t), lerp(ramp[k][1], ramp[k + 1][1], t), lerp(ramp[k][2], ramp[k + 1][2], t));
+  }
+
+  // Scroll stops, as progress -> depth.
+  var path = [[0, 46], [.3, 7.5], [.38, 4.9], [.7, -4.6], [.92, -13.5], [1, -14.5]];
+  function depth(q) {
+    for (var j = 0; j < path.length - 1; j++) {
+      if (q <= path[j + 1][0]) {
+        var t = (q - path[j][0]) / (path[j + 1][0] - path[j][0]);
+        return lerp(path[j][1], path[j + 1][1], t);
+      }
+    }
+    return path[path.length - 1][1];
+  }
+  // A stutter in scroll position, so the failure scrubs back and forth with the reader.
+  function dying(q) {
+    if (q < .88) return 1;
+    var fade = 1 - smooth(.9, .985, q);
+    var step = Math.floor(q * 260);
+    var off = Math.abs(Math.sin(step * 12.9898) * 43758.5453) % 1;
+    return q < .925 && off > .62 ? fade * .45 : fade;
+  }
+
+  function size() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = w < h ? 58 : 42;
+    camera.updateProjectionMatrix();
+  }
+  var lastW = 0, lastH = 0;
+  function maybeSize() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if (w !== lastW || Math.abs(h - lastH) > 120) { lastW = w; lastH = h; size(); }
+  }
+  addEventListener('resize', maybeSize);
+  maybeSize();
+
+  var mx = 0, my = 0, smx = 0, smy = 0;
+  if (!still) addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'mouse') { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }
+  }, { passive: true });
+
+  var q = progress(), lights = 0, prev = performance.now();
+
+  function frame(now) {
+    var dt = Math.min((now - prev) / 1000, .1); prev = now;
+    var ease = 1 - Math.exp(-dt * 5.5);
+    var pr = still ? .2 : progress();
+    q += (pr - q) * (still ? 1 : ease);
+    lights += (lightsTarget - lights) * (still ? 1 : 1 - Math.exp(-dt * 3));
+    smx += (mx - smx) * ease; smy += (my - smy) * ease;
+
+    // Camera: drift in, thread the coil, then turn back to watch it go out.
+    var z = depth(q);
+    var open = 1 - smooth(.28, .38, q);
+    var turn = smooth(.66, .78, q);
+    camera.position.set(
+      Math.sin(q * 7) * 1.6 * open + smx * 1.2 * (open + turn),
+      Math.cos(q * 5) * .9 * open - smy * .8 * (open + turn) + .35 * turn,
+      z
+    );
+    camera.rotation.set(-smy * .05 * (open + turn), Math.PI * turn - smx * .07, q * 3.4 * smooth(.3, .45, q) * (1 - turn));
+
+    // Heat.
+    var t = now / 1000;
+    var flick = still ? 1 : 1 + .018 * Math.sin(t * 7.3) + .012 * Math.sin(t * 19.1 + 1) + .01 * Math.sin(t * 47);
+    var live = dying(q);
+    var ember = q > .97 ? .22 * (1 - smooth(.985, 1, q)) : 0;
+    var heat = Math.max(.86 * flick * live, ember);
+    setHeat(heat);
+    var e = clamp(heat * 1.2, 0, 1);
+
+        leadMat.color.copy(heatColor).multiplyScalar(.14);
+    var inside = smooth(.34, .42, q) * (1 - smooth(.66, .74, q));
+    var washout = 1 - lights * .55;
+    wireMat.color.copy(heatColor).multiplyScalar(1 - inside * .3);
+    beadMat.color.copy(heatColor);
+    beadMat.opacity = lerp(.15, .05, inside) * e * washout;
+    coreMat.color.copy(heatColor);
+    var dist = camera.position.length();
+    coreMat.opacity = smooth(5, 16, dist) * e * .95 * washout + (1 - inside) * .06 * e;
+    core.scale.setScalar(lerp(7, 15, smooth(46, 9, dist)));
+    glassMat.uniforms.tint.value.copy(heatColor).multiplyScalar(.32 * e);
+    bulbLight.color.copy(heatColor); bulbLight.intensity = e * 1.6;
+    moteMat.color.copy(heatColor);
+    moteMat.opacity = (.55 * e + .04) * (1 - lights * .75);
+
+    // Lights.
+    ambient.intensity = lights * 1.02;
+    trim.material.opacity = lights * .5;
+    renderer.setClearColor(INK.clone().lerp(ROOM, lights).lerp(DARK, (1 - lights) * .6));
+
+    renderer.render(scene, camera);
+    if (!still) layoutText();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
 </body>
 </html>
