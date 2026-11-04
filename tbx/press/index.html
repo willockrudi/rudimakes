@@ -398,6 +398,23 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
 .slot.spot video { width: 100%; height: 100%; display: block; }
 @media (max-width: 860px) { .buddy { grid-template-columns: 1fr; } }
 
+/* ── v3 additions: prototype photo, remote, guide shot, phone shot ─── */
+.slot.proto .frame { --ar: 1672 / 941; }
+.photos.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 520px) { .photos.four { grid-template-columns: 1fr; } }
+.slot.screen .frame { --ar: 16 / 9; background: #000; }
+.slot.screen .frame img { object-fit: contain; }
+.photos.pack.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.photos.pack.two .wide { grid-column: auto; grid-row: auto; }
+.photos.pack.two .wide .frame { --ar: 4 / 3; min-height: 0; }
+.remote-art { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 24px; align-items: end; max-width: 900px; }
+.remote-art img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.remote-art .keys { margin-bottom: 40px; }
+@media (max-width: 600px) { .remote-art { grid-template-columns: 1fr; justify-items: center; } .remote-art .front { width: 9rem; } .remote-art .keys { margin-bottom: 0; } }
+.make { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.make .head { margin-bottom: 0; }
+.slot.phoneshot .frame { --ar: 720 / 1219; border-radius: 22px; }
+@media (max-width: 760px) { .make { grid-template-columns: 1fr; } .slot.phoneshot { width: min(100%, 300px); justify-self: center; } }
 
 /* rudimakes.com press strip (added by tools/sync_tbx.py) */
 .site-strip { background: #14120F; border-bottom: 1px solid var(--line); }
@@ -421,14 +438,13 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <a href="#on" data-ch="01"><b>01</b><span>Power on</span></a>
       <a href="#idea" data-ch="02"><b>02</b><span>The idea</span></a>
       <a href="#product" data-ch="03"><b>03</b><span>The box</span></a>
-      <a href="#companion" data-ch="04"><b>04</b><span>Pips</span></a>
-      <a href="#garden" data-ch="05"><b>05</b><span>Signal Garden</span></a>
-      <a href="#worlds" data-ch="06"><b>06</b><span>Seven Worlds</span></a>
-      <a href="#spot" data-ch="07"><b>07</b><span>The spot</span></a>
-      <a href="#panel" data-ch="08"><b>08</b><span>Control panel</span></a>
-      <a href="#brand" data-ch="09"><b>09</b><span>Brand</span></a>
-      <a href="#patterns" data-ch="10"><b>10</b><span>Patterns</span></a>
-      <a href="#status" data-ch="11"><b>11</b><span>Status</span></a>
+      <a href="#remote" data-ch="04"><b>04</b><span>The remote</span></a>
+      <a href="#guide" data-ch="05"><b>05</b><span>The guide</span></a>
+      <a href="#westgate" data-ch="06"><b>06</b><span>Westgate</span></a>
+      <a href="#channels" data-ch="07"><b>07</b><span>Channels</span></a>
+      <a href="#brand" data-ch="08"><b>08</b><span>Brand</span></a>
+      <a href="#patterns" data-ch="09"><b>09</b><span>Patterns</span></a>
+      <a href="#status" data-ch="10"><b>10</b><span>Status</span></a>
     </nav>
   </div>
 </header>
@@ -445,7 +461,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
     <p class="lede">TBX turns the movies and shows you already own into <strong>live, scheduled television</strong>. Numbered channels, commercial breaks, a guide, and static between stations, on any TV, including the CRT in the basement. It is a small box that behaves like an appliance: you turn it on and it is already broadcasting.</p>
     <div class="ctas">
       <a class="btn primary" href="#on">See it turn on</a>
-      <a class="btn" href="#spot">Watch the spot</a>
+      <a class="btn" href="#guide">See the guide</a>
       <a class="btn" href="#status">Where it stands today</a>
     </div>
   </div>
@@ -465,9 +481,9 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <p>Power the box and the screen stays black until the startup bumper lights the mark, arc by arc. Then TBX tunes back to the channel you were last watching, joining whatever is on right where the schedule says it should be.</p>
       <button class="btn sound" id="sound" type="button" aria-pressed="false">Play with sound</button>
       <dl class="spec">
-        <dt>Prototype</dt><dd>Raspberry Pi 5</dd>
+        <dt>Prototype</dt><dd>v3.0, on a Raspberry Pi 5</dd>
         <dt>Picture</dt><dd class="num">720 × 480 to a CRT over RF, or HDMI to any TV</dd>
-        <dt>Media</dt><dd>Your own files on a USB drive</dd>
+        <dt>Media</dt><dd>Your own library, on the box or a USB drive</dd>
       </dl>
     </div>
   </div>
@@ -489,10 +505,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <aside class="guide" aria-label="Example guide listing">
         <p class="gh">tbx guide</p>
         <ul>
-          <li><b>CH 00</b><span>Guide</span><small>Live listing of what is airing on every channel</small></li>
-          <li><b>CH 01</b><span>Movie Night</span><small>Features in order, commercial breaks between</small></li>
-          <li><b>CH 07</b><span>Indy 500</span><small>Shuffled, all day</small></li>
-          <li><b>CH 99</b><span>Signal Garden</span><small>Your Pip&rsquo;s home. Games start here</small></li>
+          <li><b>CH 00</b><span>Guide</span><small>Pops up over whatever you&rsquo;re watching</small></li>
+          <li><b>CH 21</b><span>The Office</span><small>Every episode in order, commercial breaks between</small></li>
+          <li><b>CH 23</b><span>Indy 500</span><small>Shuffled, all day</small></li>
+          <li><b>CH 99</b><span>Westgate Plaza</span><small>A video store, a record shop and a theater</small></li>
         </ul>
         <p class="note">Channel names from the prototype's own guide.</p>
       </aside>
@@ -503,10 +519,11 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
         <h3><i style="background:var(--signal)"></i>Channels</h3>
         <ul>
           <li>Numbered channels 01 to 98</li>
-          <li>A live guide on 00, Signal Garden on 99</li>
+          <li>A guide on 00, Westgate Plaza on 99</li>
           <li>Tuning joins a show in progress</li>
           <li>Static on a channel with nothing scheduled</li>
           <li>The channel number flashes on every tune</li>
+          <li>The schedule keeps time even while the box is off</li>
         </ul>
       </div>
       <div class="feat">
@@ -522,18 +539,18 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
         <h3><i style="background:var(--amber)"></i>Station identity</h3>
         <ul>
           <li>Startup bumper at power-on</li>
-          <li>Channel idents and station IDs</li>
-          <li>Guide channel with its own theme music</li>
+          <li>Station IDs between shows, never on a tune</li>
+          <li>A satellite-style guide in seven colour themes</li>
           <li>Every piece replaceable with your own</li>
         </ul>
       </div>
       <div class="feat">
         <h3><i style="background:var(--coral)"></i>Control</h3>
         <ul>
-          <li>Control panel in any browser on your network</li>
-          <li>Phone remote at <code>/remote</code></li>
-          <li>Guided setup wizards</li>
-          <li>Drop files on the network share and they are filed and converted</li>
+          <li>A remote with a keyboard on the back</li>
+          <li>Set up from a phone or any browser at home</li>
+          <li>Anything picked from the library: pause, scrub, and pick up where you left off</li>
+          <li>Drop files on the network share and they are filed for you</li>
           <li>A DVD ripping wizard for physical media</li>
         </ul>
       </div>
@@ -566,158 +583,71 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <figure class="slot"><div class="frame"><img src="../assets/concept/colorways-grid.jpg" alt="Concept render: the box in translucent coral, amber, cream, aqua and blue, and solid black" loading="lazy"></div></figure>
     </div>
     <h3 class="sub">What's in the box <small>Packaging concept by Filament.</small></h3>
-    <div class="photos concept pack">
+    <div class="photos concept pack two">
       <figure class="slot wide"><div class="frame"><img src="../assets/concept/pack-front.jpg" alt="Concept render: cream TBX box with the Filament mark, the TBX Home Broadcast lockup and the line Your channels. Your way." loading="lazy"></div><figcaption><b>The box</b>Your channels. Your way.</figcaption></figure>
-      <figure class="slot"><div class="frame"><img src="../assets/concept/pack-open-companion.jpg" alt="Concept render: open box with the TBX unit and power supply; the lid reads Better TV. A little brighter., under the glowing filament mark." loading="lazy"></div><figcaption><b>Open it</b>Better TV. A little brighter.</figcaption></figure>
-      <figure class="slot"><div class="frame"><img src="../assets/concept/pack-companion-detail.jpg" alt="Concept render: the companion printed on the box with the words Always here." loading="lazy"></div><figcaption><b>Always here</b>The companion comes along.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="../assets/concept/pack-open-companion.jpg" alt="Concept render: open box with the TBX unit and power supply; the lid reads Better TV. A little brighter." loading="lazy"></div><figcaption><b>Open it</b>Better TV. A little brighter.</figcaption></figure>
     </div>
-    <h3 class="sub">The prototype, today <small>Prototype 1, the working unit behind every screenshot and video on this page.</small></h3>
-    <div class="photos" data-soon="Photos of the working prototype on its CRT are being added.">
-      <figure class="slot wide"><div class="frame"><img src="../assets/photos/product-01.jpg" alt="Prototype 1: a black box with a TBX label, on an orange backdrop" loading="lazy"><div class="ph"><strong>Prototype 1</strong><code>assets/photos/product-01.jpg</code></div></div><figcaption><b>Prototype 1</b>The box that runs the demo.</figcaption></figure>
-      <figure class="slot "><div class="frame"><img src="../assets/photos/product-02.jpg" alt="The TBX label on the front corner of Prototype 1, on pink" loading="lazy"><div class="ph"><strong>Front</strong><code>assets/photos/product-02.jpg</code></div></div><figcaption><b>Front</b>Just a label and a box, for now.</figcaption></figure>
-      <figure class="slot "><div class="frame"><img src="../assets/photos/product-03.jpg" alt="Prototype 1 back panel: power cable, panel-mount HDMI and USB ports, a red power button and a second round button, on blue" loading="lazy"><div class="ph"><strong>Back panel</strong><code>assets/photos/product-03.jpg</code></div></div><figcaption><b>Back panel</b>Power in, HDMI, USB.</figcaption></figure>
-      <figure class="slot "><div class="frame"><img src="../assets/photos/product-04.jpg" alt="Prototype 1 from above with its power cable, on yellow" loading="lazy"><div class="ph"><strong>From above</strong><code>assets/photos/product-04.jpg</code></div></div><figcaption><b>From above</b>A single cable to the wall.</figcaption></figure>
-      <figure class="slot "><div class="frame"><img src="../assets/photos/product-05.jpg" alt="Close-up of the HDMI and USB ports and the red power button on Prototype 1, on red" loading="lazy"><div class="ph"><strong>Up close</strong><code>assets/photos/product-05.jpg</code></div></div><figcaption><b>Up close</b>Power button, HDMI and USB.</figcaption></figure>
-      <figure class="slot "><div class="frame"><img src="../assets/photos/product-06.jpg" alt="Prototype 1 tilted up on a purple backdrop" loading="lazy"><div class="ph"><strong>Every angle</strong><code>assets/photos/product-06.jpg</code></div></div><figcaption><b>Every angle</b>A real box you can pick up.</figcaption></figure>
+    <h3 class="sub">The prototype, today <small>Prototype v3.0, the third box, behind every screenshot on this page. Hand-built; it runs every day on a CRT.</small></h3>
+    <figure class="slot proto"><div class="frame"><img src="../assets/photos/prototype-v3.jpg" alt="The TBX prototype held in one hand: a worn black and copper vented case, hand-lettered tbx, Prototype V.3.0" width="1672" height="941" loading="lazy"></div><figcaption><b>Prototype v3.0</b>Raspberry Pi 5, a 1 TB drive inside, and a lot of paint.</figcaption></figure>
+  </div>
+</section>
+
+<section class="ch" id="remote" data-ch="04">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow"><b>04</b>The remote</p>
+      <h2>One clicker.</h2>
+      <p>Arrows to flip, OK to tune, the guide a key away, and a keyboard on the back for finding anything you own. Lettered by hand, like the box.</p>
+    </div>
+    <div class="remote-art">
+      <img class="front" src="../assets/photos/remote-front.jpg" alt="The TBX remote, front: power, transport keys, a blue OK in the middle, channel and volume rockers, number pad, lettered tbx by Rudi" width="574" height="1803" loading="lazy">
+      <img class="keys" src="../assets/photos/remote-keyboard.jpg" alt="The back of the remote: a small QWERTY keyboard, a hand-drawn signal mark and tbx in silver" width="1600" height="509" loading="lazy">
     </div>
   </div>
 </section>
 
-<section class="ch" id="companion" data-ch="04">
+<section class="ch" id="guide" data-ch="05">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>04</b>Pips</p>
-      <h2>A small friend for big moments.</h2>
-      <p>Every TBX comes with a Pip: a little pixel creature with floppy ears and no arms, who lives in the broadcast. You name it and pick its colour from your phone. It hosts the guide channel, and on channel 99 it has a whole world to live in.</p>
+      <p class="eyebrow"><b>05</b>The guide</p>
+      <h2>What&rsquo;s on.</h2>
+      <p>A guide like the satellite box you grew up with, filled with your own shows. It opens over whatever you&rsquo;re watching, which keeps playing in the corner. At the top of the list, My Library: any movie, show or album, played now, with pause, scrubbing and a place kept for next time.</p>
     </div>
-    <div class="buddy">
-      <div class="buddy-tv" aria-live="polite">
-        <div class="screen">
-          <span class="osd-num" aria-hidden="true">00</span>
-          <p class="bubble" id="buddy-say">Good evening.</p>
-          <canvas id="buddy" width="312" height="264" role="img" aria-label="Your Pip"></canvas>
-        </div>
-        <p class="status-tag">The real sprites, drawn live from the same data the TV uses</p>
-      </div>
-      <form class="buddy-ctl" id="buddy-form" autocomplete="off">
-        <label class="field"><span>Name yours</span><input id="buddy-name" maxlength="14" placeholder="e.g. Blip" spellcheck="false"></label>
-        <fieldset><legend>Colour</legend><div class="swatches" id="buddy-colors"></div></fieldset>
-        <fieldset><legend>Try a move</legend><div class="moods" id="buddy-moods"></div></fieldset>
-      </form>
-    </div>
-    <h3 class="sub">Where it shows up <small>Moments, not a permanent overlay: it never sits on top of your show.</small></h3>
-    <ul class="moments">
-      <li><b>Guide channel</b><span>Walks in, looks up at what&rsquo;s coming on, perks its ears to say hello, and gets sleepy late at night. Motion only, no words on the TV.</span></li>
-      <li><b>Channel 99</b><span>Its home: Signal Garden, a village the whole family shares, played with the TV remote.</span></li>
-      <li><b>Your phone</b><span>Name it and pick its colour in the control panel. The name stays yours; the TV never shows it.</span></li>
-      <li><b>It grows up</b><span>How the family plays shapes it: twenty forms, a few of them secret.</span></li>
-    </ul>
-    <h3 class="sub">It grows up <small>Every form, drawn from the game&rsquo;s own sprites. Tap one to try it on above.</small></h3>
-    <div class="forms" id="pip-forms" aria-label="Pip forms"></div>
-    <figure class="slot sheet"><div class="frame"><img src="../assets/concept/tbx-companion-concept-sheet.jpg" alt="The original hand-drawn concept sheet for the Pips: expressions, animation frames and contexts" loading="lazy"></div><figcaption><b>Where it started</b>The first concept sheet. The walk and jump above are traced from it.</figcaption></figure>
+    <figure class="slot screen"><div class="frame"><img src="../assets/screens/guide-broadcast.png" alt="The TBX guide in its classic blue and yellow: a grid of channels including Cartoons, The Office, I Love Lucy and PBS Kids, with SpongeBob still playing in the corner" width="1920" height="1080" loading="lazy"></div><figcaption><b>Live from the prototype</b>Seven themes; this is the classic one.</figcaption></figure>
   </div>
 </section>
 
-<section class="ch" id="garden" data-ch="05">
+<section class="ch" id="westgate" data-ch="06">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>05</b>Signal Garden</p>
+      <p class="eyebrow"><b>06</b>Westgate Plaza</p>
       <h2>Channel 99 is a place.</h2>
-      <p>Tune to 99 and your Pip walks out of the TV into Signal Garden: a little village the whole family shares on one box. Grow bonsai, build and furnish a house, fish the pond, explore the caves under the village and trade at the market. Everything is played with the TV remote, and it all lives on the box: no accounts, no cloud.</p>
+      <p>A strip mall just off the dial, open all night, walked with the remote. Rewind Video&rsquo;s shelves hold your movies and shows; pull one and it plays. Bside Records spins your music. WTBX, across the lot, is where the channels are run. The Satalite is waiting for its first premiere.</p>
     </div>
-    <div class="photos games" data-soon="Screenshots from Signal Garden are being added.">
-      <figure class="slot game wide"><div class="frame"><img src="../assets/screens/games/garden-village.png" alt="Signal Garden: a family's five Pips in the village in front of their houses" loading="lazy"><div class="ph"><strong>The village</strong><code>assets/screens/games/garden-village.png</code></div></div><figcaption><b>The village</b>Every Pip in the family, and everyone&rsquo;s house.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-market.png" alt="The market row: Lost Pip stalls under colour-bar awnings, and the Wandering Tinker" loading="lazy"><div class="ph"><strong>The market</strong><code>assets/screens/games/garden-market.png</code></div></div><figcaption><b>The market</b>Rescued Pips run the stalls. Some days, a Tinker visits.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-night.png" alt="The village at night: stars, lit windows, Pips asleep" loading="lazy"><div class="ph"><strong>After dark</strong><code>assets/screens/games/garden-night.png</code></div></div><figcaption><b>After dark</b>Lights on, and the Pips go to bed.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-house.png" alt="Inside a furnished two-storey Pip house" loading="lazy"><div class="ph"><strong>Home</strong><code>assets/screens/games/garden-house.png</code></div></div><figcaption><b>Home</b>From a tent to a two-storey, furnished your way.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-bonsai.png" alt="Choosing the shape of a bonsai: upright, windswept, cascade, broom, literati" loading="lazy"><div class="ph"><strong>Bonsai</strong><code>assets/screens/games/garden-bonsai.png</code></div></div><figcaption><b>Bonsai</b>Grow trees from seeds won in games, and shape them.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-stall.png" alt="Trading at a Lost Pip's fish stall, at Master level" loading="lazy"><div class="ph"><strong>A stall</strong><code>assets/screens/games/garden-stall.png</code></div></div><figcaption><b>A stall</b>Merchants level up the more the family trades.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-static-board.png" alt="The garden TV board showing each family member's channel price for static" loading="lazy"><div class="ph"><strong>The Static Market</strong><code>assets/screens/games/garden-static-board.png</code></div></div><figcaption><b>The Static Market</b>Everyone&rsquo;s price on the garden TV. Whose is climbing?</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-kiosk-static.png" alt="The Repairman robot's kiosk showing this week's static prices as a bar chart" loading="lazy"><div class="ph"><strong>The Repairman</strong><code>assets/screens/games/garden-kiosk-static.png</code></div></div><figcaption><b>The Repairman</b>He buys your jars at your channel&rsquo;s price.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/garden-undersignal.png" alt="The Undersignal: caves under the village with ore to crack" loading="lazy"><div class="ph"><strong>The Undersignal</strong><code>assets/screens/games/garden-undersignal.png</code></div></div><figcaption><b>The Undersignal</b>Caves under the village, full of things to find.</figcaption></figure>
-    </div>
-    <h3 class="sub">A week in the garden <small>Built around the family&rsquo;s real week, so there&rsquo;s always something to come back for.</small></h3>
-    <ul class="moments">
-      <li><b>Sunday morning</b><span>Crackle the Static Peddler rolls in with jars of charged static.</span></li>
-      <li><b>All week</b><span>Every Pip&rsquo;s channel pays its own price for static, changing at noon. Mail jars to whoever&rsquo;s price is climbing.</span></li>
-      <li><b>Saturday</b><span>Race day, and the last day to sell before the TV signs off for the week.</span></li>
-      <li><b>Any day</b><span>Stalls restock, a Wandering Tinker may pass through, the trees need care, and the fish are biting.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="ch" id="worlds" data-ch="06">
-  <div class="wrap">
-    <div class="head">
-      <p class="eyebrow"><b>06</b>The Seven Worlds</p>
-      <h2>Put your planet back on the air.</h2>
-      <p>Your planet&rsquo;s signal shattered into the seven bars of the test pattern, and each bar flew off to its own world. Climb into the TV rocket on the village launch pad and go get them: a platform adventure across seven worlds, each with a boss and a crystal of colour to bring home. Light all seven and Station 99 is back on the air.</p>
-    </div>
-    <div class="photos games" data-soon="Screenshots from Pip Flyer are being added.">
-      <figure class="slot game wide"><div class="frame"><img src="../assets/screens/games/garden-launchpad.png" alt="The TV rocket on its launch pad beside Station 99's aerial, five colour bars lit" loading="lazy"><div class="ph"><strong>Lift-off</strong><code>assets/screens/games/garden-launchpad.png</code></div></div><figcaption><b>Lift-off</b>An old TV with rabbit ears, and the aerial the bars light up.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-space.png" alt="Pip Flyer in 3D: the rocket from behind, climbing through clouds into the signal" loading="lazy"><div class="ph"><strong>The climb</strong><code>assets/screens/games/flyer-space.png</code></div></div><figcaption><b>The climb</b>Out of the garden and into 3D.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-starmap.png" alt="The star map of the Seven Worlds, three cleared" loading="lazy"><div class="ph"><strong>The star map</strong><code>assets/screens/games/flyer-starmap.png</code></div></div><figcaption><b>The star map</b>Clear a world to fly on to the next.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-gate.png" alt="A 3D boss on the way between worlds: the Static Gate" loading="lazy"><div class="ph"><strong>Between worlds</strong><code>assets/screens/games/flyer-gate.png</code></div></div><figcaption><b>Between worlds</b>The flight has its own fights.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-tunnel.png" alt="The rocket banking through the signal tunnel past a broken satellite" loading="lazy"><div class="ph"><strong>The tunnel</strong><code>assets/screens/games/flyer-tunnel.png</code></div></div><figcaption><b>The tunnel</b>Auto-zap on, so it plays well on a remote.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-world.png" alt="Tidewave: the Pip on a pier over the sea" loading="lazy"><div class="ph"><strong>Tidewave</strong><code>assets/screens/games/flyer-world.png</code></div></div><figcaption><b>Tidewave</b>Hop, stomp, and pulse with your ears.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-world-jungle.png" alt="Cable Jungle: hanging cables and platforms" loading="lazy"><div class="ph"><strong>Cable Jungle</strong><code>assets/screens/games/flyer-world-jungle.png</code></div></div><figcaption><b>Cable Jungle</b>Every world plays differently.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-boss.png" alt="The Dish, the boss of Amber Dunes, among old antennas" loading="lazy"><div class="ph"><strong>A boss</strong><code>assets/screens/games/flyer-boss.png</code></div></div><figcaption><b>A boss</b>One per world, each with its own pattern.</figcaption></figure>
-      <figure class="slot game"><div class="frame"><img src="../assets/screens/games/flyer-chamber.png" alt="A crystal chamber in Echo Nebula with ore and the glowing bar crystal" loading="lazy"><div class="ph"><strong>The crystal</strong><code>assets/screens/games/flyer-chamber.png</code></div></div><figcaption><b>The crystal</b>The prize: one bar of colour, going home.</figcaption></figure>
-    </div>
-    <h3 class="sub">The worlds <small>In test-pattern order. Each also hides a Lost Pip, who moves into the village.</small></h3>
-    <ol class="worlds">
-        <li style="--bar:#ECEAE4"><span class="n">1</span><b>Snowfield</b><span>A hush of snow-static</span><small>Boss: The Big Static</small></li>
-        <li style="--bar:#FFD640"><span class="n">2</span><b>Amber Dunes</b><span>Old antennas in the sand</span><small>Boss: The Dish</small></li>
-        <li style="--bar:#48CEDE"><span class="n">3</span><b>Tidewave</b><span>A sea world</span><small>Boss: The Feedback Eel</small></li>
-        <li style="--bar:#5CC462"><span class="n">4</span><b>Cable Jungle</b><span>Vines of old wiring</span><small>Boss: The Tangle</small></li>
-        <li style="--bar:#E258C4"><span class="n">5</span><b>Echo Nebula</b><span>Low gravity</span><small>Boss: The Echo</small></li>
-        <li style="--bar:#E84034"><span class="n">6</span><b>The Forge</b><span>A factory planet</span><small>Boss: The Overdrive</small></li>
-        <li style="--bar:#3C5AD6"><span class="n">7</span><b>The Deep</b><span>The Drift&rsquo;s shore</span><small>Boss: The Static King</small></li>
-    </ol>
-    <h3 class="sub">Three acts <small>A story the family plays through together. Progress is shared by everyone on the box.</small></h3>
-    <ul class="moments acts">
-      <li><b>Act 1: Home</b><span>Settle the village, grow the garden, and dig into the mystery under it.</span></li>
-      <li><b>Act 2: The Seven Worlds</b><span>Seven platform worlds and seven bosses. Bring the colour home and the station lights up.</span></li>
-      <li><b>Act 3: The universe</b><span>Next: relight the worlds you rescued, one by one.</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="ch" id="spot" data-ch="07">
-  <div class="wrap">
-    <div class="head">
-      <p class="eyebrow"><b>07</b>The spot</p>
-      <h2>Forty seconds of TBX.</h2>
-      <p>The startup bumper, a channel flip, the box, making a channel from a phone, the guide, the companion and the colours, cut like a station promo. The control panel and guide are the real thing; product shots are design renders.</p>
-    </div>
-    <figure class="slot spot"><div class="frame"><video src="../assets/video/tbx-ad.mp4" poster="../assets/video/tbx-ad-poster.jpg" controls playsinline preload="none"></video></div></figure>
-  </div>
-</section>
-
-<section class="ch" id="panel" data-ch="08">
-  <div class="wrap">
-    <div class="head">
-      <p class="eyebrow"><b>08</b>Control panel</p>
-      <h2>Program it from the couch.</h2>
-      <p>Everything is set up from a web control panel the box serves on your home network. Make a channel on your phone and watch the TV change a moment later.</p>
-    </div>
-    <div class="panel" data-soon="Screenshots of the control panel are being added.">
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/"><img src="../assets/screens/ui-01.png" alt="Dashboard" loading="lazy"><div class="ph"><strong>Dashboard</strong><code>assets/screens/ui-01.png</code></div></div><figcaption><b>Dashboard</b><span>What is on air, at a glance</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels"><img src="../assets/screens/ui-02.png" alt="Channels" loading="lazy"><div class="ph"><strong>Channels</strong><code>assets/screens/ui-02.png</code></div></div><figcaption><b>Channels</b><span>The whole lineup</span></figcaption></figure>
-      <figure class="slot phone"><div class="frame"><img src="../assets/screens/ui-05.png" alt="Phone remote" loading="lazy"><div class="ph"><strong>Phone remote</strong><code>assets/screens/ui-05.png</code></div></div><figcaption><b>Phone remote</b><span>Tune, flip, volume</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels"><img src="../assets/screens/ui-03.png" alt="New channel" loading="lazy"><div class="ph"><strong>New channel</strong><code>assets/screens/ui-03.png</code></div></div><figcaption><b>New channel</b><span>Name it, number it, fill it</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="channel 00"><img src="../assets/screens/ui-04.png" alt="Guide channel" loading="lazy"><div class="ph"><strong>Guide channel</strong><code>assets/screens/ui-04.png</code></div></div><figcaption><b>Guide channel</b><span>Channel 00 on the TV</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/settings/identity"><img src="../assets/screens/ui-06.png" alt="Companion settings: name it and pick its colour" loading="lazy"><div class="ph"><strong>Your companion</strong><code>assets/screens/ui-06.png</code></div></div><figcaption><b>Your companion</b><span>Name it, pick its colour</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels/media"><img src="../assets/screens/ui-07.png" alt="Media bank" loading="lazy"><div class="ph"><strong>Media bank</strong><code>assets/screens/ui-07.png</code></div></div><figcaption><b>Media bank</b><span>Everything on the drive</span></figcaption></figure>
-      <figure class="slot browser"><div class="frame" data-url="tbx.local:8080/channels/schedule"><img src="../assets/screens/ui-08.png" alt="Schedule" loading="lazy"><div class="ph"><strong>Schedule</strong><code>assets/screens/ui-08.png</code></div></div><figcaption><b>Schedule</b><span>Morning, day, evening, night</span></figcaption></figure>
+    <div class="photos games four">
+      <figure class="slot"><div class="frame"><img src="../assets/screens/westgate/plaza-strip.png" alt="Westgate Plaza at night: Rewind Video, Bside Records and the Satalite Theater in a row of lit signs" loading="lazy"></div><figcaption><b>The strip</b>Rewind Video, Bside Records, the Satalite.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="../assets/screens/westgate/wtbx-across-the-lot.png" alt="WTBX, a small station building with a colour-bar sign, across the parking lot" loading="lazy"></div><figcaption><b>WTBX 93.7</b>The station, across the lot.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="../assets/screens/westgate/satalite-marquee.png" alt="The Satalite Theater marquee: no premieres tonight, see you at midnight" loading="lazy"></div><figcaption><b>The Satalite</b>No premieres tonight.</figcaption></figure>
+      <figure class="slot"><div class="frame"><img src="../assets/screens/westgate/gary-weather.png" alt="Gary Bell gives the TBX Weather forecast while Morris the cat sits on the desk" loading="lazy"></div><figcaption><b>TBX Weather</b>Gary has the real local forecast, every two hours.</figcaption></figure>
     </div>
   </div>
 </section>
 
-<section class="ch" id="brand" data-ch="09">
+<section class="ch" id="channels" data-ch="07">
+  <div class="wrap make">
+    <figure class="slot phoneshot"><div class="frame"><img src="../assets/screens/panel-channel-blocks.jpg" alt="A channel's page on a phone: tabs for Morning, Day, Evening, Night and All Day, the play order, ad breaks, and the films in that block" width="720" height="1219" loading="lazy"></div></figure>
+    <div class="head">
+      <p class="eyebrow"><b>07</b>Channels</p>
+      <h2>Make your own channels.</h2>
+      <p>Name a channel, give it a number, and fill it from your own shelves. Split its day into morning, day, evening and late night, choose the order and the commercial breaks, and TBX keeps the schedule. All from a phone, while the TV changes a moment later.</p>
+    </div>
+  </div>
+</section>
+
+<section class="ch" id="brand" data-ch="08">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>09</b>Brand</p>
+      <p class="eyebrow"><b>08</b>Brand</p>
       <h2>The glow.</h2>
       <p>The mark is a quarter of a rainbow rising from a corner: a signal spreading outward, and a nod to the colour bars and sign-on cards that used to fill the screen before the day's programmes began. The wordmark is lowercase because the box lives in a living room.</p>
     </div>
@@ -772,10 +702,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="patterns" data-ch="10" style="padding-bottom:0">
+<section class="ch" id="patterns" data-ch="09" style="padding-bottom:0">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>10</b>Patterns</p>
+      <p class="eyebrow"><b>09</b>Patterns</p>
       <h2>Built from one shape.</h2>
       <p>Turn the mark around its corner four times and the arcs close into full rings. Stack half-rings and they become a scallop. Every pattern below is generated from the same geometry as the logo, for packaging, merchandise, the box's panels and the guide channel.</p>
     </div>
@@ -790,10 +720,10 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </section>
 
-<section class="ch" id="status" data-ch="11">
+<section class="ch" id="status" data-ch="10">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow"><b>11</b>Status</p>
+      <p class="eyebrow"><b>10</b>Status</p>
       <h2>Where it stands today.</h2>
       <p>TBX is a working prototype. It runs every day on a Raspberry Pi 5 connected to a CRT, and the live demo is that same box.</p>
     </div>
@@ -801,13 +731,13 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
       <div>
         <p class="col-title">Working today</p>
         <ul class="list">
-          <li><b>Boots straight to broadcast</b><span class="pill ok">Working</span><p>Black screen, startup bumper, then the last channel you watched.</p></li>
-          <li><b>Scheduled channels</b><span class="pill ok">Working</span><p>Day-part schedules, three playback orders, and tuning that joins shows in progress.</p></li>
-          <li><b>A station's in-between moments</b><span class="pill ok">Working</span><p>Commercial breaks, idents, station IDs, midnight and sign-off bumpers, static on empty channels.</p></li>
-          <li><b>Guide channel and Pips</b><span class="pill ok">Working</span><p>A live guide on 00 with theme music, hosted by your Pip.</p></li>
-          <li><b>Signal Garden and the Seven Worlds</b><span class="pill ok">Playable</span><p>Channel 99: the village, the market, the caves, and Pip Flyer&rsquo;s seven worlds, all playable on the prototype. Being tuned through family play.</p></li>
-          <li><b>Control panel and phone remote</b><span class="pill ok">Working</span><p>Channels, schedules, media and setup wizards from any browser at home.</p></li>
-          <li><b>Getting media in</b><span class="pill ok">Working</span><p>Network-share drop-in with automatic filing and conversion, a DVD ripping wizard and a PC converter.</p></li>
+          <li><b>Boots straight to broadcast</b><span class="pill ok">Working</span><p>Black screen, startup bumper, then the last channel you watched, right where the schedule says it should be.</p></li>
+          <li><b>Scheduled channels</b><span class="pill ok">Working</span><p>Morning, day, evening and night blocks, three playback orders, and tuning that joins shows in progress. The schedule follows the clock, not the power switch.</p></li>
+          <li><b>A station's in-between moments</b><span class="pill ok">Working</span><p>Commercial breaks from themed ad pools, station IDs, midnight and sign-off bumpers, static on empty channels.</p></li>
+          <li><b>The guide</b><span class="pill ok">Working</span><p>A satellite-style grid over what you&rsquo;re watching, seven colour themes, and My Library at the top.</p></li>
+          <li><b>Picked titles</b><span class="pill ok">Working</span><p>Anything chosen from the library or Westgate&rsquo;s shelves plays now, with pause, scrubbing and a place kept for next time.</p></li>
+          <li><b>Westgate Plaza</b><span class="pill ok">Playable</span><p>Channel 99: Rewind Video, Bside Records, WTBX, the Satalite and TBX Weather, all walkable on the prototype.</p></li>
+          <li><b>Remote and control panel</b><span class="pill ok">Working</span><p>A 2.4 GHz remote with a keyboard on the back; channels, schedules and media from any phone or browser at home.</p></li>
           <li><b>Stays on the air</b><span class="pill ok">Working</span><p>If the player stops, a watchdog restarts it in about two seconds and retunes.</p></li>
         </ul>
       </div>
@@ -815,7 +745,7 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
         <p class="col-title">Next</p>
         <ul class="list">
           <li><b>Power button</b><span class="pill built">Designed</span><p>A front button wired straight to the Pi&rsquo;s own power header, software done; fitting it is next.</p></li>
-          <li><b>IR remote</b><span class="pill next">In progress</span><p>Receiver supported in software; choosing the remote hardware.</p></li>
+          <li><b>Clock battery</b><span class="pill next">Next</span><p>A real-time-clock battery, so the schedule keeps perfect time with no network at all.</p></li>
           <li><b>Appliance OS image</b><span class="pill next">Planned</span><p>Move from a desktop OS to a minimal image that runs only TBX.</p></li>
           <li><b>Enclosure</b><span class="pill next">Planned</span><p>A finished case with a channel-number display and status lights.</p></li>
         </ul>
@@ -840,7 +770,6 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
   </div>
 </footer>
 
-<script src="../assets/js/pips-data.js"></script>
 <script>
 (() => {
   // Missing photo or screenshot. With ?slots in the URL, show the branded
@@ -901,148 +830,6 @@ footer .right { text-align: right; font-size: .875rem; color: var(--mute); displ
     btn.textContent = v.muted ? "Play with sound" : "Mute";
     clearTimeout(wait); play();
   });
-  // Pips: the real sprite sheet (../assets/js/pips-data.js, generated from
-  // assets/brand/companion/sprites.json), drawn the way tbxkit/companion.py draws it.
-  (() => {
-    const S = window.PIPS;
-    const cv = document.getElementById("buddy");
-    if (!cv || !S) return;
-    const cx = cv.getContext("2d");
-    const CW = 12, CH = 11;   // the concept art's pixels are slightly wider than tall
-    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-    const lighten = (h, k) => `rgb(${hex(h).map((v) => Math.round(v + (255 - v) * k)).join(",")})`;
-    const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
-                    set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // one frame of a state, with an evolution form, onto a 26x24-cell canvas
-    const paint = (ctx, state, index, color, formKey) => {
-      const st = S.states[state], n = st.frames.length, i = index % n;
-      const rows = st.frames[i], lift = st.lifts ? st.lifts[i] : 0;
-      const body = S.colors[color], form = formKey ? S.forms[formKey] : null;
-      const accent = S.colors[st.accent] || "#7FD6E6";
-      const cell = (x, y, c) => { if (x >= 0 && y >= 0 && x < S.w && y < S.h) { ctx.fillStyle = c; ctx.fillRect(x * CW, y * CH, CW, CH); } };
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      const solid = new Set(), isBody = new Set();
-      let seed = 7;
-      const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-      const greys = [40, 70, 110, 160, 210];
-      if (color === "midnight") {       // a soft rim so a midnight Pip reads on a midnight screen
-        rows.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== ".") solid.add(x + "," + y); }));
-        solid.forEach((k) => { const [x, y] = k.split(",").map(Number);
-          [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { if (!solid.has((x + dx) + "," + (y + dy))) cell(x + dx, y + dy, "rgba(247,243,234,.55)"); }); });
-      }
-      rows.forEach((row, y) => [...row].forEach((ch, x) => {
-        if (ch === ".") return;
-        let c = ch === "#" ? body : ch === "o" ? S.eye : accent;
-        if (ch === "#") { isBody.add(x + "," + y); if (form && form.static) { const v = greys[Math.floor(rnd() * 5)]; c = `rgb(${v},${v},${v})`; } }
-        cell(x, y, c);
-      }));
-      if (!form) return;
-      const fc = (code) => code === "B" ? body : code === "L" ? lighten(body, .35) : code;
-      const up = lift + (form.lift || 0);
-      (form.marks || []).forEach(([x, y, code]) => { if (isBody.has(x + "," + (y - lift))) cell(x, y - lift, fc(code)); });
-      (form.acc || []).forEach(([x, y, code]) => {
-        const yy = y - up;
-        const taken = yy >= 0 && yy < S.h && x >= 0 && x < S.w && rows[yy][x] !== ".";
-        if (!taken) cell(x, yy, fc(code));
-      });
-      if (form.glow) {
-        const [gx, gy] = form.glow_at, [r, g, b] = hex(form.glow);
-        const px = (gx + .5) * CW, py = (gy - up + .5) * CH;
-        [[4, .27], [2, .43]].forEach(([rad, al]) => { ctx.fillStyle = `rgba(${r},${g},${b},${al})`; ctx.beginPath(); ctx.arc(px, py, rad * CW, 0, 7); ctx.fill(); });
-      }
-    };
-
-    let color = store.get("tbx-buddy-color") || "coral";
-    if (!S.colors[color]) color = "coral";
-    let name = store.get("tbx-buddy-name") || "";
-    let form = store.get("tbx-pip-form") || "";
-    if (form && !S.forms[form]) form = "";
-    let mood = "idle", frame = 0, until = 0;
-    const say = document.getElementById("buddy-say");
-    const hello = () => {
-      const h = new Date().getHours();
-      const part = h < 5 ? "Up late?" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
-      return name ? (part.endsWith("?") ? `${part} It's ${name}.` : `${part}. I'm ${name}.`) : `${part}.`;
-    };
-    const draw = () => paint(cx, mood, frame, color, form);
-    const setMood = (m, ms = 2400) => { mood = m; frame = 0; until = performance.now() + ms; markMood(); draw(); };
-
-    // controls
-    const moods = { idle: "Idle", perk: "Hello", happy: "Happy", curious: "Curious", surprised: "Surprised", sleepy: "Sleepy", walk: "Walk", jump: "Jump", looking_up: "Look up" };
-    const mBox = document.getElementById("buddy-moods");
-    Object.entries(moods).forEach(([k, label]) => {
-      const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.m = k;
-      b.addEventListener("click", () => setMood(k, k === "idle" ? 0 : 3200)); mBox.append(b);
-    });
-    const markMood = () => mBox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.m === mood)));
-    const cBox = document.getElementById("buddy-colors");
-    const cNames = { coral: "Coral", amber: "Amber", cream: "Cream", aqua: "Aqua", signal: "Signal blue", midnight: "Midnight" };
-    Object.keys(S.colors).forEach((k) => {
-      const b = document.createElement("button"); b.type = "button"; b.style.setProperty("--c", S.colors[k]);
-      b.setAttribute("aria-label", cNames[k] || k); b.dataset.c = k;
-      b.addEventListener("click", () => { color = k; store.set("tbx-buddy-color", k); mark(); drawForms(); setMood("happy", 1600); });
-      cBox.append(b);
-    });
-    const mark = () => cBox.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.c === color)));
-    const input = document.getElementById("buddy-name");
-    input.value = name;
-    input.addEventListener("input", () => { name = input.value.trim(); store.set("tbx-buddy-name", name); say.textContent = hello(); });
-    input.addEventListener("change", () => { if (name) setMood("perk", 2600); });
-    document.getElementById("buddy-form").addEventListener("submit", (e) => { e.preventDefault(); if (name) setMood("perk", 2600); });
-
-    // the forms gallery: every form in your colour; tap one to try it on
-    const fBox = document.getElementById("pip-forms");
-    const groups = [
-      ["First forms", "The fruit it eats and how it&rsquo;s cared for", (k, f) => !f.stage && f.stat !== "Prism"],
-      ["Grown up", "A second evolution, later on", (k, f) => f.stage && f.stat !== "Prism"],
-      ["Secret forms", "Rare, from Prism fruit. They grow up too", (k, f) => f.stat === "Prism"],
-    ];
-    const cards = [];
-    const card = (key, title, note) => {
-      const b = document.createElement("button"); b.type = "button"; b.className = "form"; b.dataset.f = key;
-      const c = document.createElement("canvas"); c.width = S.w * CW; c.height = S.h * CH; c.setAttribute("aria-hidden", "true");
-      b.append(c); b.insertAdjacentHTML("beforeend", `<b>${title}</b><small>${note}</small>`);
-      b.addEventListener("click", () => { form = key; store.set("tbx-pip-form", key); markForms(); setMood("happy", 2200);
-        document.querySelector(".buddy-tv").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }); });
-      cards.push([c, key]); return b;
-    };
-    if (fBox) {
-      const first = document.createElement("div"); first.className = "forms-row";
-      first.append(card("", "Original", "Where every Pip starts"));
-      groups.forEach(([title, sub, pick], gi) => {
-        const row = gi === 0 ? first : document.createElement("div");
-        if (gi) { row.className = "forms-row"; }
-        const h = document.createElement("p"); h.className = "forms-title"; h.innerHTML = `${title} <small>${sub}</small>`;
-        fBox.append(h); fBox.append(row);
-        Object.entries(S.forms).filter(([k, f]) => pick(k, f)).forEach(([k, f]) => {
-          const note = f.stage ? `From ${(S.forms[f.base] || {}).title || f.base}` : f.stat === "Prism" ? "Secret" : `${f.stat} &middot; ${f.mood}`;
-          row.append(card(k, f.title, note));
-        });
-      });
-    }
-    const markForms = () => fBox && fBox.querySelectorAll(".form").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === form)));
-    const drawForms = () => cards.forEach(([c, key]) => paint(c.getContext("2d"), "idle", 0, color, key));
-
-    say.textContent = hello(); mark(); markMood(); markForms(); drawForms(); draw();
-    if (reduce) return;
-    // idle life: blink now and then, back to idle after a move, 8 frames a second like the TV
-    let last = 0, blinkAt = performance.now() + 2500;
-    const tick = (t) => {
-      if (t - last > 125) {
-        last = t; frame++;
-        if (mood !== "idle" && until && t > until) { mood = "idle"; until = 0; markMood(); }
-        if (mood === "idle" && t > blinkAt) { mood = "blink"; until = t + 160; blinkAt = t + 2500 + Math.random() * 3500; }
-        draw();
-      }
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    const num = document.querySelector(".osd-num");
-    new IntersectionObserver(([e]) => { if (e.isIntersecting) { num.textContent = "00"; setMood("perk", 2200); } }, { threshold: .6 })
-      .observe(document.querySelector(".buddy-tv"));
-  })();
 })();
 </script>
 </body>

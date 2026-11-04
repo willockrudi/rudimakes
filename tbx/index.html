@@ -60,12 +60,24 @@
 /* game screens are cropped past their on-screen controls */
 .tbx .frame .crop { overflow: hidden; background: #000; }
 .tbx .frame img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
-.tbx .garden .crop { aspect-ratio: 1280 / 800; }
-.tbx .garden img { object-position: 50% 53%; }
-.tbx .worlds .crop { aspect-ratio: 1280 / 900; }
-.tbx .worlds img { object-position: 50% 0; }
-.tbx .pip { display: grid; place-items: center; padding: 6vh 0 2rem; }
-.tbx .pip canvas { width: 156px; height: auto; image-rendering: pixelated; }
+.tbx .frame .crop { aspect-ratio: 4 / 3; }
+.tbx .plaza .crop { aspect-ratio: 16 / 10; }
+.tbx .proto .crop { aspect-ratio: 1672 / 941; }
+.tbx .proto img { image-rendering: auto; }
+.tbx .guide .crop { aspect-ratio: 16 / 9; }
+.tbx .guide img { image-rendering: auto; }
+.tbx .phone { display: grid; place-items: center; padding: 0 var(--gutter); margin: 0 auto 2rem; }
+.tbx .phone img { width: min(19rem, 78vw); height: auto; display: block; border-radius: 22px; border: 1px solid rgba(255, 255, 255, .08); box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .8); }
+/* the remote: the front stands tall, the keyboard lies along its foot */
+.tbx .remote-art { max-width: 52rem; margin: 0 auto 2rem; padding: 0 var(--gutter); display: grid; grid-template-columns: 10.5rem minmax(0, 1fr); gap: 1.5rem; align-items: end; }
+.tbx .remote-art img { width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 24px 60px -24px rgba(0, 0, 0, .7); }
+.tbx .remote-art .keys { margin-bottom: 2.5rem; }
+@media (max-width: 600px) {
+  .tbx .remote-art { grid-template-columns: 1fr; justify-items: center; }
+  .tbx .remote-art .front { width: 8.5rem; }
+  .tbx .remote-art .keys { margin-bottom: 0; }
+}
+.tbx .plaza img { object-position: 50% 60%; }
 
 .tbx .invite { padding: 24vh 0 20vh; text-align: center; }
 .tbx .invite a {
@@ -104,38 +116,79 @@
   <section class="words">
     <div class="col">
       <p>Streaming put everything within reach and made watching feel like homework. Broadcast never asked you to choose. Something was already on, and you tuned in to it.</p>
-      <p>TBX gives that back. The films and shows you already own become a station that runs around the clock, whether or not anyone is watching. You don&rsquo;t pick. You tune in. The power is yours again.</p>
+      <p>TBX gives that back. The films and shows you already own become a station that runs around the clock, whether or not anyone is watching. You don&rsquo;t pick. You tune in.</p>
+      <p>Turn it off and the broadcast carries on without you. Come back an hour later, or three days later, and you land mid-show, right where the schedule says you should.</p>
       <p class="one">A small box behind the television that turns your own library into live, scheduled TV, on any screen, even the CRT in the basement.</p>
     </div>
   </section>
 
+  <section class="glimpse proto">
+    <div class="frame"><div class="crop"><img src="assets/photos/prototype-v3.jpg" alt="The TBX prototype held in one hand: a worn black and copper vented case, hand-lettered tbx, Prototype V.3.0" width="1672" height="941" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">prototype v3.0</span>
+      <h2>The third box.</h2>
+      <p>Hand-built, and still a prototype. This is the one on the air right now, behind a CRT somewhere in the middle of the country.</p>
+    </div>
+  </section>
   <section class="glimpse">
-    <div class="pip"><canvas id="pip" width="312" height="264" role="img" aria-label="A Pip"></canvas></div>
+    <div class="remote-art">
+      <img class="front" src="assets/photos/remote-front.jpg" alt="The TBX remote, front: power, transport keys, a blue OK in the middle, channel and volume rockers, number pad, lettered tbx by Rudi" width="574" height="1803" loading="lazy">
+      <img class="keys" src="assets/photos/remote-keyboard.jpg" alt="The back of the remote: a small QWERTY keyboard, a hand-drawn signal mark and tbx in silver" width="1600" height="509" loading="lazy">
+    </div>
     <div class="col">
-      <span class="chno">pips</span>
-      <h2>A small friend who lives in the broadcast.</h2>
-      <p>Every box comes with one. It hosts the guide, and grows up with the family.</p>
+      <span class="chno">the remote</span>
+      <h2>One clicker.</h2>
+      <p>Arrows to flip, OK to tune, and a keyboard on the back for finding anything you own. Lettered by hand, like the box.</p>
     </div>
   </section>
-
-  <section class="glimpse garden">
-    <div class="frame"><div class="crop"><img src="assets/screens/games/garden-night.png" alt="Signal Garden at night: the village asleep under a full moon" width="1280" height="960" loading="lazy"></div></div>
+  <section class="glimpse guide">
+    <div class="frame"><div class="crop"><img src="assets/screens/guide-broadcast.png" alt="The TBX guide in classic blue and yellow: a grid of channels including Cartoons, The Office, I Love Lucy and PBS Kids, with SpongeBob still playing in the corner" width="1920" height="1080" loading="lazy"></div></div>
     <div class="col">
-      <span class="chno">ch 99 &middot; signal garden</span>
+      <span class="chno">ch 00 &middot; the guide</span>
+      <h2>What&rsquo;s on.</h2>
+      <p>A guide like the satellite box you grew up with, filled with your own shows. Whatever you were watching keeps playing in the corner.</p>
+    </div>
+  </section>
+  <section class="glimpse">
+    <div class="phone"><img src="assets/screens/panel-channel-blocks.jpg" alt="A channel's page on a phone: tabs for Morning, Day, Evening, Night and All Day, the play order, ad breaks, and the list of films in that block" width="720" height="1219" loading="lazy"></div>
+    <div class="col">
+      <span class="chno">the station</span>
+      <h2>Make your own channels.</h2>
+      <p>Name a channel, give it a number, and fill it from your own shelves. Split its day into morning, day, evening and late night, and TBX keeps the schedule.</p>
+    </div>
+  </section>
+  <section class="glimpse plaza">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/plaza-strip.png" alt="Westgate Plaza at night: Rewind Video, Bside Records and the Satalite Theater in a row of lit signs across an empty parking lot" width="960" height="720" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">ch 99 &middot; westgate plaza</span>
       <h2>Channel 99 is a place.</h2>
-      <p>A village the whole family shares, played with the remote. It lives on the box.</p>
+      <p>A strip mall just off the dial, open all night. A video store, a record shop, a theater. Everything on the shelves is yours.</p>
     </div>
   </section>
-
-  <section class="glimpse worlds">
-    <div class="frame"><div class="crop"><img src="assets/screens/games/flyer-starmap.png" alt="The star map of the Seven Worlds" width="1280" height="960" loading="lazy"></div></div>
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/wtbx-across-the-lot.png" alt="WTBX, a small station building with a colour-bar sign, under a street lamp across the parking lot" width="960" height="720" loading="lazy"></div></div>
     <div class="col">
-      <span class="chno">the seven worlds</span>
-      <h2>Put your planet back on the air.</h2>
-      <p>The signal shattered into seven bars of colour. Go and bring them home.</p>
+      <span class="chno">wtbx 93.7</span>
+      <h2>The station is across the lot.</h2>
+      <p>Pull up a chair. Every channel is run from here.</p>
     </div>
   </section>
-
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/gary-weather.png" alt="Gary Bell gives the TBX Weather forecast in front of a rain map while Morris the cat sits on the desk" width="720" height="540" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">tbx weather</span>
+      <h2>Gary has the forecast.</h2>
+      <p>Your town&rsquo;s real weather, every couple of hours. Morris is not supposed to be on the desk.</p>
+    </div>
+  </section>
+  <section class="glimpse">
+    <div class="frame"><div class="crop"><img src="assets/screens/westgate/satalite-marquee.png" alt="The Satalite Theater marquee: no premieres tonight, see you at midnight" width="960" height="720" loading="lazy"></div></div>
+    <div class="col">
+      <span class="chno">satalite theater</span>
+      <h2>Something is coming to the Satalite.</h2>
+      <p>The marquee will say when.</p>
+    </div>
+  </section>
   <section class="invite">
     <a href="mailto:info@rudimakes.com?subject=Tune%20in">Tune in</a>
   </section>
@@ -151,7 +204,6 @@
   <p class="signoff mono">this concludes tonight's transmission.</p>
 </footer>
 
-<script src="assets/js/pips-data.js"></script>
 <script>
 // the startup bumper plays only when asked, with sound
 (() => {
@@ -163,24 +215,6 @@
   v.addEventListener("ended", () => { v.load(); b.textContent = "play with sound"; });
 })();
 
-// a Pip, drawn from the same sprite data the TV uses; it blinks now and then
-(() => {
-  const S = window.PIPS, cv = document.getElementById("pip");
-  if (!S || !cv) return;
-  const cx = cv.getContext("2d"), CW = 12, CH = 11, body = S.colors.coral;
-  const paint = (state) => {
-    const rows = S.states[state].frames[0];
-    cx.clearRect(0, 0, cv.width, cv.height);
-    rows.forEach((row, y) => [...row].forEach((ch, x) => {
-      if (ch === ".") return;
-      cx.fillStyle = ch === "o" ? S.eye : body;
-      cx.fillRect(x * CW, y * CH, CW, CH);
-    }));
-  };
-  paint("idle");
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !S.states.blink) return;
-  setInterval(() => { paint("blink"); setTimeout(() => paint("idle"), 160); }, 5200);
-})();
 </script>
 <script src="../filament.js" defer></script>
 </body>
