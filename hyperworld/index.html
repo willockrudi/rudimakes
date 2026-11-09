@@ -76,13 +76,6 @@
 }
 .hw input[type="email"]::placeholder { color: var(--dim); }
 .hw input[type="email"]:focus { border-color: var(--light); outline: none; }
-.hw .check { display: flex; align-items: flex-start; gap: .65rem; cursor: pointer; font-size: .9375rem; }
-.hw .check input {
-  flex: none;
-  width: 18px; height: 18px;
-  margin: .22em 0 0;
-  accent-color: var(--light);
-}
 .hw button {
   padding: 15px 18px;
   border: 0;
@@ -170,7 +163,6 @@
     <form action="https://app.kit.com/forms/10164058/subscriptions" method="post" id="follow">
       <label class="vh" for="email">Your email</label>
       <input type="email" id="email" name="email_address" placeholder="your email" autocomplete="email" inputmode="email" required>
-      <label class="check"><input type="checkbox" name="fields[audition]" value="yes"> I want to audition</label>
       <button type="submit">follow the pilot</button>
       <p class="fine mono">No spam, unsubscribe anytime.</p>
     </form>
@@ -218,7 +210,6 @@
     <form action="https://app.kit.com/forms/10164058/subscriptions" method="post">
       <label class="vh" for="email2">Your email</label>
       <input type="email" id="email2" name="email_address" placeholder="your email" autocomplete="email" inputmode="email" required>
-      <label class="check"><input type="checkbox" name="fields[audition]" value="yes"> I want to audition</label>
       <button type="submit">follow the pilot</button>
       <p class="fine mono">No spam, unsubscribe anytime.</p>
     </form>
