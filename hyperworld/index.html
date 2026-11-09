@@ -3,19 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hyperworld · Filament</title>
+<title>hyperworld · Filament</title>
 <meta name="description" content="A washed-up wizard. A runaway demon. A public access show that was never as private as he thought. An adult animated series in development. Follow the pilot.">
-<meta property="og:title" content="Hyperworld">
+<meta property="og:title" content="hyperworld">
 <meta property="og:description" content="A washed-up wizard. A runaway demon. A public access show that was never as private as he thought.">
-<!-- The share card. This one is type only, set in the site's own fallback serif.
-     When the drawn card arrives, give it a NEW filename rather than overwriting
-     this: Instagram, Facebook and Twitter cache a preview against its image URL,
-     and a replacement at the same path may not refresh for people who have
-     already seen it. -->
-<meta property="og:image" content="https://rudimakes.com/images/hyperworld/og-type.png">
+<!-- The share card: the poster, with the logline set beside it. A NEW filename, not a
+     replacement of og-type.png - Instagram, Facebook and Twitter cache a preview
+     against its image URL, so overwriting the old path may not refresh for anyone who
+     has already seen it. og-type.png stays where it is for the same reason. -->
+<meta property="og:image" content="https://rudimakes.com/images/hyperworld/og-poster.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Hyperworld: a washed-up wizard, a runaway demon, a public access show that was never as private as he thought.">
+<meta property="og:image:alt" content="Gus and Henry blown out of the studio in a cloud of smoke, over the road into town. hyperworld: a washed-up wizard, a runaway demon, a public access show that was never as private as he thought.">
 <meta property="og:url" content="https://rudimakes.com/hyperworld/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +29,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
 <link rel="stylesheet" href="../filament.css">
 <style>
-/* Hyperworld sits in the Filament room with the lights on: Bone paper, Night ink.
+/* hyperworld sits in the Filament room with the lights on: Bone paper, Night ink.
    The drawings are pen on paper, so the page is pinned light and there is no
    switch. One job: the email box. Phone first; the title, the premise and the
    form all land above the fold on a 375x600 screen.
@@ -43,15 +42,27 @@
 
 /* ---------- above the fold ---------- */
 .hw .open { padding: 2vh 0 0; text-align: center; }
-.hw h1 { margin: 0 0 1rem; }
-/* the hand-lettered title, when it lands, at its own aspect ratio. The height is
-   capped so art dropped in later can't push the email box below the fold. */
-.hw h1 img { width: auto; max-width: 100%; max-height: 14vh; margin: 0 auto; }
-.hw .word {
+.hw h1 { margin: 0 0 1.25rem; }
+/* The poster is the title - the word is drawn into it, so there is no type version
+   over it. It keeps its own shape (0.764 wide to tall) and is never cropped; the
+   height cap is the only thing holding it, and it is what keeps the email box near
+   the fold on a phone. Taller and the one thing on the page to press falls off the
+   bottom; much shorter and the drawing turns into a stamp, which costs more signups
+   than a short scroll does. 43 is where a 375x667 screen - an average phone inside
+   Instagram's own browser, once its bars are counted - still lands the whole button
+   above the fold.
+
+   svh, not vh: vh measures the viewport as if the browser's bars were hidden, so on
+   a phone it promises height the page does not actually have yet. svh measures it
+   with the bars showing, which is the state someone arriving from Instagram is in.
+   The vh line above it is the fallback for browsers too old to know svh. */
+.hw h1 img {
   display: block;
-  font: 300 clamp(2.75rem, 13vw, 5rem)/1 var(--serif);
-  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
-  letter-spacing: -.03em;
+  width: auto;
+  max-width: 100%;
+  max-height: 43vh;
+  max-height: 43svh;
+  margin: 0 auto;
 }
 .hw .premise {
   max-width: 26rem;
@@ -60,12 +71,6 @@
   text-wrap: balance;
 }
 .hw .label { color: var(--dim); margin: 0 0 1.5rem; }
-
-/* the two of them, over the title. One picture, its own shape, no crop.
-   Capped: with both slots filled the email box still has to clear the fold on a
-   phone, so a tall drawing gets held back. Use a wide crop here. */
-.hw .pair { margin: 0 0 1.25rem; }
-.hw .pair img { width: auto; max-width: 100%; max-height: 22vh; margin: 0 auto; }
 
 /* ---------- the signup ---------- */
 .hw form { display: grid; gap: .875rem; text-align: left; }
@@ -157,12 +162,15 @@
 <main class="hw">
 
   <section class="open">
-    <!-- Gus and Henry go here, at their own aspect ratio:
-         <figure class="pair"><img src="../images/hyperworld/gus-and-henry.jpg" alt="Gus and Henry" width="" height=""></figure> -->
     <h1>
-      <!-- the hand-lettered title goes here; when it does, change the span's class to "vh":
-           <img src="../images/hyperworld/hyperworld-title.png" alt="Hyperworld" width="" height=""> -->
-      <span class="word">Hyperworld</span>
+      <!-- Drawn on paper and scanned. The white of the scan is cut away, so this is
+           Night ink on nothing and the page's own Bone is the paper - which is why
+           there is no rectangle around it. That also means it needs a light
+           background to exist on, which this page is pinned to.
+           The alt is the title, because that is what this image is; the drawing
+           itself is described in og:image:alt above. -->
+      <img src="../images/hyperworld/poster.webp" alt="hyperworld"
+           width="900" height="1177" fetchpriority="high">
     </h1>
     <p class="premise">A washed-up wizard. A runaway demon. A public access show that was never as private as he thought.</p>
     <p class="label mono">adult animation · in development</p>
