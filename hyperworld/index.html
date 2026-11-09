@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -13,17 +13,25 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://rudimakes.com/hyperworld/">
-<meta name="theme-color" content="#14120F">
+<meta name="theme-color" content="#EFE7DA">
 <link rel="icon" type="image/svg+xml" href="../images/filament-mark.svg">
-<script>try{var t=localStorage.getItem("filament-lights");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<!-- This page stays on Bone. The drawings are pen on paper, so there is no dark
+     version of them, and no lights switch here. The site's stored setting is
+     deliberately not read. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
 <link rel="stylesheet" href="../filament.css">
 <style>
-/* Hyperworld keeps the Filament room — Night, Bone, amber, phosphor — and adds only
-   what a signup page needs. One job: the email box. Phone first; the title, the
-   premise and the form all land above the fold on a 375x600 screen. */
+/* Hyperworld sits in the Filament room with the lights on: Bone paper, Night ink.
+   The drawings are pen on paper, so the page is pinned light and there is no
+   switch. One job: the email box. Phone first; the title, the premise and the
+   form all land above the fold on a 375x600 screen.
+
+   The shared tokens are tuned for Night, so three of them are swapped below for
+   ones that hold up on Bone: --rule is 1.27:1 there (an invisible edge on the
+   email box), --faint is 2.56:1, and the button's night-on-amber label falls to
+   3.03:1. */
 .hw { max-width: 34rem; margin: 0 auto; padding: 0 var(--gutter); }
 
 /* ---------- above the fold ---------- */
@@ -57,7 +65,7 @@
 .hw input[type="email"] {
   width: 100%;
   padding: 14px 15px;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--dim);
   border-radius: 0;
   background: transparent;
   color: var(--fg);
@@ -66,7 +74,7 @@
   appearance: none;
   transition: border-color .4s ease;
 }
-.hw input[type="email"]::placeholder { color: var(--faint); }
+.hw input[type="email"]::placeholder { color: var(--dim); }
 .hw input[type="email"]:focus { border-color: var(--light); outline: none; }
 .hw .check { display: flex; align-items: flex-start; gap: .65rem; cursor: pointer; font-size: .9375rem; }
 .hw .check input {
@@ -80,7 +88,7 @@
   border: 0;
   border-radius: 0;
   background: var(--light);
-  color: var(--night);
+  color: var(--bg);
   font: 500 1.0625rem/1.2 var(--sans);
   letter-spacing: .01em;
   cursor: pointer;
@@ -101,8 +109,8 @@
 .hw .cap { color: var(--dim); margin: 0 0 1rem; }
 
 .hw .gets { list-style: none; margin: 0; padding: 0; }
-.hw .gets li { padding: .7rem 0; border-top: 1px solid var(--rule); }
-.hw .gets li:last-child { border-bottom: 1px solid var(--rule); }
+.hw .gets li { padding: .7rem 0; border-top: 1px solid var(--faint); }
+.hw .gets li:last-child { border-bottom: 1px solid var(--faint); }
 
 .hw .promise p {
   margin: 0;
@@ -114,7 +122,7 @@
 /* the cast: Henry first, he's who they came for */
 .hw .cast ol { list-style: none; margin: 0; padding: 0; }
 .hw .cast li { padding: 2rem 0 0; }
-.hw .cast .pic { background: #000; margin-bottom: 1rem; }
+.hw .cast .pic { margin-bottom: 1rem; }
 .hw .cast .pic img { width: 100%; height: auto; }
 .hw .cast h3 {
   margin: 0;
@@ -126,7 +134,7 @@
 .hw .again { padding-top: 14vh; }
 .hw .again .cap { text-align: center; }
 .hw .watch { padding: 12vh 0 0; text-align: center; }
-.hw .watch a { color: var(--light); border-bottom: 1px solid var(--rule); padding-bottom: 3px; }
+.hw .watch a { color: var(--light); border-bottom: 1px solid var(--faint); padding-bottom: 3px; }
 .hw .watch a:hover { border-color: var(--light); }
 
 /* Windows high contrast strips the amber fill, and the button stops looking like one.
@@ -144,9 +152,6 @@
     <svg viewBox="0 0 180 612" aria-hidden="true"><path class="f" transform="translate(-418.5 -216.5)" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725"/></svg>
     filament
   </a>
-  <nav aria-label="Site">
-    <button class="lights" type="button" aria-label="Lights"><span class="sw"></span><span class="word"><span class="off">lights off</span><span class="on">lights on</span></span></button>
-  </nav>
 </header>
 
 <main class="hw">
