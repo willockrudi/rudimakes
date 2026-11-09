@@ -2,11 +2,12 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>hyperworld · Filament</title>
-<meta name="description" content="Hyperworld: A washed-up wizard. A runaway demon. A public access show that was never as private as he thought. An adult animated series in development.">
-<meta property="og:title" content="hyperworld · Filament">
-<meta property="og:description" content="Hyperworld: A washed-up wizard. A runaway demon. A public access show that was never as private as he thought. An adult animated series in development.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hyperworld · Filament</title>
+<meta name="description" content="A washed-up wizard. A runaway demon. A public access show that was never as private as he thought. An adult animated series in development. Follow the pilot.">
+<meta property="og:title" content="Hyperworld">
+<meta property="og:description" content="A washed-up wizard. A runaway demon. A public access show that was never as private as he thought.">
+<!-- TODO: a Hyperworld share image (1200x630) at images/hyperworld/og.png. Until then this falls back to the Filament card. -->
 <meta property="og:image" content="https://rudimakes.com/images/og-filament.png">
 <meta property="og:url" content="https://rudimakes.com/hyperworld/">
 <meta property="og:type" content="website">
@@ -19,9 +20,123 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
 <link rel="stylesheet" href="../filament.css">
-</head>
-<body>
+<style>
+/* Hyperworld keeps the Filament room — Night, Bone, amber, phosphor — and adds only
+   what a signup page needs. One job: the email box. Phone first; the title, the
+   premise and the form all land above the fold on a 375x600 screen. */
+.hw { max-width: 34rem; margin: 0 auto; padding: 0 var(--gutter); }
 
+/* ---------- above the fold ---------- */
+.hw .open { padding: 2vh 0 0; text-align: center; }
+.hw h1 { margin: 0 0 1rem; }
+/* the hand-lettered title, when it lands, at its own aspect ratio. The height is
+   capped so art dropped in later can't push the email box below the fold. */
+.hw h1 img { width: auto; max-width: 100%; max-height: 14vh; margin: 0 auto; }
+.hw .word {
+  display: block;
+  font: 300 clamp(2.75rem, 13vw, 5rem)/1 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+  letter-spacing: -.03em;
+}
+.hw .premise {
+  max-width: 26rem;
+  margin: 0 auto 1.75rem;
+  font: 400 1.0625rem/1.5 var(--serif);
+  text-wrap: balance;
+}
+.hw .label { color: var(--dim); margin: 0 0 1.5rem; }
+
+/* the two of them, over the title. One picture, its own shape, no crop.
+   Capped: with both slots filled the email box still has to clear the fold on a
+   phone, so a tall drawing gets held back. Use a wide crop here. */
+.hw .pair { margin: 0 0 1.25rem; }
+.hw .pair img { width: auto; max-width: 100%; max-height: 22vh; margin: 0 auto; }
+
+/* ---------- the signup ---------- */
+.hw form { display: grid; gap: .875rem; text-align: left; }
+.hw input[type="email"] {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font: 400 1.0625rem/1.2 var(--sans);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .4s ease;
+}
+.hw input[type="email"]::placeholder { color: var(--faint); }
+.hw input[type="email"]:focus { border-color: var(--light); outline: none; }
+.hw .check { display: flex; align-items: flex-start; gap: .65rem; cursor: pointer; font-size: .9375rem; }
+.hw .check input {
+  flex: none;
+  width: 18px; height: 18px;
+  margin: .22em 0 0;
+  accent-color: var(--light);
+}
+.hw button {
+  padding: 15px 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--light);
+  color: var(--night);
+  font: 500 1.0625rem/1.2 var(--sans);
+  letter-spacing: .01em;
+  cursor: pointer;
+  transition: opacity .3s ease;
+}
+.hw button:hover { opacity: .88; }
+.hw button[disabled] { background: var(--rule); color: var(--dim); cursor: default; }
+.hw .fine { margin: 0; color: var(--dim); text-align: center; }
+
+/* ---------- below the fold ---------- */
+.hw section { padding: 14vh 0 0; }
+.hw h2 {
+  margin: 0 0 1.25rem;
+  font: 400 1.5rem/1.15 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  letter-spacing: -.01em;
+}
+.hw .cap { color: var(--dim); margin: 0 0 1rem; }
+
+.hw .gets { list-style: none; margin: 0; padding: 0; }
+.hw .gets li { padding: .7rem 0; border-top: 1px solid var(--rule); }
+.hw .gets li:last-child { border-bottom: 1px solid var(--rule); }
+
+.hw .promise p {
+  margin: 0;
+  font: 400 1.25rem/1.4 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  text-wrap: balance;
+}
+
+/* the cast: Henry first, he's who they came for */
+.hw .cast ol { list-style: none; margin: 0; padding: 0; }
+.hw .cast li { padding: 2rem 0 0; }
+.hw .cast .pic { background: #000; margin-bottom: 1rem; }
+.hw .cast .pic img { width: 100%; height: auto; }
+.hw .cast h3 {
+  margin: 0;
+  font: 400 1.25rem/1.15 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+}
+.hw .cast p { margin: .35rem 0 0; color: var(--dim); }
+
+.hw .again { padding-top: 14vh; }
+.hw .again .cap { text-align: center; }
+.hw .watch { padding: 12vh 0 0; text-align: center; }
+.hw .watch a { color: var(--light); border-bottom: 1px solid var(--rule); padding-bottom: 3px; }
+.hw .watch a:hover { border-color: var(--light); }
+
+/* Windows high contrast strips the amber fill, and the button stops looking like one.
+   Give it an edge so the one thing on the page to press still reads as pressable. */
+@media (forced-colors: active) {
+  .hw button { border: 2px solid ButtonText; }
+  .hw input[type="email"] { border: 1px solid ButtonText; }
+}
+</style>
+</head>
 <body>
 
 <header class="top">
@@ -30,22 +145,90 @@
     filament
   </a>
   <nav aria-label="Site">
-    <a href="../#worlds">worlds</a>
-    <a href="../studio/">studio</a>
     <button class="lights" type="button" aria-label="Lights"><span class="sw"></span><span class="word"><span class="off">lights off</span><span class="on">lights on</span></span></button>
   </nav>
 </header>
 
-<main>
-  <section class="still">
-    <div>
-      <!-- Hyperworld's one picture goes here, at its own aspect ratio:
-           <figure class="photo"><img src="../images/worlds/hyperworld.jpg" alt="" width="" height=""></figure> -->
-      <h1>Hyperworld</h1>
-      <p class="logline">A washed-up wizard. A runaway demon. A public access show that was never as private as he thought.</p>
-      <p class="label mono">adult animation · in development</p>
-    </div>
+<main class="hw">
+
+  <section class="open">
+    <!-- Gus and Henry go here, at their own aspect ratio:
+         <figure class="pair"><img src="../images/hyperworld/gus-and-henry.jpg" alt="Gus and Henry" width="" height=""></figure> -->
+    <h1>
+      <!-- the hand-lettered title goes here; when it does, change the span's class to "vh":
+           <img src="../images/hyperworld/hyperworld-title.png" alt="Hyperworld" width="" height=""> -->
+      <span class="word">Hyperworld</span>
+    </h1>
+    <p class="premise">A washed-up wizard. A runaway demon. A public access show that was never as private as he thought.</p>
+    <p class="label mono">adult animation · in development</p>
+
+    <form action="https://buttondown.com/api/emails/embed-subscribe/BUTTONDOWN-USERNAME" method="post" id="follow">
+      <input type="hidden" name="embed" value="1">
+      <input type="hidden" name="tag" value="hyperworld">
+      <label class="vh" for="email">Your email</label>
+      <input type="email" id="email" name="email" placeholder="your email" autocomplete="email" inputmode="email" required>
+      <label class="check"><input type="checkbox" name="tag" value="audition"> I want to audition</label>
+      <button type="submit">follow the pilot</button>
+      <p class="fine mono">No spam, unsubscribe anytime.</p>
+    </form>
   </section>
+
+  <section class="what">
+    <h2>What you get</h2>
+    <ul class="gets">
+      <li>The work as it happens</li>
+      <li>First look at the pilot</li>
+      <li>First word on casting</li>
+      <li>First word on the Kickstarter</li>
+    </ul>
+  </section>
+
+  <section class="promise">
+    <h2 class="vh">Made by hand</h2>
+    <p>Every frame, voice and note made by people.</p>
+  </section>
+
+  <section class="cast">
+    <h2>Who's in it</h2>
+    <ol>
+      <li>
+        <!-- <div class="pic"><img src="../images/hyperworld/henry.jpg" alt="Henry" width="" height="" loading="lazy"></div> -->
+        <h3>Henry</h3>
+        <!-- TODO: your line for Henry. Mine is a placeholder. -->
+        <p>The runaway demon.</p>
+      </li>
+      <li>
+        <!-- <div class="pic"><img src="../images/hyperworld/gus.jpg" alt="Gus" width="" height="" loading="lazy"></div> -->
+        <h3>Gus</h3>
+        <!-- TODO: your line for Gus. Mine is a placeholder. -->
+        <p>The washed-up wizard with the public access show.</p>
+      </li>
+      <li>
+        <!-- <div class="pic"><img src="../images/hyperworld/rick.jpg" alt="Rick" width="" height="" loading="lazy"></div> -->
+        <h3>Rick</h3>
+        <!-- TODO: your line for Rick. I don't know who he is, so there's nothing here. -->
+      </li>
+    </ol>
+  </section>
+
+  <section class="again">
+    <p class="cap">Follow the pilot.</p>
+    <form action="https://buttondown.com/api/emails/embed-subscribe/BUTTONDOWN-USERNAME" method="post">
+      <input type="hidden" name="embed" value="1">
+      <input type="hidden" name="tag" value="hyperworld">
+      <label class="vh" for="email2">Your email</label>
+      <input type="email" id="email2" name="email" placeholder="your email" autocomplete="email" inputmode="email" required>
+      <label class="check"><input type="checkbox" name="tag" value="audition"> I want to audition</label>
+      <button type="submit">follow the pilot</button>
+      <p class="fine mono">No spam, unsubscribe anytime.</p>
+    </form>
+  </section>
+
+  <section class="watch">
+    <p class="cap">Watch it being made.</p>
+    <a href="https://instagram.com/rudimakes">instagram.com/rudimakes</a>
+  </section>
+
 </main>
 
 <footer class="foot">
@@ -59,5 +242,17 @@
 </footer>
 
 <script src="../filament.js" defer></script>
+<script>
+/* Until the Buttondown username is in the form action, don't let anyone submit into
+   nothing. Delete this whole block once the action is real. */
+(() => {
+  document.querySelectorAll('form[action*="BUTTONDOWN-USERNAME"]').forEach((f) => {
+    f.addEventListener("submit", (e) => e.preventDefault());
+    const b = f.querySelector("button");
+    b.disabled = true;
+    b.textContent = "signup not connected yet";
+  });
+})();
+</script>
 </body>
 </html>
