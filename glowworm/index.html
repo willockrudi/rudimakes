@@ -70,10 +70,6 @@
 }
 .gw .join:hover { opacity: .88; color: var(--fg); }
 .gw .join[aria-disabled="true"] { background: var(--rule); color: var(--dim); cursor: default; }
-.gw .year { margin: .875rem 0 0; }
-.gw .year a { color: var(--light); }
-/* switched off with the join button, and it has to look it */
-.gw .year a[aria-disabled="true"] { color: var(--dim); }
 .gw .terms { margin: 1.25rem 0 0; color: var(--dim); text-align: center; }
 
 /* ---------- below the fold ---------- */
@@ -170,7 +166,6 @@
     <!-- TODO: paste the Stripe Payment Link in here. Until it starts with https the
          button stays switched off, so this page can never ship a dead join button. -->
     <a class="join" id="gw-join" href="#" data-link="STRIPE_PAYMENT_LINK">join &mdash; $25 a season</a>
-    <p class="year"><a href="#" data-link="STRIPE_PAYMENT_LINK_YEAR">or $85 for the year</a></p>
     <p class="terms">Shipped free in the US.<br>
       Spring prints when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
   </section>
