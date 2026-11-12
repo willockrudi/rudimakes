@@ -92,6 +92,8 @@
 .gw .when { color: var(--dim); margin: -.75rem 0 1.25rem; }
 
 /* the one place the worm's orange is allowed to be a mark rather than a fill */
+.gw .already .when { color: var(--dim); }
+.gw .aside { margin: 1rem 0 0; color: var(--dim); }
 .gw .issue h2::after {
   content: "";
   display: block;
@@ -172,7 +174,7 @@
     <a class="join" id="gw-join" href="#" data-link="STRIPE_PAYMENT_LINK">join &mdash; $25 a season</a>
     <p class="year"><a href="#" data-link="STRIPE_PAYMENT_LINK_YEAR">or $85 for the year</a></p>
     <p class="terms">Shipped free in the US.<br>
-      We print when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
+      Spring prints when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
   </section>
 
   <section class="arrives">
@@ -190,13 +192,22 @@
   </section>
 
   <section class="issue">
-    <h2>Winter &middot; Roots</h2>
-    <p class="when mono">issue no. 1 &middot; dec 21 2026 &ndash; mar 20 2027</p>
+    <h2>Spring is the first one</h2>
+    <!-- TODO: confirm the spring dates. Winter ran dec 21 - mar 20 on the cover of
+         no. 1, so spring starts mar 20 2027, but I am inferring the end. -->
+    <p class="when mono">issue no. 2 &middot; spring 2027</p>
+    <p>Join now and Spring is the first envelope that arrives.</p>
+  </section>
+
+  <section class="already">
+    <h2>Issue no. 1 already exists</h2>
+    <p class="when mono">winter &middot; roots &middot; not for sale</p>
     <ul class="plain">
       <li>The cowboys Hollywood left out</li>
       <li>Do trees really talk?</li>
       <li>A lost apple, found on a walk</li>
     </ul>
+    <p class="aside">Forty pages, cut and printed. It&rsquo;s where this started.</p>
   </section>
 
   <section class="who">
