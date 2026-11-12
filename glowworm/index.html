@@ -47,7 +47,7 @@
 /* the worm, cut from paper, at its own shape (2.45 wide to tall). Capped so it can
    never push the join button off a phone. */
 .gw .mark { margin: 0 0 1.25rem; }
-.gw .mark img { display: block; width: auto; max-width: 100%; max-height: 22vh; max-height: 22svh; margin: 0 auto; }
+.gw .mark img { display: block; width: auto; max-width: 100%; max-height: 19vh; max-height: 19svh; margin: 0 auto; }
 .gw h1 {
   margin: 0;
   font: 300 clamp(2.5rem, 12vw, 4.5rem)/1 var(--serif);
@@ -58,7 +58,22 @@
 .gw .what { max-width: 24rem; margin: 0 auto 1.75rem; font: 400 1.0625rem/1.5 var(--serif); text-wrap: balance; }
 
 /* ---------- the join ---------- */
-.gw .left { margin: 0 0 .75rem; color: var(--dim); }
+.gw .meter { margin: 0 0 1.1rem; }
+.gw .count { margin: 0 0 .4rem; }
+.gw .track { position: relative; height: 8px; background: var(--rule); }
+.gw .fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+  background: var(--worm);
+  transition: width 1.4s cubic-bezier(.2, .8, .2, 1);
+}
+/* Only drawn once the goal is passed: until then the goal IS the right hand edge.
+   Called goalmark, not mark, because the worm's figure is class "mark" and sharing
+   the name cost twice: an unscoped rule flattened the worm to a sliver, and even
+   scoped, the figure's 1.25rem bottom margin still applied here and collapsed this
+   to zero height (top + height + margin + bottom has to equal the track). */
+.gw .track .goalmark { position: absolute; top: -4px; bottom: -4px; width: 3px; background: var(--fg); }
+.gw .left { margin: .4rem 0 0; color: var(--dim); }
+@media (prefers-reduced-motion: reduce) { .gw .fill { transition: none; } }
 .gw .join {
   display: block;
   padding: 15px 18px;
@@ -162,10 +177,15 @@
     <p class="tag">a little light reading</p>
     <p class="what">An art and culture club. A handmade zine, four times a year, in the post.</p>
 
-    <!-- Counts down to the hundred, then turns around and counts members. The
-         hundred is where Spring prints and where the naming stops, not a cap on
-         joining. Edit members in glowworm.json and push. -->
-    <p class="left mono" id="gw-left" hidden></p>
+    <!-- The meter. No cap on members: past the goal the track rescales so the bar
+         stays full and the goal mark slides back, which shows how far over it went
+         rather than pinning at 100% and hiding it. Edit members in glowworm.json
+         and push. -->
+    <div class="meter">
+      <p class="count mono" id="gw-count" hidden></p>
+      <div class="track"><span class="fill" id="gw-fill"></span><span class="goalmark" id="gw-mark" hidden></span></div>
+      <p class="left mono" id="gw-left" hidden></p>
+    </div>
 
     <!-- Deliberately switched off. The price moved to 30 and Stripe prices cannot
          be edited, so the 25 link (buy.stripe.com/14A14nfNz6866T76xuc7u01) is the
@@ -195,7 +215,7 @@
          next charge date, which the script works out from the drop. That is what
          keeps every issue printed on money already in the bank. -->
     <p class="terms">Shipped free in the US. Nothing is charged until January 31.<br>
-      Spring prints when we reach 250. If it doesn&rsquo;t, nobody is charged.</p>
+      Spring prints when we reach 250. If we don&rsquo;t, nobody is charged.</p>
   </section>
 
   <section class="arrives">

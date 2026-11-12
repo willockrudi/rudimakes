@@ -1,5 +1,6 @@
 {
-  "_": "members drives the counter. founding is the naming cutoff, not the print goal (250, in the page copy).",
+  "_": "members is the live count. founding is the naming cutoff. goal is the print threshold.",
   "members": 0,
-  "founding": 100
+  "founding": 100,
+  "goal": 250
 }

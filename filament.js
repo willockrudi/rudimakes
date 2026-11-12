@@ -156,12 +156,36 @@
   // its own argument.
   const left = document.getElementById("gw-left");
   if (left) {
+    const count = document.getElementById("gw-count");
+    const fill = document.getElementById("gw-fill");
+    const mark = document.getElementById("gw-mark");
     fetch("/glowworm.json", { cache: "no-cache" }).then((x) => x.json()).then((g) => {
-      const members = Math.max(0, g.members ?? 0), n = (g.founding ?? 100) - members;
-      left.textContent = n > 0
-        ? n + (n === 1 ? " founding place left" : " founding places left")
-        : members + (members === 1 ? " member" : " members");
-      left.hidden = false;
+      const members = Math.max(0, g.members ?? 0);
+      const founding = g.founding ?? 100, goal = g.goal ?? 250;
+
+      // There is no cap. The track measures the goal until the goal is passed, and
+      // the members after that, so the bar never pins at full and quietly stops
+      // telling the story. Past the goal the mark shows where it was.
+      const max = Math.max(goal, members);
+      count.textContent = members + " of " + goal;
+      count.hidden = false;
+      if (members > goal) {
+        mark.style.left = (goal / max * 100) + "%";
+        mark.hidden = false;
+      }
+
+      // The second line is the scarce thing, while it is still scarce. After that
+      // the count above is the whole story and a second number is just noise.
+      const places = founding - members;
+      if (places > 0) {
+        left.textContent = places + (places === 1 ? " founding place left" : " founding places left");
+        left.hidden = false;
+      }
+
+      // One frame late so the width animates from zero: the bar filling is the
+      // point, it is what makes signing up feel like adding to something.
+      const width = members ? Math.max(members / max * 100, 1.5) : 0;
+      requestAnimationFrame(() => { fill.style.width = width + "%"; });
     }).catch(() => {});
   }
 
