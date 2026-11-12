@@ -167,9 +167,11 @@
          joining. Edit members in glowworm.json and push. -->
     <p class="left mono" id="gw-left" hidden></p>
 
-    <!-- TODO: paste the Stripe Payment Link in here. Until it starts with https the
-         button stays switched off, so this page can never ship a dead join button. -->
-    <a class="join" id="gw-join" href="#" data-link="STRIPE_PAYMENT_LINK">join &middot; $25 a season</a>
+    <!-- The live Stripe link. filament.js only turns the button on for an https
+         value, so a placeholder here switches it off rather than shipping a dead
+         button. -->
+    <a class="join" id="gw-join" href="#"
+       data-link="https://buy.stripe.com/14A14nfNz6866T76xuc7u01">join &middot; $25 a season</a>
     <p class="terms">Shipped free in the US.<br>
       Spring prints when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
   </section>
