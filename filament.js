@@ -146,14 +146,21 @@
   }
 
   // glowworm: the founding hundred, from /glowworm.json so the number can be edited
-  // and pushed without touching the page. It counts DOWN on purpose - while only
-  // seven people have joined, "93 places left" says the same thing as "7 of 100"
-  // without advertising how empty it is, and it sharpens as the window fills.
+  // and pushed without touching the page.
+  //
+  // The hundred is a milestone, not a cap. It is where Spring gets printed and
+  // where the naming perk stops, but anyone can still join at 101, so the counter
+  // has to turn around rather than sit at zero looking shut. Below it, count down:
+  // "93 founding places left" is a reason to act today, where "7 of 100" only
+  // advertises how empty it is. Above it, count up, because by then the number is
+  // its own argument.
   const left = document.getElementById("gw-left");
   if (left) {
     fetch("/glowworm.json", { cache: "no-cache" }).then((x) => x.json()).then((g) => {
-      const n = Math.max(0, (g.goal ?? 100) - (g.members ?? 0));
-      left.textContent = n ? n + (n === 1 ? " place left" : " places left") : "the first hundred are in";
+      const members = Math.max(0, g.members ?? 0), n = (g.goal ?? 100) - members;
+      left.textContent = n > 0
+        ? n + (n === 1 ? " founding place left" : " founding places left")
+        : members + (members === 1 ? " member" : " members");
       left.hidden = false;
     }).catch(() => {});
   }
