@@ -172,8 +172,11 @@
          button. -->
     <a class="join" id="gw-join" href="#"
        data-link="https://buy.stripe.com/14A14nfNz6866T76xuc7u01">join &middot; $25 a season</a>
-    <p class="terms">Shipped free in the US.<br>
-      Spring prints when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
+    <!-- This is only true while the Stripe link carries a 90 day free trial ending
+         10 February 2027. Without it the link charges on the day, and both of these
+         sentences become false. Set the trial before this page is pushed. -->
+    <p class="terms">Shipped free in the US. Nothing is charged until February 10.<br>
+      Spring prints when we reach 100. If it doesn&rsquo;t, nobody is charged.</p>
   </section>
 
   <section class="arrives">
