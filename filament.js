@@ -157,7 +157,7 @@
   const left = document.getElementById("gw-left");
   if (left) {
     fetch("/glowworm.json", { cache: "no-cache" }).then((x) => x.json()).then((g) => {
-      const members = Math.max(0, g.members ?? 0), n = (g.goal ?? 100) - members;
+      const members = Math.max(0, g.members ?? 0), n = (g.founding ?? 100) - members;
       left.textContent = n > 0
         ? n + (n === 1 ? " founding place left" : " founding places left")
         : members + (members === 1 ? " member" : " members");
