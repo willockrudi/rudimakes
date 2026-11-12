@@ -145,6 +145,30 @@
     }).catch(() => {});
   }
 
+  // glowworm: the founding hundred, from /glowworm.json so the number can be edited
+  // and pushed without touching the page. It counts DOWN on purpose - while only
+  // seven people have joined, "93 places left" says the same thing as "7 of 100"
+  // without advertising how empty it is, and it sharpens as the window fills.
+  const left = document.getElementById("gw-left");
+  if (left) {
+    fetch("/glowworm.json", { cache: "no-cache" }).then((x) => x.json()).then((g) => {
+      const n = Math.max(0, (g.goal ?? 100) - (g.members ?? 0));
+      left.textContent = n ? n + (n === 1 ? " place left" : " places left") : "the first hundred are in";
+      left.hidden = false;
+    }).catch(() => {});
+  }
+
+  // Anything waiting on a payment link stays switched off until a real one is pasted
+  // into data-link. A join button that 404s costs more than one that admits it isn't
+  // open, and this way the page can be live before Stripe is.
+  document.querySelectorAll("[data-link]").forEach((el) => {
+    const to = el.dataset.link || "";
+    if (to.startsWith("https://")) { el.href = to; return; }
+    el.removeAttribute("href");
+    el.setAttribute("aria-disabled", "true");
+    if (el.classList.contains("join")) el.textContent = "not open yet";
+  });
+
   // channels come in one at a time
   const items = document.querySelectorAll(".reveal");
   if (still || !("IntersectionObserver" in window)) {

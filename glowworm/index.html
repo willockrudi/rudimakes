@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>glowworm · Filament</title>
+<meta name="description" content="A little light reading. A handmade zine, four times a year, in the post. The first hundred members are named in the back of every issue.">
+<meta property="og:title" content="glowworm">
+<meta property="og:description" content="A little light reading. A handmade zine, four times a year, in the post.">
+<meta property="og:image" content="https://rudimakes.com/images/glowworm/og-worm.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The glowworm: a worm cut from dark paper curled around an orange paper sun. Glowworm, a little light reading.">
+<meta property="og:url" content="https://rudimakes.com/glowworm/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://rudimakes.com/glowworm/">
+<meta name="theme-color" content="#EFE7DA">
+<link rel="icon" type="image/svg+xml" href="../images/filament-mark.svg">
+<!-- This page stays on Bone. The magazine is cut paper, and the worm's body is a dark
+     plum that all but disappears against Night - only its torn white edge survives.
+     Paper art wants paper. The site's stored lights setting is deliberately not read. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..500,0..100,0..1;1,9..144,300..500,0..100,0..1&family=IBM+Plex+Mono&family=Instrument+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="../filament.css">
+<style>
+/* Glowworm sits in the Filament room with the lights on, for the reason in the head.
+   One job: the first hundred members.
+
+   The shared tokens are tuned for Night, so the same three that Hyperworld swaps are
+   swapped here: --rule is 1.27:1 on Bone, --faint is 2.56:1, and amber-with-a-night-
+   label falls to 3.03:1.
+
+   --worm is the orange cut out of the magazine's own cover, sampled from the art.
+   It carries a Night label at 5.89:1, which beats the site's amber, so it earns the
+   button. As TEXT on Bone it is 2.58:1 and fails outright, so it is never set in type
+   here - only filled, never written. */
+.gw { max-width: 34rem; margin: 0 auto; padding: 0 var(--gutter); --worm: #EC6840; }
+
+/* ---------- above the fold ---------- */
+.gw .open { padding: 2vh 0 0; text-align: center; }
+/* the worm, cut from paper, at its own shape (2.45 wide to tall). Capped so it can
+   never push the join button off a phone. */
+.gw .mark { margin: 0 0 1.25rem; }
+.gw .mark img { display: block; width: auto; max-width: 100%; max-height: 22vh; max-height: 22svh; margin: 0 auto; }
+.gw h1 {
+  margin: 0;
+  font: 300 clamp(2.5rem, 12vw, 4.5rem)/1 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+  letter-spacing: -.03em;
+}
+.gw .tag { margin: .35rem 0 1.5rem; color: var(--dim); font: 400 1.0625rem/1.4 var(--serif); font-style: italic; }
+.gw .what { max-width: 24rem; margin: 0 auto 1.75rem; font: 400 1.0625rem/1.5 var(--serif); text-wrap: balance; }
+
+/* ---------- the join ---------- */
+.gw .left { margin: 0 0 .75rem; color: var(--dim); }
+.gw .join {
+  display: block;
+  padding: 15px 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--worm);
+  color: var(--fg);                /* Night on the worm's orange: 5.89:1 */
+  font: 500 1.0625rem/1.2 var(--sans);
+  letter-spacing: .01em;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity .3s ease;
+}
+.gw .join:hover { opacity: .88; color: var(--fg); }
+.gw .join[aria-disabled="true"] { background: var(--rule); color: var(--dim); cursor: default; }
+.gw .year { margin: .875rem 0 0; }
+.gw .year a { color: var(--light); }
+/* switched off with the join button, and it has to look it */
+.gw .year a[aria-disabled="true"] { color: var(--dim); }
+.gw .terms { margin: 1.25rem 0 0; color: var(--dim); text-align: center; }
+
+/* ---------- below the fold ---------- */
+.gw section { padding: 14vh 0 0; }
+.gw h2 {
+  margin: 0 0 1.25rem;
+  font: 400 1.5rem/1.15 var(--serif);
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  letter-spacing: -.01em;
+}
+.gw .plain { list-style: none; margin: 0; padding: 0; }
+.gw .plain li { padding: .7rem 0; border-top: 1px solid var(--faint); }
+.gw .plain li:last-child { border-bottom: 1px solid var(--faint); }
+
+.gw .first p { margin: 0; font: 400 1.25rem/1.4 var(--serif); font-variation-settings: "SOFT" 100, "WONK" 0; text-wrap: balance; }
+.gw .when { color: var(--dim); margin: -.75rem 0 1.25rem; }
+
+/* the one place the worm's orange is allowed to be a mark rather than a fill */
+.gw .issue h2::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 3px;
+  margin: .75rem 0 0;
+  background: var(--worm);
+}
+
+.gw .who p { margin: 0; font: 400 1.125rem/1.5 var(--serif); }
+.gw .notyet { padding-top: 14vh; }
+.gw .notyet .cap { color: var(--dim); margin: 0 0 1rem; }
+.gw form { display: grid; gap: .875rem; }
+.gw input[type="email"] {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--dim);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font: 400 1.0625rem/1.2 var(--sans);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .4s ease;
+}
+.gw input[type="email"]::placeholder { color: var(--dim); }
+.gw input[type="email"]:focus { border-color: var(--light); outline: none; }
+.gw button {
+  padding: 14px 18px;
+  border: 1px solid var(--fg);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font: 500 1rem/1.2 var(--sans);
+  cursor: pointer;
+}
+.gw button:hover { background: var(--fg); color: var(--bg); }
+.gw .fine { margin: 0; color: var(--dim); }
+
+/* Windows high contrast strips the fill off the join button and it stops looking
+   like one. Give it an edge, the same way Hyperworld does. */
+@media (forced-colors: active) {
+  .gw .join { border: 2px solid ButtonText; }
+  .gw input[type="email"] { border: 1px solid ButtonText; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="../" aria-label="Filament">
+    <svg viewBox="0 0 180 612" aria-hidden="true"><path class="f" transform="translate(-418.5 -216.5)" d="M563 298 C563 258 538 235 505 235 C468 235 443 262 443 308 C443 400 563 440 563 505 L437 604 L550 641 C572 670 580 700 580 722 C580 772 555 810 503 810 C465 810 438 788 438 758 C438 745 442 734 448 725"/></svg>
+    filament
+  </a>
+</header>
+
+<main class="gw">
+
+  <section class="open">
+    <!-- The worm, cut out of the cover of issue no. 1 and lifted straight from the
+         print PDF, so it is the same piece of paper that goes in the post. -->
+    <figure class="mark">
+      <img src="../images/glowworm/worm.webp" alt="" width="900" height="367" fetchpriority="high">
+    </figure>
+    <h1>glowworm</h1>
+    <p class="tag">a little light reading</p>
+    <!-- TODO: your line. Mine is a placeholder, and this is the sentence that does
+         the most work on the page. -->
+    <p class="what">An art and culture club. A handmade zine, four times a year, in the post.</p>
+
+    <!-- The counter counts DOWN. "7 of 100" advertises how few people have joined;
+         "93 places left" says the same thing and gets more urgent as it fills.
+         Edit members in glowworm.json and push - it only moves a few times a day. -->
+    <p class="left mono" id="gw-left" hidden></p>
+
+    <!-- TODO: paste the Stripe Payment Link in here. Until it starts with https the
+         button stays switched off, so this page can never ship a dead join button. -->
+    <a class="join" id="gw-join" href="#" data-link="STRIPE_PAYMENT_LINK">join &mdash; $25 a season</a>
+    <p class="year"><a href="#" data-link="STRIPE_PAYMENT_LINK_YEAR">or $85 for the year</a></p>
+    <p class="terms">Shipped free in the US.<br>
+      We print when we reach 100. If we don&rsquo;t, you&rsquo;re refunded.</p>
+  </section>
+
+  <section class="arrives">
+    <h2>What arrives</h2>
+    <ul class="plain">
+      <li>Forty pages, four times a year</li>
+      <li>A printed extra in every envelope</li>
+      <li>Cut by hand, printed properly</li>
+    </ul>
+  </section>
+
+  <section class="first">
+    <h2>The first hundred</h2>
+    <p>Your name and handle in the back of the magazine. Every issue, forever &mdash; whether you stay or not.</p>
+  </section>
+
+  <section class="issue">
+    <h2>Winter &middot; Roots</h2>
+    <p class="when mono">issue no. 1 &middot; dec 21 2026 &ndash; mar 20 2027</p>
+    <ul class="plain">
+      <li>The cowboys Hollywood left out</li>
+      <li>Do trees really talk?</li>
+      <li>A lost apple, found on a walk</li>
+    </ul>
+  </section>
+
+  <section class="who">
+    <h2 class="vh">Who makes it</h2>
+    <p>I&rsquo;m Rudi, an artist and designer from Indiana. I made this.</p>
+  </section>
+
+  <section class="notyet">
+    <p class="cap">Not ready yet? I&rsquo;ll write when the next issue is close.</p>
+    <!-- TODO: this posts to the Hyperworld form. Make a Glowworm form in Kit and swap
+         the id, or these people land in the same bucket as the pilot list. -->
+    <form action="https://app.kit.com/forms/10164058/subscriptions" method="post">
+      <label class="vh" for="email">Your email</label>
+      <input type="email" id="email" name="email_address" placeholder="your email" autocomplete="email" inputmode="email" required>
+      <button type="submit">keep me posted</button>
+      <p class="fine mono">No spam, unsubscribe anytime.</p>
+    </form>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <a href="mailto:info@rudimakes.com">info@rudimakes.com</a>
+  <div class="links">
+    <a href="https://instagram.com/rudimakes">instagram</a>
+    <a href="https://www.youtube.com/channel/UCmi3JMWFCpvOPwnY3tKF5Yg">youtube</a>
+    <span>&copy; Filament LLC</span>
+  </div>
+  <p class="signoff mono">this concludes tonight's transmission.</p>
+</footer>
+
+<script src="../filament.js" defer></script>
+</body>
+</html>
