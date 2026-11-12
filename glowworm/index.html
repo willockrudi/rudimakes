@@ -167,11 +167,15 @@
          joining. Edit members in glowworm.json and push. -->
     <p class="left mono" id="gw-left" hidden></p>
 
-    <!-- The live Stripe link. filament.js only turns the button on for an https
-         value, so a placeholder here switches it off rather than shipping a dead
-         button. -->
+    <!-- Deliberately switched off. The price moved to 30 and Stripe prices cannot
+         be edited, so the 25 link (buy.stripe.com/14A14nfNz6866T76xuc7u01) is the
+         wrong one now and has to be archived. Make a new 30 price on the same
+         product, make a new link from it, paste it here.
+
+         filament.js only turns the button on for an https value, so until then
+         this page cannot charge anyone the old price by accident. -->
     <a class="join" id="gw-join" href="#"
-       data-link="https://buy.stripe.com/14A14nfNz6866T76xuc7u01">join &middot; $25 a season</a>
+       data-link="STRIPE_PAYMENT_LINK_30">join &middot; $30 a season</a>
     <!-- The Stripe link carries the free trial, verified: 0.00 due today, then 25
          every 3 months from 10 February 2027.
 
