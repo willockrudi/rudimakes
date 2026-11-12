@@ -172,9 +172,14 @@
          button. -->
     <a class="join" id="gw-join" href="#"
        data-link="https://buy.stripe.com/14A14nfNz6866T76xuc7u01">join &middot; $25 a season</a>
-    <!-- This is only true while the Stripe link carries a 90 day free trial ending
-         10 February 2027. Without it the link charges on the day, and both of these
-         sentences become false. Set the trial before this page is pushed. -->
+    <!-- The Stripe link carries the free trial, verified: 0.00 due today, then 25
+         every 3 months from 10 February 2027.
+
+         The trial is a COUNT OF DAYS, not a date, so it walks forward with every
+         signup and has to be wound down to keep this line honest: 90 days on 12
+         Nov, 77 on 25 Nov, 62 on 10 Dec, 47 on 25 Dec, 31 on 10 Jan, 16 on 25 Jan.
+         Leave it at 90 all winter and a January subscriber is charged in April,
+         after Spring has already been printed and posted to them. -->
     <p class="terms">Shipped free in the US. Nothing is charged until February 10.<br>
       Spring prints when we reach 100. If it doesn&rsquo;t, nobody is charged.</p>
   </section>
