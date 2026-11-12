@@ -232,7 +232,13 @@
   </section>
 
   <section class="notyet">
-    <p class="cap">Not ready yet? I&rsquo;ll write when the next issue is close.</p>
+    <!-- The join button is US only, because a Stripe subscription link cannot carry
+         a shipping rate at all (only payment mode supports those) and cannot vary
+         one by country. So the only control is the allowed country list, and anyone
+         outside it hits a wall at checkout with no explanation. This line catches
+         them before that happens, and measures whether international is worth a
+         second link with the postage built into a higher price. -->
+    <p class="cap">Outside the US, or not ready yet? I&rsquo;ll write when the next issue is close.</p>
     <!-- TODO: this posts to the Hyperworld form. Make a Glowworm form in Kit and swap
          the id, or these people land in the same bucket as the pilot list. -->
     <form action="https://app.kit.com/forms/10164058/subscriptions" method="post">
