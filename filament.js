@@ -223,7 +223,12 @@
         return img;
       });
       if (!still && frames.length > 1) {
-        Promise.all(frames.map((f) => f.decode().catch(() => {}))).then(() => {
+        // load, not decode(): decode() can sit unresolved in a tab that is not
+        // being painted, and the loop would never start
+        Promise.all(frames.map((f) => f.complete ? 0 : new Promise((r) => {
+          f.addEventListener("load", r, { once: true });
+          f.addEventListener("error", r, { once: true });
+        }))).then(() => {
           let at = 0;
           setInterval(() => {
             frames[at].classList.remove("on");
