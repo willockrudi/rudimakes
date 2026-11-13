@@ -145,12 +145,13 @@
     }).catch(() => {});
   }
 
-  // glowworm: the founding hundred, from /glowworm.json so the number can be edited
+  // glowworm: the founding members, from /glowworm.json so the number can be edited
   // and pushed without touching the page.
   //
-  // The hundred is a milestone, not a cap. It is where Spring gets printed and
-  // where the naming perk stops, but anyone can still join at 101, so the counter
-  // has to turn around rather than sit at zero looking shut. Below it, count down:
+  // founding and goal are the same number now, because founding means you joined
+  // before it existed and goal is when it starts existing. It is a milestone, not
+  // a cap: anyone can still join after, so the counter has to turn around rather
+  // than sit at zero looking shut. Below it, count down:
   // "93 founding places left" is a reason to act today, where "7 of 100" only
   // advertises how empty it is. Above it, count up, because by then the number is
   // its own argument.

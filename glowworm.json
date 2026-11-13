@@ -1,6 +1,6 @@
 {
-  "_": "members is the live count. founding is the naming cutoff. goal is the print threshold.",
+  "_": "members is the live count. founding is the naming cutoff, now the same as goal: founding means you joined before it existed, and goal is when it starts existing.",
   "members": 0,
-  "founding": 100,
+  "founding": 250,
   "goal": 250
 }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>glowworm · rudimakes</title>
-<meta name="description" content="A little light reading. A handmade zine, four times a year, in the post. The first hundred members are named in the back of every issue.">
+<meta name="description" content="A little light reading. A handmade zine, four times a year, in the post. The first 250 members are named in the back of every issue.">
 <meta property="og:title" content="glowworm">
 <meta property="og:description" content="A little light reading. A handmade zine, four times a year, in the post.">
 <meta property="og:image" content="https://rudimakes.com/images/glowworm/og-worm.png">
@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="../filament.css">
 <style>
 /* Glowworm sits in the Filament room with the lights on, for the reason in the head.
-   One job: the first hundred members.
+   One job: the first 250 members.
 
    The shared tokens are tuned for Night, so the same three that Hyperworld swaps are
    swapped here: --rule is 1.27:1 on Bone, --faint is 2.56:1, and amber-with-a-night-
@@ -107,6 +107,18 @@
 .gw .when { color: var(--dim); margin: -.75rem 0 1.25rem; }
 
 /* the one place the worm's orange is allowed to be a mark rather than a fill */
+/* Issue one's cover. It is cream on Bone, so it needs an edge or it dissolves
+   into the page. Capped so it reads as an object on a table rather than filling
+   the column on a wide screen. */
+.gw .cover { margin: 0 0 1.5rem; }
+.gw .cover img {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid var(--rule);
+}
 .gw .already .when { color: var(--dim); }
 .gw .aside { margin: 1rem 0 0; color: var(--dim); }
 .gw .issue h2::after {
@@ -226,7 +238,7 @@
   </section>
 
   <section class="first">
-    <h2>The first hundred</h2>
+    <h2>The first 250</h2>
     <p>Your name and handle in the back of the magazine. Every issue, forever. Whether you stay or not.</p>
   </section>
 
@@ -238,6 +250,10 @@
   </section>
 
   <section class="already">
+    <!-- Issue one's cover goes here, above the text about it. Export page 1 of the
+         print PDF at its own 8.5 x 11 shape, about 900px wide is plenty:
+         <figure class="cover"><img src="../images/glowworm/roots-cover.webp"
+              alt="The cover of Glowworm issue one, Winter: Roots" width="" height="" loading="lazy"></figure> -->
     <h2>Issue no. 1 already exists</h2>
     <p class="when mono">winter &middot; roots &middot; not for sale (yet)</p>
     <ul class="plain">
