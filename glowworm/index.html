@@ -110,6 +110,15 @@
 /* Issue one's cover. It is cream on Bone, so it needs an edge or it dissolves
    into the page. Capped so it reads as an object on a table rather than filling
    the column on a wide screen. */
+/* The paper-cut guy, lifted from the issue one scans. The png/ set in the art
+   assets is already cut out on transparency, so the page's own Bone is his
+   background, same trick as the worm. Fixed height, not width, so both poses
+   stand at the same scale even though one is wider than the other.
+   alt is empty on purpose: he illustrates the sentence beside him rather than
+   adding to it, and a screen reader does not need him described twice. */
+.gw .guy { margin: 0 0 1rem; }
+.gw .guy img { display: block; width: auto; height: 130px; }
+
 .gw .cover { margin: 0 0 1.5rem; }
 .gw .cover img {
   display: block;
@@ -229,6 +238,8 @@
   </section>
 
   <section class="arrives">
+    <figure class="guy"><img src="../images/glowworm/scissors-walker.webp" alt=""
+         width="375" height="420" loading="lazy"></figure>
     <h2>What arrives</h2>
     <ul class="plain">
       <li>Forty pages, four times a year</li>
@@ -276,6 +287,8 @@
          outside it hits a wall at checkout with no explanation. This line catches
          them before that happens, and measures whether international is worth a
          second link with the postage built into a higher price. -->
+    <figure class="guy"><img src="../images/glowworm/reader-newspaper.webp" alt=""
+         width="234" height="420" loading="lazy"></figure>
     <p class="cap">Outside the US, or not ready yet? I&rsquo;ll write when the next issue is close.</p>
     <!-- TODO: this posts to the Hyperworld form. Make a Glowworm form in Kit and swap
          the id, or these people land in the same bucket as the pilot list. -->
