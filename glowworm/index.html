@@ -187,17 +187,15 @@
       <p class="left mono" id="gw-left" hidden></p>
     </div>
 
-    <!-- Deliberately switched off. The price moved to 30 and Stripe prices cannot
-         be edited, so the 25 link (buy.stripe.com/14A14nfNz6866T76xuc7u01) is the
-         wrong one now and has to be archived. Make a new 30 price on the same
-         product, make a new link from it, paste it here.
-
-         filament.js only turns the button on for an https value, so until then
-         this page cannot charge anyone the old price by accident. -->
+    <!-- filament.js only turns this on for an https data-link, so a placeholder
+         here switches the button off rather than shipping a dead or stale one.
+         The old 25 price has its own link, which is archived; its URL is kept
+         out of here deliberately, since published source is public. -->
     <a class="join" id="gw-join" href="#"
        data-link="https://buy.stripe.com/5kQcN5cBndAycdr3lic7u02">join &middot; $30 a season</a>
-    <!-- The Stripe link carries the free trial, verified: 0.00 due today, then 25
-         every 3 months from 10 February 2027.
+    <!-- The Stripe link carries the free trial, verified on the live checkout:
+         0.00 due today, 90 days free, then 30.00 every 3 months from 31 January
+         2027. US is the only country offered and the name to print is required.
 
          The trial is a COUNT OF DAYS, not a date, so it walks forward with every
          signup and has to be wound down, or a January subscriber is charged in
