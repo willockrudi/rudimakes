@@ -1,9 +1,11 @@
 {
-  "_": "Twenty paper cuts on the homepage. For each piece: img is the scan (put it in images/twenty/), link is its own Stripe payment link capped at one sale, sold turns true when it goes. No img = an empty numbered square. img but no link = shown, not yet for sale. The whole section stays hidden until at least one piece has an img.",
+  "_": "Twenty frames of Dill on the homepage. For each piece: sketch is the drawn frame, img is the scan of the paper cut (put it in images/twenty/), link is its own Stripe payment link capped at one sale, sold turns true when it goes. sketch only = shown, not for sale. img and link = for sale. The loop at the top plays all twenty at fps frames a second, using the paper cut where there is one and the sketch where there is not.",
   "price": 40,
+  "fps": 8,
   "pieces": [
     {
       "n": 1,
+      "sketch": "images/twenty/dill-01-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -11,6 +13,7 @@
     },
     {
       "n": 2,
+      "sketch": "images/twenty/dill-02-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -18,6 +21,7 @@
     },
     {
       "n": 3,
+      "sketch": "images/twenty/dill-03-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -25,6 +29,7 @@
     },
     {
       "n": 4,
+      "sketch": "images/twenty/dill-04-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -32,6 +37,7 @@
     },
     {
       "n": 5,
+      "sketch": "images/twenty/dill-05-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -39,6 +45,7 @@
     },
     {
       "n": 6,
+      "sketch": "images/twenty/dill-06-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -46,6 +53,7 @@
     },
     {
       "n": 7,
+      "sketch": "images/twenty/dill-07-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -53,6 +61,7 @@
     },
     {
       "n": 8,
+      "sketch": "images/twenty/dill-08-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -60,6 +69,7 @@
     },
     {
       "n": 9,
+      "sketch": "images/twenty/dill-09-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -67,6 +77,7 @@
     },
     {
       "n": 10,
+      "sketch": "images/twenty/dill-10-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -74,6 +85,7 @@
     },
     {
       "n": 11,
+      "sketch": "images/twenty/dill-11-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -81,6 +93,7 @@
     },
     {
       "n": 12,
+      "sketch": "images/twenty/dill-12-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -88,6 +101,7 @@
     },
     {
       "n": 13,
+      "sketch": "images/twenty/dill-13-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -95,6 +109,7 @@
     },
     {
       "n": 14,
+      "sketch": "images/twenty/dill-14-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -102,6 +117,7 @@
     },
     {
       "n": 15,
+      "sketch": "images/twenty/dill-15-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -109,6 +125,7 @@
     },
     {
       "n": 16,
+      "sketch": "images/twenty/dill-16-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -116,6 +133,7 @@
     },
     {
       "n": 17,
+      "sketch": "images/twenty/dill-17-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -123,6 +141,7 @@
     },
     {
       "n": 18,
+      "sketch": "images/twenty/dill-18-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -130,6 +149,7 @@
     },
     {
       "n": 19,
+      "sketch": "images/twenty/dill-19-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",
@@ -137,6 +157,7 @@
     },
     {
       "n": 20,
+      "sketch": "images/twenty/dill-20-sketch.webp",
       "img": "",
       "alt": "",
       "link": "",

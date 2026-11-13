@@ -194,16 +194,45 @@
     }).catch(() => {});
   }
 
-  // twenty: the paper cuts on the homepage, from /twenty.json so a scan can be added
-  // or a piece marked sold without touching the page. A piece is one of three things:
-  // not cut yet (a numbered empty square), for sale (its picture, linked to its own
-  // Stripe link), or sold (its picture, dimmed, no link). Nothing shows until at
-  // least one piece has a picture.
+  // twenty: the frames of Dill on the homepage, from /twenty.json so a scan can be
+  // added or a piece marked sold without touching the page. A piece is one of four
+  // things: nothing yet (a numbered empty box), drawn (its sketch, not for sale),
+  // for sale (its paper cut, linked to its own Stripe link), or sold (its paper cut,
+  // dimmed, no link). Nothing shows until at least one piece has a picture.
   const twenty = document.getElementById("twenty");
   if (twenty) {
     fetch("/twenty.json", { cache: "no-cache" }).then((x) => x.json()).then((t) => {
       const pieces = t.pieces || [];
-      if (!pieces.some((p) => p.img)) return;
+      const src = (s) => "/" + String(s).replace(/^\//, "");
+      // what a piece looks like today: the paper cut once it exists, the drawing until then
+      const face = (p) => p.img || p.sketch;
+      if (!pieces.some(face)) return;
+
+      // The loop. Every frame is stacked in one box and only one is opaque, so
+      // nothing reflows and nothing flashes while a frame is still downloading.
+      // It waits for all of them before it moves, and holds on frame one for
+      // anyone who has asked for less motion.
+      const loop = document.getElementById("twenty-loop");
+      const frames = pieces.filter(face).map((p, i) => {
+        const img = document.createElement("img");
+        img.src = src(face(p));
+        img.alt = i ? "" : "Dill, a round-faced baby, looking up";
+        if (!p.img) img.className = "drawn";
+        if (!i) img.classList.add("on");
+        loop.append(img);
+        return img;
+      });
+      if (!still && frames.length > 1) {
+        Promise.all(frames.map((f) => f.decode().catch(() => {}))).then(() => {
+          let at = 0;
+          setInterval(() => {
+            frames[at].classList.remove("on");
+            at = (at + 1) % frames.length;
+            frames[at].classList.add("on");
+          }, 1000 / (t.fps || 8));
+        });
+      }
+
       const grid = document.getElementById("twenty-grid");
       const el = (tag, cls, text) => {
         const e = document.createElement(tag);
@@ -214,14 +243,14 @@
       pieces.forEach((p) => {
         const num = String(p.n).padStart(2, "0");
         const open = p.img && !p.sold && String(p.link || "").startsWith("https://");
-        const li = el("li", p.sold ? "sold" : p.img ? "" : "blank");
+        const li = el("li", p.sold ? "sold" : p.img ? "" : p.sketch ? "drawn" : "blank");
         const box = el(open ? "a" : "div", "piece");
         if (open) { box.href = p.link; box.setAttribute("aria-label", "No. " + num + ", buy"); }
         const pic = el("div", "pic");
-        if (p.img) {
+        if (face(p)) {
           const img = el("img");
-          img.src = "/" + String(p.img).replace(/^\//, "");
-          img.alt = p.alt || "Paper cut no. " + num;
+          img.src = src(face(p));
+          img.alt = p.alt || (p.img ? "Paper cut no. " : "Drawing for no. ") + num;
           img.loading = "lazy";
           pic.append(img);
         }
