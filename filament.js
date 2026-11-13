@@ -190,6 +190,50 @@
     }).catch(() => {});
   }
 
+  // twenty: the paper cuts on the homepage, from /twenty.json so a scan can be added
+  // or a piece marked sold without touching the page. A piece is one of three things:
+  // not cut yet (a numbered empty square), for sale (its picture, linked to its own
+  // Stripe link), or sold (its picture, dimmed, no link). Nothing shows until at
+  // least one piece has a picture.
+  const twenty = document.getElementById("twenty");
+  if (twenty) {
+    fetch("/twenty.json", { cache: "no-cache" }).then((x) => x.json()).then((t) => {
+      const pieces = t.pieces || [];
+      if (!pieces.some((p) => p.img)) return;
+      const grid = document.getElementById("twenty-grid");
+      const el = (tag, cls, text) => {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text != null) e.textContent = text;
+        return e;
+      };
+      pieces.forEach((p) => {
+        const num = String(p.n).padStart(2, "0");
+        const open = p.img && !p.sold && String(p.link || "").startsWith("https://");
+        const li = el("li", p.sold ? "sold" : p.img ? "" : "blank");
+        const box = el(open ? "a" : "div", "piece");
+        if (open) { box.href = p.link; box.setAttribute("aria-label", "No. " + num + ", buy"); }
+        const pic = el("div", "pic");
+        if (p.img) {
+          const img = el("img");
+          img.src = "/" + String(p.img).replace(/^\//, "");
+          img.alt = p.alt || "Paper cut no. " + num;
+          img.loading = "lazy";
+          pic.append(img);
+        }
+        const cap = el("div", "cap mono");
+        cap.append(el("span", "", num), el("span", "", p.sold ? "sold" : open ? "$" + t.price : ""));
+        box.append(pic, cap);
+        li.append(box);
+        grid.append(li);
+      });
+      const left = pieces.filter((p) => !p.sold).length;
+      document.getElementById("twenty-left").textContent = left + " of " + pieces.length + " left";
+      document.getElementById("twenty-price").textContent = "$" + t.price + " each, shipped in the US.";
+      twenty.hidden = false;
+    }).catch(() => {});
+  }
+
   // Anything waiting on a payment link stays switched off until a real one is pasted
   // into data-link. A join button that 404s costs more than one that admits it isn't
   // open, and this way the page can be live before Stripe is.

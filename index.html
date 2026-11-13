@@ -49,6 +49,14 @@
 
   <section class="log" id="worlds" aria-label="Worlds">
     <p class="date mono" data-today></p>
+    <!-- Twenty paper cuts, one of each. Filled from /twenty.json by filament.js and
+         hidden until the first one is scanned, so this can be live before they are.
+         Each piece has its own Stripe link capped at one sale. -->
+    <div class="twenty" id="twenty" hidden>
+      <div class="row"><h2 class="title">twenty paper cuts</h2><span class="left mono" id="twenty-left"></span></div>
+      <p class="line">Hand cut, numbered, one of each. <span id="twenty-price"></span> Pick a number.</p>
+      <ol class="grid" id="twenty-grid"></ol>
+    </div>
     <a class="club reveal" href="glowworm/">
       <div class="pic"><img src="images/glowworm/worm-card.webp" alt="The glowworm, cut from paper" width="1280" height="720" loading="lazy"></div>
       <div class="row"><span class="name">join glowworm</span><span class="kind mono">the club</span></div>

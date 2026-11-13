@@ -1,0 +1,146 @@
+{
+  "_": "Twenty paper cuts on the homepage. For each piece: img is the scan (put it in images/twenty/), link is its own Stripe payment link capped at one sale, sold turns true when it goes. No img = an empty numbered square. img but no link = shown, not yet for sale. The whole section stays hidden until at least one piece has an img.",
+  "price": 40,
+  "pieces": [
+    {
+      "n": 1,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 2,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 3,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 4,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 5,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 6,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 7,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 8,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 9,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 10,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 11,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 12,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 13,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 14,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 15,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 16,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 17,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 18,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 19,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    },
+    {
+      "n": 20,
+      "img": "",
+      "alt": "",
+      "link": "",
+      "sold": false
+    }
+  ]
+}
