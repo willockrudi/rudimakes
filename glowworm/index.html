@@ -46,6 +46,7 @@
 .gw .open { padding: 2vh 0 0; text-align: center; }
 /* the worm, cut from paper, at its own shape (2.45 wide to tall). Capped so it can
    never push the join button off a phone. */
+.gw .thanks { margin: 0 0 2rem; padding: .9rem 1rem; border: 1px solid var(--dim); font: 400 1.0625rem/1.45 var(--serif); text-wrap: balance; }
 .gw .mark { margin: 0 0 1.25rem; }
 .gw .mark img { display: block; width: auto; max-width: 100%; max-height: 19vh; max-height: 19svh; margin: 0 auto; }
 .gw h1 {
@@ -189,6 +190,11 @@
 <main class="gw">
 
   <section class="open">
+    <!-- Only for someone arriving from buying one of the twenty paper cuts: each
+         of those Stripe links sends the buyer to /glowworm/?from=twenty after
+         they pay. filament.js unhides this for them and nobody else sees it. -->
+    <p class="thanks" id="gw-thanks" hidden>Thank you. Your paper cut is on its way.<br>
+      The magazine is the other half. Joining costs nothing today.</p>
     <!-- The worm, cut out of the cover of issue no. 1 and lifted straight from the
          print PDF, so it is the same piece of paper that goes in the post. -->
     <figure class="mark">

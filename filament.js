@@ -155,6 +155,10 @@
   // "93 founding places left" is a reason to act today, where "7 of 100" only
   // advertises how empty it is. Above it, count up, because by then the number is
   // its own argument.
+  // someone who just bought one of the twenty lands on glowworm with ?from=twenty
+  const thanks = document.getElementById("gw-thanks");
+  if (thanks && new URLSearchParams(location.search).get("from") === "twenty") thanks.hidden = false;
+
   const left = document.getElementById("gw-left");
   if (left) {
     const count = document.getElementById("gw-count");
